@@ -1,2 +1,2 @@
 # super-lama-video-editor
-open source java application to do video editing.
+open source java application to do video editing. UNSTABLE
