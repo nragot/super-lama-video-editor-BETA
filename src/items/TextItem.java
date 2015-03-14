@@ -24,8 +24,8 @@ public class TextItem extends Item {
 		setId(2);
 		setName("Text #"+lastText);
 		lastText ++;
-		m_height = 16;
-		m_width = 39;
+		m_height = 16+"";
+		m_width = 39+"";
 		reload();
 	}
 	

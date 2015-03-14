@@ -2,6 +2,7 @@ package tools;
 
 import items.ImageItem;
 import items.TextItem;
+import items.VideoItem;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -26,13 +27,17 @@ import start.MainWindow;
 
 public class RendererTool extends JPanel{
 	
-	static ArrayList<ImageItem> images = new ArrayList<ImageItem>();
-	static ArrayList<TextItem> texts = new ArrayList<TextItem>();
+	static ArrayList<ImageItem>        images = new ArrayList<ImageItem>()       ;
+	static ArrayList<TextItem>         texts  = new ArrayList<TextItem>()        ;
+	static ArrayList<VideoItem>        videos = new ArrayList<VideoItem>()       ;
+	static ArrayList<ArrayListIndexer> index  = new ArrayList<ArrayListIndexer>();
 
 	public void renderShot () {
 		setSize(MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
 		images = MainWindow.getListSprites();
 		texts = MainWindow.getListTextItem();
+		videos = MainWindow.getListVideo();
+		index = MainWindow.getListIndexer();
 		repaint();
 		BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB);
 		Graphics2D d = render.createGraphics();
@@ -49,6 +54,8 @@ public class RendererTool extends JPanel{
 		setSize(MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
 		images = MainWindow.getListSprites();
 		texts = MainWindow.getListTextItem();
+		videos = MainWindow.getListVideo();
+		index = MainWindow.getListIndexer();
 		new Renderer().start();
 	}
 	
@@ -99,15 +106,21 @@ public class RendererTool extends JPanel{
 		Graphics2D d = (Graphics2D) g.create();
 		d.setColor(Color.WHITE);
 		d.fillRect(0, 0, getWidth(), getHeight());
-		for (int index = 0; index < images.size();index++) {
-			d.rotate(Math.toRadians(images.get(index).getRotation()), (images.get(index).getWidth())/2 + images.get(index).getPosX(), (images.get(index).getHeight())/2 + images.get(index).getPosY());
-			d.drawImage(images.get(index).getImage(), (int) (images.get(index).getPosX()), (int) (images.get(index).getPosY()),(int) (images.get(index).getWidth()), (int) (images.get(index).getHeight()), null);
-			d.rotate(Math.toRadians(-images.get(index).getRotation()), (images.get(index).getWidth())/2 + images.get(index).getPosX(), (images.get(index).getHeight())/2 + images.get(index).getPosY());
-		}
-		for (int index = 0; index < texts.size();index++) {
-			d.rotate(Math.toRadians(texts.get(index).getRotation()), texts.get(index).getWidth()/2 + texts.get(index).getPosX(), texts.get(index).getHeight()/2 + texts.get(index).getPosY());
-			d.drawImage(texts.get(index).getImage(), (int) (texts.get(index).getPosX()), texts.get(index).getPosY(),texts.get(index).getWidth() ,texts.get(index).getHeight(), null);
-			d.rotate(Math.toRadians(-texts.get(index).getRotation()), texts.get(index).getWidth()/2 + texts.get(index).getPosX(), texts.get(index).getHeight()/2 + texts.get(index).getPosY());
+		for (int i = 0; i < index.size();i++) {
+			int A = index.get(i).getA(), B = index.get(i).getB()-1;
+			if (A == 1 && images.size() > 0) {
+				d.rotate(Math.toRadians(images.get(B).getRotation()), images.get(B).getPosX(), images.get(B).getPosY());
+				d.drawImage(images.get(B).getImage(), (int) (images.get(B).getPosX() -  (images.get(B).getWidth())/2), (int) (images.get(B).getPosY() - (images.get(B).getHeight())/2),(int) (images.get(B).getWidth()), (int) (images.get(B).getHeight()), null);
+				d.rotate(-Math.toRadians(images.get(B).getRotation()), images.get(B).getPosX(), images.get(B).getPosY());
+			} else if (A == 2 && texts.size() > 0) {
+				d.rotate(Math.toRadians(texts.get(B).getRotation()), (texts.get(B).getWidth())/2 + texts.get(B).getPosX(), (texts.get(B).getHeight())/2 + texts.get(B).getPosY());
+				d.drawImage(texts.get(B).getImage(), (int) (texts.get(B).getPosX()), (int) (texts.get(B).getPosY()),(int) (texts.get(B).getWidth()), (int) (texts.get(B).getHeight()), null);
+				d.rotate(Math.toRadians(-texts.get(B).getRotation()), (texts.get(B).getWidth())/2 + texts.get(B).getPosX(), (texts.get(B).getHeight())/2 + texts.get(B).getPosY());
+			} else if (A == 3 && videos.size() > 0) {
+				d.rotate(Math.toRadians(videos.get(B).getRotation()), (videos.get(B).getWidth())/2 + videos.get(B).getPosX(), (videos.get(B).getHeight())/2 + videos.get(B).getPosY());
+				d.drawImage(videos.get(B).getImage(), (int) (videos.get(B).getPosX()), (int) (videos.get(B).getPosY()),(int) (videos.get(B).getWidth()), (int) (videos.get(B).getHeight()), null);
+				d.rotate(Math.toRadians(-videos.get(B).getRotation()), (videos.get(B).getWidth())/2 + videos.get(B).getPosX(), (videos.get(B).getHeight())/2 + videos.get(B).getPosY());
+			}
 		}
 		
 	}

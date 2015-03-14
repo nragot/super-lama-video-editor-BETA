@@ -117,11 +117,11 @@ public class TimeLine extends JFrame implements KeyListener{
 				String str2 = MainWindow.getListSprites().get(i).getNextKeyFrameTranslate(time);
 
 				int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
-				int str1X = Integer.parseInt(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')));
+				int str1X = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(','))));
 				int str1Y = Integer.parseInt(str1.substring(str1.indexOf(',') + 1));
 
 				int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
-				int str2X = Integer.parseInt(str2.substring(str2.indexOf(':') + 1, str2.indexOf(',')));
+				int str2X = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str2.substring(str2.indexOf(':') + 1, str2.indexOf(','))));
 				int str2Y = Integer.parseInt(str2.substring(str2.indexOf(',') + 1));
 
 				//System.out.println("strings" + str1 + " :: "+ str2);
@@ -157,6 +157,7 @@ public class TimeLine extends JFrame implements KeyListener{
 
 				}
 			}
+			
 		}
 		for (int i = 0; i < MainWindow.getListTextItem().size() ; i++) {
 			{ // translation
@@ -205,6 +206,10 @@ public class TimeLine extends JFrame implements KeyListener{
 				}
 			}
 		}
+		for (int i = 0; i < MainWindow.getListVideo().size() ; i++) {
+			MainWindow.getListVideo().get(i).CalculeAndSetProperFrame();
+		}
+		MainWindow.refreshItemStatFromFormula();
 	}
 
 	@Override

@@ -3,45 +3,68 @@ package items;
 import java.awt.Image;
 import java.util.ArrayList;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.JFrame;
+
+import start.MainWindow;
 
 public class Item extends JFrame{
 	ArrayList<String> keyFrameTranslation = new ArrayList<String>();
 	ArrayList<String> keyFrameRotation = new ArrayList<String>();
-	int m_posX, m_posY, m_width, m_height, m_rotation, m_id;
+	String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
+	int m_id;
 	double m_ratio;
 	String m_name;
 	
 	public int getPosX () {
-		return m_posX;
+		String str = calculeVariable(m_posX);
+		if (!str.equals("!")) {
+			return (int) Double.parseDouble(str);
+		} else 
+			return 0;
 	}
 	
 	public int getPosY () {
-		return m_posY;
+		String str = calculeVariable(m_posY);
+		if (!str.equals("!"))
+			return (int) Double.parseDouble(str);
+		else 
+			return 0;
 	}
 	
 	public int getWidth () {
-		return m_width;
+		String str = calculeVariable(m_width);
+		if (!str.equals("!"))
+			return (int) Double.parseDouble(str);
+		else 
+			return 0;
 	}
 	
 	public int getHeight () {
-		return m_height;
+		String str = calculeVariable(m_height);
+		if (!str.equals("!"))
+			return (int) Double.parseDouble(str);
+		else 
+			return 0;
 	}
 	
 	public void setPosX (int i) {
-		m_posX = i;
+		m_posX = i+"";
+		System.out.println("setPosX"+m_posX);
 	}
 	
 	public void setPosY (int i) {
-		m_posY = i;
+		m_posY = i+"";
 	}
 	
 	public void setWidth (int i) {
-		m_width = i;
+		m_width = i+"";
 	}
 	
 	public void setHeight (int i) {
-		m_height = i;
+		m_height = i+"";
 	}
 	
 	public void setName (String name) {
@@ -61,18 +84,64 @@ public class Item extends JFrame{
 	}
 	
 	public void setRotation (int i) {
-		m_rotation = i;
+		m_rotation = i+"";
 	}
 	
 	public int getRotation () {
-		return m_rotation;
+		String str = calculeVariable(m_rotation);
+		if (!str.equals("!"))
+			return (int) Double.parseDouble(str);
+		else 
+			return 0;
 	}
 	
 	public double getRatio () {
 		return m_ratio;
 	}
 	
-	public void addKeyFrameTranslate (int time,int x, int y) {
+	public String getPosXFormula () {
+		System.out.println("getPosXform :: "+m_posX);
+		return m_posX;
+	}
+	
+	public String getPosYFormula () {
+		return m_posY;
+	}
+	
+	public String getWidthFormula () {
+		return m_width;
+	}
+	
+	public String getHeightFormula () {
+		return m_height;
+	}
+	
+	public String getRotationFormula () {
+		return m_rotation;
+	}
+	
+	public void setPosXFormula (String str) {
+		System.out.println(str);
+		m_posX = str;
+	}
+	
+	public void setPosYFormula (String str) {
+		m_posY = str;
+	}
+	
+	public void setWidthFormula (String str) {
+		m_width = str;
+	}
+	
+	public void setHeightFormula (String str) {
+		m_height = str;
+	}
+	
+	public void setRotationFormula (String str) {
+		m_rotation = str;
+	}
+	
+	public void addKeyFrameTranslate (int time,String x, String y) {
 		String str = "t"+time+":"+x+","+y;
 		System.out.println("keyframe added :" + str);
 		
@@ -134,8 +203,8 @@ public class Item extends JFrame{
 		}
 	}
 	
-	public void addKeyFrameRotation (int time, int rotation) {
-		String str = "r"+time+":"+rotation;
+	public void addKeyFrameRotation (int time, String string) {
+		String str = "r"+time+":"+string;
 		System.out.println("keyframe added :" + str);
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
@@ -194,6 +263,63 @@ public class Item extends JFrame{
 	
 	public String getKeyFrameRotation (int i) {
 		return keyFrameRotation.get(i);
+	}
+	
+	public String calculeVariable (String str) {
+		if (str.isEmpty()) {
+			return 0+"";
+		} else {
+			str = findAndChangeVariables(str);
+			Object result;
+			try {
+				ScriptEngine engine = new ScriptEngineManager().getEngineByExtension("js");
+				result = engine.eval(str);
+				return result.toString();
+			} catch (ScriptException e) {
+				return ("!");
+			}
+		}
+	}
+	
+	public String calculeVariableNoChange (String str) {
+		if (str.isEmpty()) {
+			return " ";
+		} else {
+			str = findAndChangeVariables(str);
+			return str;
+		}
+	}
+	
+	public String findAndChangeVariables (String str) {
+		boolean b;
+		do {
+			b = false;
+			if (str.indexOf("#time_frame") != -1) {
+				str = str.replace("#time_frame", MainWindow.getTimeLine().getTime()+"");
+				b = true;
+			}
+			if (str.indexOf("#camera_width") != -1) {
+				str = str.replace("#camera_width", MainWindow.getCameraWidth()+"");
+				b = true;
+			}
+			if (str.indexOf("#camera_height") != -1) {
+				str = str.replace("#camera_height", MainWindow.getCameraHeight()+"");
+				b = true;
+			}
+			if (str.indexOf("#me_width") != -1) {
+				str = str.replace("#me_width", m_width+"");
+				b = true;
+			}
+			if (str.indexOf("#me_height") != -1) {
+				str = str.replace("#me_height", m_height+"");
+				b = true;
+			}
+			if (str.endsWith(" ")) {
+				str = str.substring(0, str.length() - 1);
+				b = true;
+			}
+		} while (b);
+		return str;
 	}
 
 }

@@ -1,15 +1,27 @@
 package tools;
 
+import items.ImageItem;
+import items.Item;
+
+import java.awt.Checkbox;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -29,6 +41,9 @@ public class ItemOption extends JFrame implements ComponentListener{
 	ArrayList<JCheckBox> allCheckbox = new ArrayList<JCheckBox>();
 	JSlider js = new JSlider(); //adding rotation slider
 	JCheckBox jcb = new JCheckBox();
+	boolean b[][] = {{false, false}};
+	int ROTATION_FIELD = -1, POSX_FIELD = -1, POSY_FIELD = -1, WIDTH_FIELD = -1, HEIGHT_FIELD = -1, STRINGTEXT_FIELD = -1, FONTSIZE_FIELD = -1;
+	int numberOfField;
 	
 	public ItemOption () {
 		setBounds(1200,600,800,400);
@@ -39,49 +54,139 @@ public class ItemOption extends JFrame implements ComponentListener{
 		setVisible(true);
 	}
 	
+	public void addTextField (JTextField comp) {
+		super.add(comp);
+		numberOfField ++;
+		System.out.println("nbf"+numberOfField+";"+comp.getToolTipText());
+	}
+	
 	public void loadOptions () {
 		getContentPane().removeAll();
 		allButtons.clear();
 		allSliders.clear();
 		allTextFields.clear();
 		allCheckbox.clear();
+		
+		JTextField jtf;
+		numberOfField = -1;
+		ROTATION_FIELD = -1;POSX_FIELD = -1; POSY_FIELD = -1; WIDTH_FIELD = -1; HEIGHT_FIELD = -1; STRINGTEXT_FIELD = -1; FONTSIZE_FIELD = -1;
 		try {
 			if (MainWindow.getSelectedItemId() == 1) {
-				js.setMaximum(359);
-				js.setMinimum(-359);
-				js.setToolTipText("Change rotation of the selected Object");
-				js.setPreferredSize(new Dimension(getWidth() - 10, 20));
-				js.setValue(0);
-				js.addChangeListener(new ChangeListener() {
+				if (!b[0][0]) {
+					js.setMaximum(359);
+					js.setMinimum(-359);
+					js.setToolTipText("Change rotation of the selected Object");
+					js.setPreferredSize(new Dimension(getWidth() - 10, 20));
+					js.setValue(0);
+					js.addChangeListener(new ChangeListener() {
 
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						MainWindow.getSelectedImageItem().setRotation(js.getValue());
-					}
-				});
-				allSliders.add(js);
-				add(js);
+						@Override
+						public void stateChanged(ChangeEvent e) {
+							MainWindow.getSelectedImageItem().setRotation(js.getValue());
+						}
+					});
+					allSliders.add(js);
+					add(js);
+				} else {
+					jtf = new JTextField();
+					jtf.setToolTipText("set rotation");
+					jtf.setText(MainWindow.getSelectedImageItem().getRotationFormula());
+					jtf.setPreferredSize(new Dimension(getWidth() - 10, 20));
+					jtf.setHorizontalAlignment(JTextField.CENTER);
+					jtf.getDocument().addDocumentListener(new DocumentListener() {
+						
+						@Override
+						public void removeUpdate(DocumentEvent arg0) {updateStat();}
+						@Override
+						public void insertUpdate(DocumentEvent arg0) {updateStat();}
+						@Override
+						public void changedUpdate(DocumentEvent arg0) {}
+						public void updateStat () {
+							String str = "";
+							try {
+								Item item = new Item();
+								str = item.calculeVariable(allTextFields.get(ROTATION_FIELD).getText());
+								MainWindow.getSelectedImageItem().setRotationFormula(allTextFields.get(ROTATION_FIELD).getText());
+							} catch (NumberFormatException e){
+								System.err.println("rotate " + str);
+							}
+						}
+					});
+					addTextField(jtf);
+					ROTATION_FIELD = numberOfField;
+					allTextFields.add(jtf);
+				}
 
 
 				jcb.setText("respect ratio");
 				jcb.setToolTipText("if the width is change, the height is also change to fit the new size");
 				add(jcb);
 				allCheckbox.add(jcb);
+				
+				if (b[0][1]) {
+					jtf = new JTextField();
+					jtf.setToolTipText("set posX");
+					jtf.setText(MainWindow.getSelectedImageItem().getPosXFormula());
+					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+					jtf.getDocument().addDocumentListener(new DocumentListener() {
+						@Override
+						public void removeUpdate(DocumentEvent e) { updateStat();}
+						@Override
+						public void insertUpdate(DocumentEvent e) { updateStat();}
+						@Override
+						public void changedUpdate(DocumentEvent e) {}
+						public void updateStat () {
+							try {
+								MainWindow.getSelectedImageItem().setPosXFormula(allTextFields.get(POSX_FIELD).getText());
+							} catch (NumberFormatException e) {
+								
+							}
+						}
+					});
+					addTextField(jtf);
+					POSX_FIELD = numberOfField;
+					allTextFields.add(jtf);
+					
+					jtf = new JTextField();
+					jtf.setToolTipText("set posY");
+					jtf.setText(MainWindow.getSelectedImageItem().getPosYFormula());
+					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+					jtf.getDocument().addDocumentListener(new DocumentListener() {
+						@Override
+						public void removeUpdate(DocumentEvent e) { updateStat();}
+						@Override
+						public void insertUpdate(DocumentEvent e) { updateStat();}
+						@Override
+						public void changedUpdate(DocumentEvent e) {}
+						public void updateStat () {
+							try {
+								MainWindow.getSelectedImageItem().setPosXFormula(allTextFields.get(POSY_FIELD).getText());
+							} catch (NumberFormatException e) {
+								
+							}
+						}
+					});
+					addTextField(jtf);
+					POSY_FIELD = numberOfField;
+					allTextFields.add(jtf);
+				}
 
-				JTextField jtf = new JTextField();
+				jtf = new JTextField();
 				jtf.setToolTipText("set witdh");
-				jtf.setText(MainWindow.getSelectedImageItem().getWidth()+"");
+				jtf.setText(MainWindow.getSelectedImageItem().getWidthFormula());
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
 				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
-				add(jtf);
+				addTextField(jtf);
+				WIDTH_FIELD = numberOfField;
 				allTextFields.add(jtf);
 
 				JTextField jtf2 = new JTextField();
 				jtf2.setToolTipText("set height");
 				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
-				jtf2.setText(MainWindow.getSelectedImageItem().getHeight()+"");
+				jtf2.setText(MainWindow.getSelectedImageItem().getHeightFormula());
 				jtf2.getDocument().addDocumentListener(new TextFieldHeightDocument());
-				add(jtf2);
+				addTextField(jtf2);
+				HEIGHT_FIELD = numberOfField;
 				allTextFields.add(jtf2);
 				
 				JButton jb = new JButton("add a translation keyframe");
@@ -89,7 +194,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedImageItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedImageItem().getPosX(), MainWindow.getSelectedImageItem().getPosY());
+						MainWindow.getSelectedImageItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedImageItem().getPosXFormula()+"", MainWindow.getSelectedImageItem().getPosYFormula()+"");
 					}
 				});
 				add(jb);
@@ -111,7 +216,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedImageItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedImageItem().getRotation());
+						MainWindow.getSelectedImageItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedImageItem().getRotation()+"");
 					}
 				});
 				add(jb);
@@ -137,6 +242,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					public void actionPerformed(ActionEvent arg0) {
 						if (MainWindow.getSelectedImageNumber() > 0) {
 							MainWindow.setSelectedImageItem(MainWindow.getSelectedImageNumber() - 1);
+							MainWindow.ResolveIndexGap(1, MainWindow.getSelectedImageNumber() + 1);
 							MainWindow.getListSprites().remove(MainWindow.getSelectedImageNumber() + 1);
 						} else {
 							MainWindow.setSelectedItemId(0);
@@ -145,6 +251,19 @@ public class ItemOption extends JFrame implements ComponentListener{
 						MainWindow.getOutline().refresh();
 
 						loadOptions();
+					}
+				});
+				add(jb);
+				allButtons.add(jb);
+				
+				jb = new JButton("change item type");
+				jb.setBackground(Color.blue);
+				jb.setPreferredSize(new Dimension(getWidth()-10,20));
+				jb.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						new ChooseOptionsType(1);
 					}
 				});
 				add(jb);
@@ -166,12 +285,13 @@ public class ItemOption extends JFrame implements ComponentListener{
 				allSliders.add(js);
 				add(js);
 				
-				JTextField jtf = new JTextField();
+				jtf = new JTextField();
 				jtf.setToolTipText("set text");
 				jtf.setText(MainWindow.getSelectedTextItem().getText()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldTextDocument());
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
-				add(jtf);
+				addTextField(jtf);
+				STRINGTEXT_FIELD = numberOfField;
 				allTextFields.add(jtf);
 				
 				jtf = new JTextField();
@@ -179,7 +299,8 @@ public class ItemOption extends JFrame implements ComponentListener{
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
 				jtf.setText(MainWindow.getSelectedTextItem().getFontSize()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldTextSizeDocument());
-				add(jtf);
+				addTextField(jtf);
+				FONTSIZE_FIELD = numberOfField;
 				allTextFields.add(jtf);
 				
 				jtf = new JTextField();
@@ -187,15 +308,17 @@ public class ItemOption extends JFrame implements ComponentListener{
 				jtf.setText(MainWindow.getSelectedTextItem().getWidth()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
-				add(jtf);
+				addTextField(jtf);
+				WIDTH_FIELD = numberOfField;
 				allTextFields.add(jtf);
 				
 				jtf = new JTextField();
-				jtf.setToolTipText("set font size");
+				jtf.setToolTipText("set height");
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
 				jtf.setText(MainWindow.getSelectedTextItem().getHeight()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldHeightDocument());
-				add(jtf);
+				addTextField(jtf);
+				HEIGHT_FIELD = numberOfField;
 				allTextFields.add(jtf);
 				
 				JButton jb = new JButton("add a translation keyframe");
@@ -203,7 +326,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedTextItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedTextItem().getPosX(), MainWindow.getSelectedTextItem().getPosY());
+						MainWindow.getSelectedTextItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedTextItem().getPosXFormula()+"", MainWindow.getSelectedTextItem().getPosYFormula()+"");
 					}
 				});
 				add(jb);
@@ -225,7 +348,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedTextItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedTextItem().getRotation());
+						MainWindow.getSelectedTextItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedTextItem().getRotationFormula());
 					}
 				});
 				add(jb);
@@ -251,6 +374,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					public void actionPerformed(ActionEvent arg0) {
 						if (MainWindow.getSelectedTextItemNumber() > 0) {
 							MainWindow.setSelectedTextItem(MainWindow.getSelectedTextItemNumber() - 1);
+							MainWindow.ResolveIndexGap(1, MainWindow.getSelectedImageNumber() + 1);
 							MainWindow.getListTextItem().remove(MainWindow.getSelectedTextItemNumber() + 1);
 						} else {
 							MainWindow.setSelectedItemId(0);
@@ -264,15 +388,76 @@ public class ItemOption extends JFrame implements ComponentListener{
 				add(jb);
 				allButtons.add(jb);
 				revalidate ();
+			} else if (MainWindow.getSelectedItemId() == 3) {
+				js.setMaximum(359);
+				js.setMinimum(-359);
+				js.setToolTipText("Change rotation of the selected Object");
+				js.setPreferredSize(new Dimension(getWidth() - 10, 20));
+				js.setValue(0);
+				js.addChangeListener(new ChangeListener() {
+
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						MainWindow.getSelectedVideoItem().setRotation(js.getValue());
+					}
+				});
+				allSliders.add(js);
+				add(js);
+
+				jtf = new JTextField();
+				jtf.setToolTipText("set witdh");
+				jtf.setText(MainWindow.getSelectedVideoItem().getWidth()+"");
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
+				add(jtf);
+				allTextFields.add(jtf);
+
+				JTextField jtf2 = new JTextField();
+				jtf2.setToolTipText("set height");
+				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf2.setText(MainWindow.getSelectedVideoItem().getHeight()+"");
+				jtf2.getDocument().addDocumentListener(new TextFieldHeightDocument());
+				add(jtf2);
+				allTextFields.add(jtf2);
+				
+				JButton jb;
+				jb = new JButton("delete");
+				jb.setBackground(Color.red);
+				jb.setPreferredSize(new Dimension(getWidth()-10,20));
+				jb.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						MainWindow.getSelectedVideoItem().stopStream();
+						if (MainWindow.getSelectedVideoItemNumber() > 0) {
+							MainWindow.setSelectedVideoItem(MainWindow.getSelectedVideoItemNumber() - 1);
+							MainWindow.ResolveIndexGap(1, MainWindow.getSelectedVideoItemNumber() + 1);
+							MainWindow.getListVideo().remove(MainWindow.getSelectedVideoItemNumber() + 1);
+						} else {
+							MainWindow.setSelectedItemId(0);
+							MainWindow.getListVideo().remove(MainWindow.getSelectedVideoItemNumber());
+						}
+						MainWindow.getOutline().refresh();
+
+						loadOptions();
+					}
+				});
+				allButtons.add(jb);
+				add(jb);
+				
+				revalidate();
 			}
 		} catch (java.lang.IndexOutOfBoundsException e) {
 			System.err.print("Index out of bounds exception ");
 			StringWriter stringWriter = new StringWriter();
 			e.printStackTrace(new PrintWriter(stringWriter));
 			System.out.println(stringWriter.toString());
-
 		}
 		revalidate();
+	}
+	
+	public boolean getOptionType (int dim1, int dim2) {
+		return b[dim1][dim2];
 	}
 	
 	@Override
@@ -299,9 +484,78 @@ public class ItemOption extends JFrame implements ComponentListener{
 		
 	}
 	
+	public String calculeVariableW () {
+		String str;
+		if (MainWindow.getSelectedItemId() == 1) {
+			str = MainWindow.getSelectedImageItem().calculeVariable(allTextFields.get(WIDTH_FIELD).getText());
+		}else if (MainWindow.getSelectedItemId() == 2) {
+			str = MainWindow.getSelectedTextItem().calculeVariable(allTextFields.get(WIDTH_FIELD).getText());
+		}else if (MainWindow.getSelectedItemId() == 3) {
+			str = MainWindow.getSelectedVideoItem().calculeVariable(allTextFields.get(WIDTH_FIELD).getText());
+		} else {
+			str = "!";
+			System.err.println("error in ItemOption.calculeVariable()");
+		}
+		return str;
+	}
+	
+	public String calculeVariableH () {
+		String str;
+		if (MainWindow.getSelectedItemId() == 1) {
+			str = MainWindow.getSelectedImageItem().calculeVariable(allTextFields.get(HEIGHT_FIELD).getText());
+		}else if (MainWindow.getSelectedItemId() == 2) {
+			str = MainWindow.getSelectedTextItem().calculeVariable(allTextFields.get(HEIGHT_FIELD).getText());
+		}else if (MainWindow.getSelectedItemId() == 3) {
+			str = MainWindow.getSelectedVideoItem().calculeVariable(allTextFields.get(HEIGHT_FIELD).getText());
+		} else {
+			str = "!";
+			System.err.println("error in ItemOption.calculeVariable()");
+		}
+		return str;
+	}
+	
 	//-------------------------
 	//inner classes
 	//-------------------------
+	private class ChooseOptionsType extends JFrame {
+		public ChooseOptionsType (int i) {
+			setBounds(0, 0, 400, 600);
+			setTitle("tools type");
+			setVisible(true);
+			if (i == 1) {
+				setLayout(new FlowLayout());
+				Checkbox cb = new Checkbox("enable text rotation");
+				cb.addItemListener(new ItemListener() {
+					
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						b[0][0] = e.getStateChange() == ItemEvent.SELECTED;
+						System.out.println("b="+b[0][0]);
+					}
+				});
+				add (cb);
+				cb = new Checkbox("enable text position");
+				cb.addItemListener(new ItemListener() {
+					
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						b[0][1] = e.getStateChange() == ItemEvent.SELECTED;
+						System.out.println("b="+b[0][1]);
+					}
+				});
+				add (cb);
+				JButton jb = new JButton("reload");
+				jb.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						loadOptions();
+					}
+				});
+				add(jb);
+			}
+		}
+	}
 	
 	private class TextFieldWidthDocument implements DocumentListener {
 
@@ -316,24 +570,29 @@ public class ItemOption extends JFrame implements ComponentListener{
 		}
 		
 		public void updateStat () {
-			try {
-				if (MainWindow.getSelectedItemId() == 1) {
-					MainWindow.getSelectedImageItem().setWidth(Integer.parseInt(allTextFields.get(0).getText()));
-					allTextFields.get(0).setBackground(Color.white);
-					if (jcb.isSelected()) {
-						MainWindow.getSelectedImageItem().setHeight((int) Math.round(Integer.parseInt(allTextFields.get(0).getText()) / MainWindow.getSelectedImageItem().getRatio()));
-						ItemOption.this.revalidate();
-					}
-				}else if (MainWindow.getSelectedItemId() ==2) {
-					MainWindow.getSelectedTextItem().setWidth(Integer.parseInt(allTextFields.get(2).getText()));
-					allTextFields.get(2).setBackground(Color.white);
+			String str = calculeVariableW();
+			int width;
+			if (str.equals("!")) {
+				width = 0;
+				allTextFields.get(WIDTH_FIELD).setBackground(Color.red);
+			} else {
+				width = (int) Double.parseDouble(str);
+				allTextFields.get(WIDTH_FIELD).setBackground(Color.white);
+			}
+			if (MainWindow.getSelectedItemId() == 1) {
+				MainWindow.getSelectedImageItem().setWidthFormula(allTextFields.get(WIDTH_FIELD).getText());
+				if (jcb.isSelected()) {
+					System.out.println(":/");
+					MainWindow.getSelectedImageItem().setHeight((int) Math.round(Integer.parseInt(allTextFields.get(HEIGHT_FIELD).getText()) / MainWindow.getSelectedImageItem().getRatio()));
+					ItemOption.this.revalidate();
 				}
-			} catch (NumberFormatException e) {
-				if (MainWindow.getSelectedItemId() == 1)       allTextFields.get(0).setBackground(Color.red);
-				else if (MainWindow.getSelectedItemId() == 2)  allTextFields.get(2).setBackground(Color.red);
+			} else if (MainWindow.getSelectedItemId() == 2) {
+				MainWindow.getSelectedTextItem().setWidthFormula(allTextFields.get(WIDTH_FIELD).getText());
+			} else if (MainWindow.getSelectedItemId() == 3) {
+				MainWindow.getSelectedVideoItem().setWidthFormula(allTextFields.get(WIDTH_FIELD).getText());
 			}
 		}
-		
+
 		@Override
 		public void changedUpdate(DocumentEvent arg0) {
 			// TODO Auto-generated method stub
@@ -353,23 +612,29 @@ public class ItemOption extends JFrame implements ComponentListener{
 		public void insertUpdate(DocumentEvent arg0) {
 			updateStat();
 		}
-		
+
 		public void updateStat () {
-			try {
-				if (MainWindow.getSelectedItemId() == 1) {
-					MainWindow.getSelectedImageItem().setHeight(Integer.parseInt(allTextFields.get(1).getText()));
-					allTextFields.get(1).setBackground(Color.white);
-					if (jcb.isSelected()) {
-						MainWindow.getSelectedImageItem().setWidth((int) Math.round(Integer.parseInt(allTextFields.get(1).getText()) * MainWindow.getSelectedImageItem().getRatio()));
-						ItemOption.this.revalidate();
-					}
-				} else if (MainWindow.getSelectedItemId() ==2) {
-					MainWindow.getSelectedTextItem().setHeight(Integer.parseInt(allTextFields.get(3).getText()));
-					allTextFields.get(3).setBackground(Color.white);
+			String str = calculeVariableH();
+			int height;
+			if (str.equals("!")) {
+				height = 0;
+				allTextFields.get(HEIGHT_FIELD).setBackground(Color.red);
+			} else {
+				height = (int) Double.parseDouble(str);
+				allTextFields.get(HEIGHT_FIELD).setBackground(Color.white);
+			}
+			if (MainWindow.getSelectedItemId() == 1) {
+				MainWindow.getSelectedImageItem().setHeight(height);
+				if (jcb.isSelected()) {
+					MainWindow.getSelectedImageItem().setHeightFormula(allTextFields.get(WIDTH_FIELD).getText());
+					ItemOption.this.revalidate();
 				}
-			} catch (NumberFormatException e) {
-				if (MainWindow.getSelectedItemId() == 1)       allTextFields.get(1).setBackground(Color.red);
-				else if (MainWindow.getSelectedItemId() == 2)  allTextFields.get(3).setBackground(Color.red);
+			} else if (MainWindow.getSelectedItemId() ==2) {
+				MainWindow.getSelectedTextItem().setHeight(height);
+				allTextFields.get(HEIGHT_FIELD).setBackground(Color.white);
+			} else if (MainWindow.getSelectedItemId() == 3) {
+				MainWindow.getSelectedVideoItem().setHeight(height);
+				allTextFields.get(HEIGHT_FIELD).setBackground(Color.white);
 			}
 		}
 
@@ -413,7 +678,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-			MainWindow.getSelectedTextItem().setText(allTextFields.get(0).getText());
+			MainWindow.getSelectedTextItem().setText(MainWindow.getSelectedTextItem().calculeVariableNoChange(allTextFields.get(STRINGTEXT_FIELD).getText()));
 			MainWindow.getSelectedTextItem().reload();
 		}
 
