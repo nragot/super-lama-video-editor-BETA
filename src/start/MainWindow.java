@@ -1,6 +1,10 @@
 package start;
 
 import items.ImageItem;
+import items.Item;
+import items.Shape;
+import items.ShapeOval;
+import items.ShapeRect;
 import items.TextItem;
 import items.VideoItem;
 
@@ -30,6 +34,7 @@ import javax.swing.JPanel;
 import tools.ArrayListIndexer;
 import tools.ImageSelector;
 import tools.ItemOption;
+import tools.KeyframeTool;
 import tools.Outline;
 import tools.PropertiesWindow;
 import tools.RendererTool;
@@ -46,18 +51,23 @@ public class MainWindow extends JFrame{
 	JMenuItem jmi_add_image = new JMenuItem("image");
 	JMenuItem jmi_add_text = new JMenuItem("text");
 	JMenuItem jmi_add_video = new JMenuItem("video");
+	JMenuItem jmi_add_shape_rect = new JMenuItem("Rect");
+	JMenuItem jmi_add_shape_oval = new JMenuItem("Oval");
+	JMenu jm_add_shape = new JMenu("shape");
 	JMenuItem jmi_property = new JMenuItem("properties");
 	JMenuItem jmi_shot = new JMenuItem("shot");
 	JMenuItem jmi_video = new JMenuItem("video");
 
 	//really usefull stuff
-	static ArrayList<ImageItem> images = new ArrayList<ImageItem>();
-	static ArrayList<TextItem> texts = new ArrayList<TextItem>();
-	static ArrayList<VideoItem> videos = new ArrayList<VideoItem>();
-	static ArrayList<ArrayListIndexer> index = new ArrayList<ArrayListIndexer>();
+	static ArrayList<ImageItem>        images = new ArrayList<ImageItem>()       ;
+	static ArrayList<TextItem>         texts  = new ArrayList<TextItem>()        ;
+	static ArrayList<VideoItem>        videos = new ArrayList<VideoItem>()       ;
+	static ArrayList<Shape>            shapes = new ArrayList<Shape>()           ;
+	static ArrayList<ArrayListIndexer> index  = new ArrayList<ArrayListIndexer>(); 
 	static int selectedSprite = 0;
 	static int selectedText = 0;
 	static int selectedVideo = 0;
+	static int selectedShape = 0;
 	static int selectedItemId = 0;
 	
 	static Outline outline;
@@ -84,13 +94,18 @@ public class MainWindow extends JFrame{
 		jmi_add_image.addActionListener(al);
 		jmi_add_text.addActionListener(al);
 		jmi_add_video.addActionListener(al);
+		jmi_add_shape_rect.addActionListener(al);
+		jmi_add_shape_oval.addActionListener(al);
 		jmi_property.addActionListener(al);
 		jmi_shot.addActionListener(al);
 		jmi_video.addActionListener(al);
 		
+		jm_add_shape.add(jmi_add_shape_rect);
+		jm_add_shape.add(jmi_add_shape_oval); //inner menu
 		jm_add.add(jmi_add_image);
 		jm_add.add(jmi_add_text);
 		jm_add.add(jmi_add_video);
+		jm_add.add(jm_add_shape);//menu
 		jm_render.add(jmi_shot);
 		jm_render.add(jmi_video);
 		jm_render.add(jmi_property);
@@ -101,7 +116,6 @@ public class MainWindow extends JFrame{
 		setJMenuBar(jmb);
 
 		//loading tools
-		setVisible(true);
 		outline = new Outline();
 		itemOptions = new ItemOption();
 		timeline = new TimeLine();
@@ -109,7 +123,9 @@ public class MainWindow extends JFrame{
 		//prgm lunching
 		redrawer = new Redrawer();
 		redrawer.start();
-		addKeyListener(new MyKeyListener());
+		KeyListener km = new MyKeyListener();
+		addKeyListener(km);
+		setVisible(true);
 	}
 	
 	public static void addImageItem (ImageItem II) {
@@ -183,6 +199,35 @@ public class MainWindow extends JFrame{
 		selectedVideo = i;
 	}
 	
+	public static void addShapeRect (ShapeRect sr) { //add shape
+		shapes.add(sr);
+		System.out.print("2:" + shapes.size());
+		index.add(new ArrayListIndexer(401, shapes.size()));
+	}
+	
+	public static ArrayList<Shape> getListShapes () {
+		return shapes;
+	}
+	
+	public static int getSelectedShapeNumber () {
+		return selectedShape;
+	}
+	
+	public static Shape getSelectedShape () {
+		return shapes.get(selectedShape);
+	}
+	
+	public static void setSelectedShape (int i) {
+		selectedShape = i;
+	}
+	
+	public static void addShapeOval (ShapeOval so) { //add shape
+		shapes.add(so);
+		System.out.print("2:" + shapes.size());
+		index.add(new ArrayListIndexer(401, shapes.size()));
+	}
+	
+	
 	public static void setSelectedItemId (int i) {
 		selectedItemId = i;
 	}
@@ -234,6 +279,31 @@ public class MainWindow extends JFrame{
 	public static int getNumberOfTextItem () {
 		return texts.size();
 	}
+	
+	public Item getItemByName (String str) {
+		for (int index = 0; index < images.size();index++) {
+			if (str.equals(images.get(index).getName())) {
+				return images.get(index);
+			}
+		}
+		for (int index = 0; index < texts.size();index++) {
+			if (str.equals(texts.get(index).getName())) {
+				return texts.get(index);
+			}
+		}
+		for (int index = 0; index < videos.size();index++) {
+			if (str.equals(videos.get(index).getName())) {
+				return videos.get(index);
+			}
+		}
+		for (int index = 0; index < shapes.size();index++) {
+			if (str.equals(shapes.get(index).getName())) {
+				return shapes.get(index);
+			}
+		}
+		return new Item();
+	}
+	
 	public static void secureRedrawerStop () {
 		redrawer.secureStop();
 	}
@@ -315,15 +385,19 @@ public class MainWindow extends JFrame{
 					d.rotate(Math.toRadians(videos.get(B).getRotation()), (videos.get(B).getWidth()*viewerZoom)/2 + videos.get(B).getPosX()*viewerZoom, (videos.get(B).getHeight()*viewerZoom)/2 + videos.get(B).getPosY()*viewerZoom);
 					d.drawImage(videos.get(B).getImage(), (int) (videos.get(B).getPosX()*viewerZoom), (int) (videos.get(B).getPosY()*viewerZoom),(int) (videos.get(B).getWidth() * viewerZoom), (int) (videos.get(B).getHeight() * viewerZoom), null);
 					d.rotate(Math.toRadians(-videos.get(B).getRotation()), (videos.get(B).getWidth()*viewerZoom)/2 + videos.get(B).getPosX()*viewerZoom, (videos.get(B).getHeight()*viewerZoom)/2 + videos.get(B).getPosY()*viewerZoom);
+				} else if ((A == 401 || A == 402) && shapes.size() > 0) {
+					d.rotate(Math.toRadians(shapes.get(B).getRotation()), (shapes.get(B).getWidth()*viewerZoom)/2 + shapes.get(B).getPosX()*viewerZoom, (shapes.get(B).getHeight()*viewerZoom)/2 + shapes.get(B).getPosY()*viewerZoom);
+					d.drawImage(shapes.get(B).getImage(), (int) (shapes.get(B).getPosX()*viewerZoom), (int) (shapes.get(B).getPosY()*viewerZoom),(int) (shapes.get(B).getWidth() * viewerZoom), (int) (shapes.get(B).getHeight() * viewerZoom), null);
+					d.rotate(Math.toRadians(-shapes.get(B).getRotation()), (shapes.get(B).getWidth()*viewerZoom)/2 + shapes.get(B).getPosX()*viewerZoom, (shapes.get(B).getHeight()*viewerZoom)/2 + shapes.get(B).getPosY()*viewerZoom);
 				}
 			}
 			
 			g.setColor(new Color(30, 30, 30, 110));
-			g.fillRect(0, 0, (int) ((getWidth()-(cameraWidth*viewerZoom))/2), 1080);
-			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2 + ((cameraWidth) * viewerZoom)), 0, (int) ((getWidth() - cameraWidth * viewerZoom)/2 ) + 2, getHeight());
-			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), 0, (int) (cameraWidth * viewerZoom), (int) ((getHeight()-(cameraHeight * viewerZoom))/2));
-			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), (int) ((getHeight()-(cameraHeight*viewerZoom))/2 + cameraHeight*viewerZoom), (int) ((cameraWidth) * viewerZoom), (int) ((getHeight()-(cameraHeight*viewerZoom))/2));
-			
+			g.fillRect(0, 0, (int) ((getWidth()-(cameraWidth*viewerZoom))/2), 1080);//left
+			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2 + ((cameraWidth) * viewerZoom)), 0, (int) ((getWidth() - cameraWidth * viewerZoom)/2 ) + 2, getHeight());//right
+			double I = ((int) ((getWidth()-(cameraWidth*viewerZoom))/2 + ((cameraWidth) * viewerZoom) - (getWidth()-(cameraWidth*viewerZoom))/2));
+			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), 0,(int) Math.round(I), (int) ((getHeight()-(cameraHeight * viewerZoom))/2));//up
+			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), (int) ((getHeight()-(cameraHeight*viewerZoom))/2 + cameraHeight*viewerZoom), (int) Math.round(I), (int) ((getHeight()-(cameraHeight*viewerZoom))/2));//down
 			d.setColor(Color.red);
 
 			if (selectedItemId == 1) {
@@ -334,7 +408,10 @@ public class MainWindow extends JFrame{
 				d.rotate(Math.toRadians(texts.get(selectedText).getRotation()), (texts.get(selectedText).getWidth()*viewerZoom)/2 + texts.get(selectedText).getPosX()*viewerZoom, (texts.get(selectedText).getHeight()*viewerZoom)/2 + texts.get(selectedText).getPosY()*viewerZoom);
 				d.drawRect((int) (texts.get(selectedText).getPosX()*viewerZoom), (int) (texts.get(selectedText).getPosY()*viewerZoom),(int) (texts.get(selectedText).getWidth() * viewerZoom), (int) (texts.get(selectedText).getHeight() * viewerZoom));
 				d.drawOval((int) (texts.get(selectedText).getPosX()*viewerZoom + (texts.get(selectedText).getWidth()*viewerZoom)/2 - 3), (int) (texts.get(selectedText).getPosY()*viewerZoom + (texts.get(selectedText).getHeight()*viewerZoom)/2 - 3), 6, 6);
-			
+			} else if (selectedItemId == 3) {
+				d.rotate(Math.toRadians(videos.get(selectedText).getRotation()), (videos.get(selectedText).getWidth()*viewerZoom)/2 + videos.get(selectedText).getPosX()*viewerZoom, (videos.get(selectedText).getHeight()*viewerZoom)/2 + videos.get(selectedText).getPosY()*viewerZoom);
+				d.drawRect((int) (videos.get(selectedText).getPosX()*viewerZoom), (int) (videos.get(selectedText).getPosY()*viewerZoom),(int) (videos.get(selectedText).getWidth() * viewerZoom), (int) (videos.get(selectedText).getHeight() * viewerZoom));
+				d.drawOval((int) (videos.get(selectedText).getPosX()*viewerZoom + (videos.get(selectedText).getWidth()*viewerZoom)/2 - 3), (int) (videos.get(selectedText).getPosY()*viewerZoom + (videos.get(selectedText).getHeight()*viewerZoom)/2 - 3), 6, 6);
 			}
 			g.setColor(Color.BLACK);
 			g.drawRect((int) ((getWidth()-(cameraWidth * viewerZoom))/2),(int) ((getHeight()-(cameraHeight) * viewerZoom)/2),(int) (cameraWidth * viewerZoom),(int) (cameraHeight * viewerZoom));
@@ -380,11 +457,21 @@ public class MainWindow extends JFrame{
 			else if (jmi == jmi_add_video) {
 				new VideoSelector();
 			}
+			else if (jmi == jmi_add_shape_rect) {
+				addShapeRect(new ShapeRect());
+				outline.refresh();
+			}
+			else if (jmi == jmi_add_shape_oval) {
+				addShapeOval(new ShapeOval());
+				outline.refresh();
+			}
 		}
 		
 	}
 	
 	class MyKeyListener implements KeyListener {
+		public MyKeyListener () {}
+		
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (e.getModifiers() == KeyEvent.SHIFT_DOWN_MASK) {
@@ -396,15 +483,19 @@ public class MainWindow extends JFrame{
 			}
 			else {
 				if (e.getKeyChar() == 'i') {
-					try {
-						new Robot().mouseMove(itemOptions.getX() + 75, itemOptions.getY() + 100);
-					} catch (AWTException e1) {
-						e1.printStackTrace();
-					}
+						new KeyframeTool();
 				} else if (e.getKeyChar() == '-') {
 					viewerZoom -= 0.1;
 				} else if (e.getKeyChar() == '+') {
 					viewerZoom += 0.1;
+				} else if (e.getKeyCode() == 37) {
+					TimeLine.addTime(-1);
+					setTitle("timeline ("+TimeLine.getTime()+")");
+					TimeLine.calculateItemsState();
+				} else if (e.getKeyCode() == 39) {
+					TimeLine.addTime(1);
+					setTitle("timeline ("+TimeLine.getTime()+")");
+					TimeLine.calculateItemsState();
 				}
 			}
 			System.out.println("key pressed :" + e.getKeyChar() + " code :" + e.getKeyCode());
@@ -430,6 +521,12 @@ public class MainWindow extends JFrame{
 				} else if (selectedItemId == 2) {
 					texts.get(selectedText).setPosX((int) (c + (e.getX() - a)/viewerZoom));
 					texts.get(selectedText).setPosY((int) (d + (e.getY() - b)/viewerZoom));
+				} else if (selectedItemId == 3) {
+					videos.get(selectedVideo).setPosX((int) (c + (e.getX() - a)/viewerZoom));
+					videos.get(selectedVideo).setPosY((int) (d + (e.getY() - b)/viewerZoom));
+				} else if (selectedItemId == 401 || selectedItemId == 402) {
+					shapes.get(selectedShape).setPosX((int) (c + (e.getX() - a)/viewerZoom));
+					shapes.get(selectedShape).setPosY((int) (d + (e.getY() - b)/viewerZoom));
 				}
 			}
 		}
@@ -456,6 +553,12 @@ public class MainWindow extends JFrame{
 			} else if (selectedItemId == 2) {
 				c = getSelectedTextItem().getPosX();
 				d = getSelectedTextItem().getPosY();
+			} else if (selectedItemId == 3) {
+				c = getSelectedVideoItem().getPosX();
+				d = getSelectedVideoItem().getPosY();
+			} else if (selectedItemId == 401 || selectedItemId == 402) {
+				c = getSelectedShape().getPosX();
+				d = getSelectedShape().getPosY();
 			}
 		}
 

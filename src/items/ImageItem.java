@@ -18,7 +18,7 @@ public class ImageItem extends Item{
 		m_height = height+"";
 		m_ratio = width/(height*1.0);
 		m_id = 1;
-		addKeyFrameTranslate(0, posX+"", posY+"");
+		addKeyFrameTranslate(0, posX+"", posY+"",1);
 		addKeyFrameRotation(0, 0+"");
 	}
 	
@@ -31,7 +31,7 @@ public class ImageItem extends Item{
 		m_height = img.getHeight(null)+"";
 		m_ratio = getWidth()/(getHeight()*1.0);
 		m_id = 1;
-		addKeyFrameTranslate(0, posX+"", posY+"");
+		addKeyFrameTranslate(0, posX+"", posY+"",1);
 		addKeyFrameRotation(0, 0+"");
 	}
 	

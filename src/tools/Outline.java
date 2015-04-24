@@ -54,6 +54,16 @@ public class Outline extends JFrame implements ActionListener{
 			add(button);
 			AllButtons.add(button);
 		}
+		System.out.println("shape:"+MainWindow.getListShapes().size());
+		for (int i = 0; i < MainWindow.getListShapes().size();i++) {
+			JButton button = new JButton(MainWindow.getListShapes().get(i).getName());
+			button.addActionListener(this);
+			if (i == MainWindow.getSelectedVideoItemNumber()) {
+				button.setBackground(Color.orange);
+			}
+			add(button);
+			AllButtons.add(button);
+		}
 		revalidate();
 	}
 
@@ -83,7 +93,13 @@ public class Outline extends JFrame implements ActionListener{
 				MainWindow.getItemOption().loadOptions();
 			}
 		}
-		
+		for (int index = 0; index < MainWindow.getListShapes().size();index++) {
+			if (str.equals(MainWindow.getListShapes().get(index).getName())) {
+				MainWindow.setSelectedShape(index);
+				MainWindow.setSelectedItemId(MainWindow.getSelectedShape().getId());
+				MainWindow.getItemOption().loadOptions();
+			}
+		}
 		refresh();
 	}
 	

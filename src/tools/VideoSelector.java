@@ -95,7 +95,7 @@ public class VideoSelector extends JFrame implements ActionListener{
 			if (str != null) {
 				lastItemNumCreated ++;
 				System.out.println("added video ** \n path :  " + path + " \n name gived :" + str + "\n**********");
-				MainWindow.addVideoItem(new VideoItem(path.substring(0, path.length() - 1),str));
+				MainWindow.addVideoItem(new VideoItem(path.substring(0, path.length() - 1),str,MainWindow.getTimeLine().getTime()));
 				MainWindow.getOutline().refresh();
 				dispose();
 			} else {

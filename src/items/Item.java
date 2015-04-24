@@ -52,7 +52,6 @@ public class Item extends JFrame{
 	
 	public void setPosX (int i) {
 		m_posX = i+"";
-		System.out.println("setPosX"+m_posX);
 	}
 	
 	public void setPosY (int i) {
@@ -100,7 +99,6 @@ public class Item extends JFrame{
 	}
 	
 	public String getPosXFormula () {
-		System.out.println("getPosXform :: "+m_posX);
 		return m_posX;
 	}
 	
@@ -141,8 +139,10 @@ public class Item extends JFrame{
 		m_rotation = str;
 	}
 	
-	public void addKeyFrameTranslate (int time,String x, String y) {
-		String str = "t"+time+":"+x+","+y;
+	public void addKeyFrameTranslate (int time,String x, String y, int type) {
+		String str = "";
+		if (type == 1) str = "t"+time+":"+x+","+y;
+		else str = "T" + time + ":" + x + "," + y;
 		System.out.println("keyframe added :" + str);
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
@@ -313,6 +313,14 @@ public class Item extends JFrame{
 			if (str.indexOf("#me_height") != -1) {
 				str = str.replace("#me_height", m_height+"");
 				b = true;
+			}
+			if (str.indexOf("#item_width(") != -1) {
+				try {
+					String str1 = str.substring(str.indexOf("#item_width(") + 12, str.indexOf(')'));
+					System.out.println(str1);
+				} catch (StringIndexOutOfBoundsException e) {
+					break;
+				}
 			}
 			if (str.endsWith(" ")) {
 				str = str.substring(0, str.length() - 1);

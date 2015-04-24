@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.ParseException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import start.MainWindow;
@@ -17,13 +20,13 @@ public class TimeLine extends JFrame implements KeyListener{
 	
 	public TimeLine () {
 		setBounds (0,0,1920,80);
-		setContentPane(new MyPanel());
+		setContentPane(new KeyframePanel());
 		addKeyListener(this);
 		setTitle("timeline");
 		setVisible(true);
 	}
 	
-	private class MyPanel extends JPanel{
+	private class KeyframePanel extends JPanel{
 		public void paintComponent (Graphics g) {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, getWidth(), getHeight());
@@ -47,11 +50,14 @@ public class TimeLine extends JFrame implements KeyListener{
 					String str2 = MainWindow.getSelectedImageItem().getKeyFrameTranslate(index);
 					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
 					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
+					g.fillRect(str1T*10 + addX + 1 , 8, 8, 8);
 					
 					if (index%2 != 0) {
-						g.drawLine(str1T*10 + addX + 5, 12, str2T*10 + addX + 5, 12);
+						if (str2.substring(0, 1).equals("T")||str1.substring(0, 1).equals("T")) g.drawLine(str1T*10 + addX + 5, 12, str2T*10 + addX + 5, 12);
+						else g.drawLine(str1T*10 + addX + 5, 12, str2T*10 + addX + 5, 10);
 					} else {
-						g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 10);
+						if (str2.substring(0, 1).equals("T")||str1.substring(0, 1).equals("T")) g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 10);
+						else g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 12);
 					}
 				}
 				g.setColor(Color.green);
@@ -60,11 +66,14 @@ public class TimeLine extends JFrame implements KeyListener{
 					String str2 = MainWindow.getSelectedImageItem().getKeyFrameRotation(index);
 					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
 					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
+					g.fillRect(str1T*10 + addX + 1 , 18, 8, 8);
 					
 					if (index%2 != 0) {
-						g.drawLine(str1T*10 + addX + 5, 22, str2T*10 + addX + 5, 22);
+						if (str2.substring(0, 1).equals("R")||str1.substring(0, 1).equals("R")) g.drawLine(str1T*10 + addX + 5, 22, str2T*10 + addX + 5, 22);
+						else g.drawLine(str1T*10 + addX + 5, 22, str2T*10 + addX + 5, 20);
 					} else {
-						g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 20);
+						if (str2.substring(0, 1).equals("R")||str1.substring(0, 1).equals("R")) g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 20);
+						else g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 22);
 					}
 				}
 			}
@@ -75,11 +84,14 @@ public class TimeLine extends JFrame implements KeyListener{
 					String str2 = MainWindow.getSelectedTextItem().getKeyFrameTranslate(index);
 					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
 					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
+					g.fillRect(str1T*10 + addX + 1 , 8, 8, 8);
 					
 					if (index%2 != 0) {
-						g.drawLine(str1T*10 + addX + 5, 12, str2T*10 + addX + 5, 12);
+						if (str2.substring(0, 1).equals("T")||str1.substring(0, 1).equals("T")) g.drawLine(str1T*10 + addX + 5, 12, str2T*10 + addX + 5, 12);
+						else g.drawLine(str1T*10 + addX + 5, 12, str2T*10 + addX + 5, 10);
 					} else {
-						g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 10);
+						if (str2.substring(0, 1).equals("T")||str1.substring(0, 1).equals("T")) g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 10);
+						else g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 12);
 					}
 				}
 				for (int index = 1; index < MainWindow.getSelectedTextItem().getAllKeyFramesRotation().length; index ++) {
@@ -88,64 +100,84 @@ public class TimeLine extends JFrame implements KeyListener{
 					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
 					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
 					g.setColor(Color.green);
+					g.fillRect(str1T*10 + addX + 1 , 18, 8, 8);
 					if (index%2 != 0) {
-						g.drawLine(str1T*10 + addX + 5, 22, str2T*10 + addX + 5, 22);
+						if (str2.substring(0, 1).equals("R")||str1.substring(0, 1).equals("R")) g.drawLine(str1T*10 + addX + 5, 22, str2T*10 + addX + 5, 22);
+						else g.drawLine(str1T*10 + addX + 5, 22, str2T*10 + addX + 5, 20);
 					} else {
-						g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 20);
+						if (str2.substring(0, 1).equals("R")||str1.substring(0, 1).equals("R")) g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 20);
+						else g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 22);
 					}
 				}
 			}
 		}
 	}
 	
-	public void setTime (int i) {
+	private class VideoFramePanel extends JPanel{
+		public void paintComponent (Graphics g) {
+			g.setColor(Color.white);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.setColor(Color.BLACK);
+			for (int i = 0; i < getHeight()/50+2; i ++) {
+				g.drawLine(0, i*50, getWidth(), i*50);
+			}
+		}
+	}
+	
+	public static void setTime (int i) {
 		time = i;
 	}
 	
-	public void addTime (int i) {
+	public static void addTime (int i) {
 		time += i;
 	}
 	
-	public int getTime () {
+	public static  int getTime () {
 		return time;
 	}
 
-	public void calculateItemsState () {
+	public static void calculateItemsState () {
 		for (int i = 0; i < MainWindow.getListSprites().size() ; i++) {
 			{ // translation
 				String str1 = MainWindow.getListSprites().get(i).getLastKeyFrameTranslate(time);
 				String str2 = MainWindow.getListSprites().get(i).getNextKeyFrameTranslate(time);
 
-				int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
-				int str1X = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(','))));
-				int str1Y = Integer.parseInt(str1.substring(str1.indexOf(',') + 1));
+				if (str2.substring(0, 1).equals("t")&& str1.substring(0, 1).equals("t")) {
+					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
+					int str1X = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(','))));
+					int str1Y = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str1.substring(str1.indexOf(',') + 1)));
 
-				int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
-				int str2X = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str2.substring(str2.indexOf(':') + 1, str2.indexOf(','))));
-				int str2Y = Integer.parseInt(str2.substring(str2.indexOf(',') + 1));
+					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
+					int str2X = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str2.substring(str2.indexOf(':') + 1, str2.indexOf(','))));
+					int str2Y = (int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str2.substring(str2.indexOf(',') + 1)));
 
-				//System.out.println("strings" + str1 + " :: "+ str2);
 
-				try {
-					if (str1T == str2T) {
-						MainWindow.getListSprites().get(i).setPosX(str1X);
-						MainWindow.getListSprites().get(i).setPosY(str1Y);
-					} else {
-						MainWindow.getListSprites().get(i).setPosX((int) (str1X + ((str2X - str1X) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
-						MainWindow.getListSprites().get(i).setPosY((int) (str1Y + ((str2Y - str1Y) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+					//System.out.println("strings" + str1 + " :: "+ str2);
+
+					try {
+						if (str1T == str2T) {
+							MainWindow.getListSprites().get(i).setPosX(str1X);
+							MainWindow.getListSprites().get(i).setPosY(str1Y);
+						} else {
+							MainWindow.getListSprites().get(i).setPosX((int) (str1X + ((str2X - str1X) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+							MainWindow.getListSprites().get(i).setPosY((int) (str1Y + ((str2Y - str1Y) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+						}
+					} catch (java.lang.ArithmeticException e) {
+
 					}
-				} catch (java.lang.ArithmeticException e) {
-
+				} else {
+					MainWindow.getListSprites().get(i).setPosX((int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
+					MainWindow.getListSprites().get(i).setPosY((int) Double.parseDouble(MainWindow.getSelectedImageItem().calculeVariable(str1.substring(str1.indexOf(',') + 1))));
 				}
 			}
 			{ //rotation
 				String str1 = MainWindow.getListSprites().get(i).getLastKeyFrameRotation(time);
 				String str2 = MainWindow.getListSprites().get(i).getNextKeyFrameRotation(time);
 				
-				int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
-				int str1R = Integer.parseInt(str1.substring(str1.indexOf(':') + 1));
-				int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
-				int str2R = Integer.parseInt(str2.substring(str2.indexOf(':') + 1));
+				int str1T = (int) Double.parseDouble(str1.substring(1,str1.indexOf(':')));
+				int str1R = (int) Double.parseDouble(str1.substring(str1.indexOf(':') + 1));
+				int str2T = (int) Double.parseDouble(str2.substring(1,str2.indexOf(':')));
+				int str2R = (int) Double.parseDouble(str2.substring(str2.indexOf(':') + 1));
 				
 				try {
 					if (str1T == str2T) {
@@ -164,13 +196,13 @@ public class TimeLine extends JFrame implements KeyListener{
 				String str1 = MainWindow.getListTextItem().get(i).getLastKeyFrameTranslate(time);
 				String str2 = MainWindow.getListTextItem().get(i).getNextKeyFrameTranslate(time);
 
-				int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
-				int str1X = Integer.parseInt(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')));
-				int str1Y = Integer.parseInt(str1.substring(str1.indexOf(',') + 1));
+				int str1T = (int) Double.parseDouble(str1.substring(1,str1.indexOf(':')));
+				int str1X = (int) Double.parseDouble(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')));
+				int str1Y = (int) Double.parseDouble(str1.substring(str1.indexOf(',') + 1));
 
-				int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
-				int str2X = Integer.parseInt(str2.substring(str2.indexOf(':') + 1, str2.indexOf(',')));
-				int str2Y = Integer.parseInt(str2.substring(str2.indexOf(',') + 1));
+				int str2T = (int) Double.parseDouble(str2.substring(1,str2.indexOf(':')));
+				int str2X = (int) Double.parseDouble(str2.substring(str2.indexOf(':') + 1, str2.indexOf(',')));
+				int str2Y = (int) Double.parseDouble(str2.substring(str2.indexOf(',') + 1));
 
 				//System.out.println("strings" + str1 + " :: "+ str2);
 
@@ -190,10 +222,10 @@ public class TimeLine extends JFrame implements KeyListener{
 				String str1 = MainWindow.getListTextItem().get(i).getLastKeyFrameRotation(time);
 				String str2 = MainWindow.getListTextItem().get(i).getNextKeyFrameRotation(time);
 				
-				int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
-				int str1R = Integer.parseInt(str1.substring(str1.indexOf(':') + 1));
-				int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
-				int str2R = Integer.parseInt(str2.substring(str2.indexOf(':') + 1));
+				int str1T = (int) Double.parseDouble(str1.substring(1,str1.indexOf(':')));
+				int str1R = (int) Double.parseDouble(str1.substring(str1.indexOf(':') + 1));
+				int str2T = (int) Double.parseDouble(str2.substring(1,str2.indexOf(':')));
+				int str2R = (int) Double.parseDouble(str2.substring(str2.indexOf(':') + 1));
 				
 				try {
 					if (str1T == str2T) {
@@ -204,6 +236,13 @@ public class TimeLine extends JFrame implements KeyListener{
 				} catch (java.lang.ArithmeticException e) {
 
 				}
+			}
+			{ // text's keyframe
+				String str1 = MainWindow.getListTextItem().get(i).getLastKeyFrameText(time);
+				MainWindow.getListTextItem().get(i).setText(str1.substring(str1.indexOf(':')+1));
+			}
+			{//Reload
+				MainWindow.getListTextItem().get(i).reload();
 			}
 		}
 		for (int i = 0; i < MainWindow.getListVideo().size() ; i++) {
@@ -226,6 +265,34 @@ public class TimeLine extends JFrame implements KeyListener{
 			addX += 10;
 		} else if (e.getKeyCode() == 40) {
 			addX -= 10;
+		} else if (e.getKeyCode() == 71) {
+			String str = (String)JOptionPane.showInputDialog( TimeLine.this,"time to jump in the tardis !","travel in time",JOptionPane.QUESTION_MESSAGE,new ImageIcon(
+					getClass().getResource("/timeline jump.png")),null,"give the frame you want to go now");
+			try {
+				time = Integer.parseInt(str);
+				calculateItemsState();
+			} catch (NumberFormatException exc) {
+				
+			}
+		} else if (e.getKeyChar() == '1' ) {
+			
+		} else if (e.getKeyChar() == '2') {
+			cond:do {
+				if (getHeight() < 450) {
+					setSize(getWidth(), getHeight() + 1);
+				} else if (getHeight() > 450) {
+					setSize(getWidth(), getHeight() - 1);
+				} else {
+					break cond;
+				}
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} while (true);
+			setContentPane(new VideoFramePanel());
 		}
 		
 	}

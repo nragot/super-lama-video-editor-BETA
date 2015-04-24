@@ -66,7 +66,6 @@ public class RendererTool extends JPanel{
 			
 			try {
 				recorder.setFrameRate(24);
-				recorder.setFormat("mp4");
 				recorder.setPixelFormat(0);
 				recorder.setVideoCodec(28);
 				System.out.println("recording will start soon, info :" + MainWindow.getCameraWidth() + ":" + MainWindow.getCameraHeight());
@@ -78,11 +77,10 @@ public class RendererTool extends JPanel{
 				
 				for (int i = 0; i<PropertiesWindow.getEndVideo();i++) {
 					repaint();
-					BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB);
+					BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_3BYTE_BGR);
 					Graphics2D d = render.createGraphics();
 					paintComponent(d);
-					ImageIO.write(render, "png", new File(AppProperties.getRenderOutputPath() + "~.png"));
-					img = IplImage.createFrom(ImageIO.read(new File (AppProperties.getRenderOutputPath() + "~.png")));
+					img = IplImage.createFrom(render);
 					recorder.record(img);
 					System.out.println("recording images :"+i);
 					MainWindow.getTimeLine().addTime(1);
@@ -92,9 +90,6 @@ public class RendererTool extends JPanel{
 				recorder.stop();
 			} catch (Exception e) {
 				System.err.println("exception catched" + e.getMessage());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.err.println("Io exception catched :" + e.getMessage() + ":" + e.getCause());
 			}
 			System.out.println("video done");
 			MainWindow.secureRedrawRestart();
