@@ -14,11 +14,12 @@ public class Item extends JFrame{
 	ArrayList<String> keyFrameTranslation = new ArrayList<String>();
 	ArrayList<String> keyFrameRotation = new ArrayList<String>();
 	String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
+	int cachePosX, cachePosY, cacheWidth, cacheHeight, cacheRotation;
 	int m_id;
 	double m_ratio;
 	String m_name;
 	
-	public int getPosX () {
+	public int getPosXFromFormula () {
 		String str = calculeVariable(m_posX);
 		if (!str.equals("!")) {
 			return (int) Double.parseDouble(str);
@@ -26,7 +27,7 @@ public class Item extends JFrame{
 			return 0;
 	}
 	
-	public int getPosY () {
+	public int getPosYFromFormula () {
 		String str = calculeVariable(m_posY);
 		if (!str.equals("!"))
 			return (int) Double.parseDouble(str);
@@ -34,7 +35,7 @@ public class Item extends JFrame{
 			return 0;
 	}
 	
-	public int getWidth () {
+	public int getWidthFromFormula () {
 		String str = calculeVariable(m_width);
 		if (!str.equals("!"))
 			return (int) Double.parseDouble(str);
@@ -42,7 +43,7 @@ public class Item extends JFrame{
 			return 0;
 	}
 	
-	public int getHeight () {
+	public int getHeightFromFormula () {
 		String str = calculeVariable(m_height);
 		if (!str.equals("!"))
 			return (int) Double.parseDouble(str);
@@ -50,20 +51,44 @@ public class Item extends JFrame{
 			return 0;
 	}
 	
+	public int getWidth () {
+		return cacheWidth;
+	}
+	
+	public int getHeight () {
+		return cacheHeight;
+	}
+	
+	public int getPosX () {
+		return cachePosX;
+	}
+	
+	public int getPosY () {
+		return cachePosY;
+	}
+	
+	public int getRotation () {
+		return cacheRotation;
+	}
+	
 	public void setPosX (int i) {
 		m_posX = i+"";
+		cachePosX = i;
 	}
 	
 	public void setPosY (int i) {
 		m_posY = i+"";
+		cachePosY = i;
 	}
 	
 	public void setWidth (int i) {
 		m_width = i+"";
+		cacheWidth = i;
 	}
 	
 	public void setHeight (int i) {
 		m_height = i+"";
+		cacheHeight = i;
 	}
 	
 	public void setName (String name) {
@@ -84,9 +109,10 @@ public class Item extends JFrame{
 	
 	public void setRotation (int i) {
 		m_rotation = i+"";
+		cacheRotation = i;
 	}
 	
-	public int getRotation () {
+	public int getRotationFormFormula () {
 		String str = calculeVariable(m_rotation);
 		if (!str.equals("!"))
 			return (int) Double.parseDouble(str);
@@ -266,6 +292,7 @@ public class Item extends JFrame{
 	}
 	
 	public String calculeVariable (String str) {
+		System.out.println("calculevariable");
 		if (str.isEmpty()) {
 			return 0+"";
 		} else {
@@ -292,6 +319,7 @@ public class Item extends JFrame{
 	
 	public String findAndChangeVariables (String str) {
 		boolean b;
+		System.out.println("findandchangevariable");
 		do {
 			b = false;
 			if (str.indexOf("#time_frame") != -1) {
@@ -317,7 +345,11 @@ public class Item extends JFrame{
 			if (str.indexOf("#item_width(") != -1) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_width(") + 12, str.indexOf(')'));
-					System.out.println(str1);
+					System.out.println("*-*-*-*-*"+str1);
+					System.out.println("str:"+str+" : "+ str1 +" :: " + "#item_width(" + str1 + ")" + " ::: "+ str.indexOf("#item_width(" + str1 + ")"));
+					str = str.replace("#item_width(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
+					System.out.println("str"+str+"::"+Thread.currentThread().getName());
+					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
 				}

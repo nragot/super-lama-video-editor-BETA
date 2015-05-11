@@ -137,6 +137,7 @@ public class TimeLine extends JFrame implements KeyListener{
 	}
 
 	public static void calculateItemsState () {
+		System.out.println("calculeItemState");
 		for (int i = 0; i < MainWindow.getListSprites().size() ; i++) {
 			{ // translation
 				String str1 = MainWindow.getListSprites().get(i).getLastKeyFrameTranslate(time);

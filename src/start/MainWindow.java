@@ -280,7 +280,7 @@ public class MainWindow extends JFrame{
 		return texts.size();
 	}
 	
-	public Item getItemByName (String str) {
+	public static Item getItemByName (String str) {
 		for (int index = 0; index < images.size();index++) {
 			if (str.equals(images.get(index).getName())) {
 				return images.get(index);
@@ -336,7 +336,6 @@ public class MainWindow extends JFrame{
 			ImageItem item = images.get(index);
 			try {
 				item.setPosX((int)Double.parseDouble(item.calculeVariable(item.getPosXFormula())));
-				item.setPosY((int)Double.parseDouble(item.calculeVariable(item.getPosYFormula())));
 				item.setRotation((int)Double.parseDouble(item.calculeVariable(item.getRotationFormula())));
 				item.setWidth((int)Double.parseDouble(item.calculeVariable(item.getWidthFormula())));
 				item.setHeight((int)Double.parseDouble(item.calculeVariable(item.getHeightFormula())));

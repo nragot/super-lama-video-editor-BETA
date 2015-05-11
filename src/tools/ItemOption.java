@@ -123,7 +123,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					jtf = new JTextField();
 					jtf.setToolTipText("set posX");
 					jtf.setText(MainWindow.getSelectedImageItem().getPosXFormula());
-					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 					jtf.getDocument().addDocumentListener(new DocumentListener() {
 						@Override
 						public void removeUpdate(DocumentEvent e) { updateStat();}
@@ -146,7 +146,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					jtf = new JTextField();
 					jtf.setToolTipText("set posY");
 					jtf.setText(MainWindow.getSelectedImageItem().getPosYFormula());
-					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 					jtf.getDocument().addDocumentListener(new DocumentListener() {
 						@Override
 						public void removeUpdate(DocumentEvent e) { updateStat();}
@@ -170,7 +170,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				jtf = new JTextField();
 				jtf.setToolTipText("set witdh");
 				jtf.setText(MainWindow.getSelectedImageItem().getWidthFormula());
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
 				addTextField(jtf);
 				WIDTH_FIELD = numberOfField;
@@ -178,7 +178,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 				JTextField jtf2 = new JTextField();
 				jtf2.setToolTipText("set height");
-				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				jtf2.setText(MainWindow.getSelectedImageItem().getHeightFormula());
 				jtf2.getDocument().addDocumentListener(new TextFieldHeightDocument());
 				addTextField(jtf2);
@@ -190,7 +190,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedImageItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedImageItem().getPosXFormula()+"", MainWindow.getSelectedImageItem().getPosYFormula()+"",1);
+						MainWindow.getSelectedImageItem().addKeyFrameTranslate(TimeLine.getTime(), MainWindow.getSelectedImageItem().getPosXFormula()+"", MainWindow.getSelectedImageItem().getPosYFormula()+"",1);
 					}
 				});
 				add(jb);
@@ -201,7 +201,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedImageItem().deleteKeyFrameTranslationAt(MainWindow.getTimeLine().getTime());
+						MainWindow.getSelectedImageItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
 					}
 				});
 				add(jb);
@@ -212,7 +212,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedImageItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedImageItem().getRotation()+"");
+						MainWindow.getSelectedImageItem().addKeyFrameRotation(TimeLine.getTime(), MainWindow.getSelectedImageItem().getRotation()+"");
 					}
 				});
 				add(jb);
@@ -223,7 +223,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedImageItem().deleteKeyFrameRotationAt(MainWindow.getTimeLine().getTime());
+						MainWindow.getSelectedImageItem().deleteKeyFrameRotationAt(TimeLine.getTime());
 					}
 				});
 				add(jb);
@@ -285,14 +285,14 @@ public class ItemOption extends JFrame implements ComponentListener{
 				jtf.setToolTipText("set text");
 				jtf.setText(MainWindow.getSelectedTextItem().getText()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldTextDocument());
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				addTextField(jtf);
 				STRINGTEXT_FIELD = numberOfField;
 				allTextFields.add(jtf);
 				
 				jtf = new JTextField();
 				jtf.setToolTipText("set font size");
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				jtf.setText(MainWindow.getSelectedTextItem().getFontSize()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldTextSizeDocument());
 				addTextField(jtf);
@@ -303,14 +303,14 @@ public class ItemOption extends JFrame implements ComponentListener{
 				jtf.setToolTipText("set width");
 				jtf.setText(MainWindow.getSelectedTextItem().getWidth()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				addTextField(jtf);
 				WIDTH_FIELD = numberOfField;
 				allTextFields.add(jtf);
 				
 				jtf = new JTextField();
 				jtf.setToolTipText("set height");
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				jtf.setText(MainWindow.getSelectedTextItem().getHeight()+"");
 				jtf.getDocument().addDocumentListener(new TextFieldHeightDocument());
 				addTextField(jtf);
@@ -404,7 +404,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				jtf = new JTextField();
 				jtf.setToolTipText("set witdh");
 				jtf.setText(MainWindow.getSelectedVideoItem().getWidth()+"");
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				jtf.getDocument().addDocumentListener(new DocumentListener() {
 					
 					@Override
@@ -424,7 +424,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				
 				JTextField jtf2 = new JTextField();
 				jtf2.setToolTipText("set height");
-				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,15));
+				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
 				jtf2.setText(MainWindow.getSelectedVideoItem().getHeight()+"");
 				jtf2.getDocument().addDocumentListener(new DocumentListener() {
 					@Override
