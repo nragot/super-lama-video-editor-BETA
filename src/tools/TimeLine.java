@@ -190,7 +190,7 @@ public class TimeLine extends JFrame implements KeyListener{
 
 				}
 			}
-			
+			MainWindow.getSelectedImageItem().cache();
 		}
 		for (int i = 0; i < MainWindow.getListTextItem().size() ; i++) {
 			{ // translation
@@ -245,9 +245,11 @@ public class TimeLine extends JFrame implements KeyListener{
 			{//Reload
 				MainWindow.getListTextItem().get(i).reload();
 			}
+			MainWindow.getSelectedTextItem().cache();
 		}
 		for (int i = 0; i < MainWindow.getListVideo().size() ; i++) {
 			MainWindow.getListVideo().get(i).CalculeAndSetProperFrame();
+			MainWindow.getSelectedVideoItem().cache();
 		}
 		MainWindow.refreshItemStatFromFormula();
 	}

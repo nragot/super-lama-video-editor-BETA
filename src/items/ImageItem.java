@@ -16,6 +16,11 @@ public class ImageItem extends Item{
 		m_posY = posY+"";
 		m_width = width+"";
 		m_height = height+"";
+		cachePosX = posX;
+		cachePosY = posY;
+		cacheWidth = width;
+		cacheHeight = height;
+		cacheRotation = 0;
 		m_ratio = width/(height*1.0);
 		m_id = 1;
 		addKeyFrameTranslate(0, posX+"", posY+"",1);
@@ -29,6 +34,11 @@ public class ImageItem extends Item{
 		m_posY = posY+"";
 		m_width = img.getWidth(null)+"";
 		m_height = img.getHeight(null)+"";
+		cachePosX = posX;
+		cachePosY = posY;
+		cacheWidth = img.getWidth(null);
+		cacheHeight = img.getHeight(null);
+		cacheRotation = 0;
 		m_ratio = getWidth()/(getHeight()*1.0);
 		m_id = 1;
 		addKeyFrameTranslate(0, posX+"", posY+"",1);

@@ -95,6 +95,34 @@ public class Item extends JFrame{
 		m_name = name;
 	}
 	
+	public void cache () {
+		try {
+			cachePosX = (int) Double.parseDouble(calculeVariable(m_posX));
+		} catch (NumberFormatException e) {
+			cachePosX = 0;
+		}
+		try {
+			cachePosY = (int) Double.parseDouble(calculeVariable(m_posY));
+		} catch (NumberFormatException e) {
+			cachePosY = 0;
+		}
+		try {
+			cacheWidth = (int) Double.parseDouble(calculeVariable(m_width));
+		} catch (NumberFormatException e) {
+			cacheWidth = 0;
+		}
+		try {
+			cacheHeight = (int) Double.parseDouble(calculeVariable(m_height));
+		} catch (NumberFormatException e) {
+			cacheHeight = 0;
+		}
+		try {
+			cacheRotation = (int) Double.parseDouble(calculeVariable(m_rotation));
+		} catch (NumberFormatException e) {
+			cacheRotation = 0;
+		}
+	}
+	
 	public String getName () {
 		return m_name;
 	}
@@ -145,24 +173,28 @@ public class Item extends JFrame{
 	}
 	
 	public void setPosXFormula (String str) {
-		System.out.println(str);
 		m_posX = str;
+		cache();
 	}
 	
 	public void setPosYFormula (String str) {
 		m_posY = str;
+		cache();
 	}
 	
 	public void setWidthFormula (String str) {
 		m_width = str;
+		cache();
 	}
 	
 	public void setHeightFormula (String str) {
 		m_height = str;
+		cache();
 	}
 	
 	public void setRotationFormula (String str) {
 		m_rotation = str;
+		cache();
 	}
 	
 	public void addKeyFrameTranslate (int time,String x, String y, int type) {
