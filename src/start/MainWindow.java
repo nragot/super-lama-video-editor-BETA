@@ -280,6 +280,14 @@ public class MainWindow extends JFrame{
 		return texts.size();
 	}
 	
+	public static int getNumberOfVideoItems () {
+		return videos.size();
+	}
+	
+	public static int getNumberOfShapes () {
+		return shapes.size();
+	}
+	
 	public static Item getItemByName (String str) {
 		for (int index = 0; index < images.size();index++) {
 			if (str.equals(images.get(index).getName())) {

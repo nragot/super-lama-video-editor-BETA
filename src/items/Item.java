@@ -377,10 +377,53 @@ public class Item extends JFrame{
 			if (str.indexOf("#item_width(") != -1) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_width(") + 12, str.indexOf(')'));
-					System.out.println("*-*-*-*-*"+str1);
-					System.out.println("str:"+str+" : "+ str1 +" :: " + "#item_width(" + str1 + ")" + " ::: "+ str.indexOf("#item_width(" + str1 + ")"));
 					str = str.replace("#item_width(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
 					System.out.println("str"+str+"::"+Thread.currentThread().getName());
+					b = true;
+				} catch (StringIndexOutOfBoundsException e) {
+					break;
+				}
+			}
+			if (str.indexOf("#item_height(") != -1) {
+				try {
+					String str1 = str.substring(str.indexOf("#item_height(") + 12, str.indexOf(')'));
+					str = str.replace("#item_height(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
+					b = true;
+				} catch (StringIndexOutOfBoundsException e) {
+					break;
+				}
+			}
+			if (str.indexOf("#item_posX(") != -1) {
+				try {
+					String str1 = str.substring(str.indexOf("#item_posX(") + 12, str.indexOf(')'));
+					str = str.replace("#item_posX(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
+					b = true;
+				} catch (StringIndexOutOfBoundsException e) {
+					break;
+				}
+			}
+			if (str.indexOf("#item_posAbsciss(") != -1) {
+				try {
+					String str1 = str.substring(str.indexOf("#item_posAbsciss(") + 12, str.indexOf(')'));
+					str = str.replace("#item_posAbsciss(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
+					b = true;
+				} catch (StringIndexOutOfBoundsException e) {
+					break;
+				}
+			}
+			if (str.indexOf("#item_posY(") != -1) {
+				try {
+					String str1 = str.substring(str.indexOf("#item_Y(") + 12, str.indexOf(')'));
+					str = str.replace("#item_Y(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
+					b = true;
+				} catch (StringIndexOutOfBoundsException e) {
+					break;
+				}
+			}
+			if (str.indexOf("#item_posOrdinate(") != -1) {
+				try {
+					String str1 = str.substring(str.indexOf("#item_posOrdinate(") + 12, str.indexOf(')'));
+					str = str.replace("#item_posOrdinate(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;

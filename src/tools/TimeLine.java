@@ -2,8 +2,11 @@ package tools;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Arc2D;
+import java.awt.geom.QuadCurve2D;
 import java.text.ParseException;
 
 import javax.swing.ImageIcon;
@@ -17,6 +20,9 @@ public class TimeLine extends JFrame implements KeyListener{
 	static int time;
 	static int addX;
 	static short type;
+	ImageIcon iconImage = new ImageIcon(getClass().getResource("/icon timeline image.png")),
+			  iconText  = new ImageIcon(getClass().getResource("/icon timeline text.png")) ,
+			  iconVideo = new ImageIcon(getClass().getResource("/icon timeline video.png"));
 	
 	public TimeLine () {
 		setBounds (0,0,1920,80);
@@ -121,6 +127,22 @@ public class TimeLine extends JFrame implements KeyListener{
 			for (int i = 0; i < getHeight()/50+2; i ++) {
 				g.drawLine(0, i*50, getWidth(), i*50);
 			}
+			System.out.println(":)");
+			
+			g.setColor(new Color(150,20,20));
+			g.fillRect(getWidth()-170, 0, 60, 25);
+			g.fillRect(0, 0, getWidth()-170, 50);
+			g.setColor(new Color(255,100,100));
+			g.fillArc(getWidth()-140, 0, 60, 50, 180, -90);
+			g.fillRect(getWidth()-170, 25, 200, 25);
+			g.fillRect(getWidth()-120, 0, 120, 25);
+			g.setColor(new Color(150,20,20));
+			g.fillArc(getWidth()-200, 0, 60, 50, 270, 90);
+			g.setColor(Color.black);
+			g.drawLine(50, 50, 50, getHeight());
+			g.drawImage(iconImage.getImage(),30,5,40,40,null);
+			g.drawImage(iconText.getImage(),100, 5,40,40,null);
+			g.drawImage(iconVideo.getImage(),170, 5,40,40,null);
 		}
 	}
 	
@@ -281,15 +303,18 @@ public class TimeLine extends JFrame implements KeyListener{
 			
 		} else if (e.getKeyChar() == '2') {
 			cond:do {
-				if (getHeight() < 450) {
-					setSize(getWidth(), getHeight() + 1);
+				if (getHeight() - 450 < 21 && getHeight() - 450 > -21) {
+					setBounds(TimeLine.this.getX(),0,getWidth(),450);
+					break cond;
+				}else if (getHeight() < 450) {
+					setSize(getWidth(), getHeight() + 20);
 				} else if (getHeight() > 450) {
-					setSize(getWidth(), getHeight() - 1);
+					setSize(getWidth(), getHeight() - 20);
 				} else {
 					break cond;
 				}
 				try {
-					Thread.sleep(5);
+					Thread.sleep(40);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
