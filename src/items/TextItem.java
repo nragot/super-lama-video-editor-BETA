@@ -12,6 +12,7 @@ public class TextItem extends Item {
 	static int lastText;
 	BufferedImage bi;
 	int fontSize = 16, canvasWidth, canvasHeight;
+	String fontSizeFormula = fontSize+"";
 	ArrayList<String> keyFrameText = new ArrayList<String>();
 	
 	public TextItem (String str) {
@@ -19,8 +20,8 @@ public class TextItem extends Item {
 		setId(2);
 		setName("Text #"+lastText);
 		lastText ++;
-		m_height = 16+"";
-		m_width = 39+"";
+		setHeight(16);
+		setWidth(39);
 		reload();
 	}
 	
@@ -32,6 +33,20 @@ public class TextItem extends Item {
 		fontSize = i;
 	}
 	
+	public void setFontSizeFormula (String formula) {
+		fontSizeFormula = formula;
+		String str = calculeVariable(formula);
+		if (!str.equals("!"))
+			fontSize = (int) Double.parseDouble(str);
+		else 
+			fontSize = 1;
+		System.out.println("fontSizeFormula::"+fontSizeFormula);
+	}
+	
+	public void setFontSizeFormulaNoCache (String formula) {
+		fontSizeFormula = formula;
+		System.out.println("fontSizeFormula:::"+fontSizeFormula + "form " + formula);
+	}
 	/**
 	 * redraw the panel containing the text
 	 */
@@ -60,6 +75,18 @@ public class TextItem extends Item {
 	
 	public BufferedImage getImage () {
 		return bi;
+	}
+	
+	@Override
+	public void cache() {
+		super.cache();
+		System.out.println("fontSizeFormula:"+fontSizeFormula);
+		String str = calculeVariable(fontSizeFormula);
+		System.out.println("str" + str + " fontSizeFormula:" + fontSizeFormula);
+		if (!str.equals("!"))
+			fontSize = (int) Double.parseDouble(str);
+		else 
+			fontSize = 1;
 	}
 	
 	public void addKeyFrameText (int time,String x) {

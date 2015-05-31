@@ -1,6 +1,7 @@
 package tools;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +27,7 @@ public class Outline extends JFrame implements ActionListener{
 		for (int i =0; i < AllButtons.size(); i++) {
 			remove(AllButtons.get(i));
 		}
+		AllButtons.clear();
 		
 		for (int i = 0; i < MainWindow.getListSprites().size();i++) {
 			JButton button = new JButton(MainWindow.getListSprites().get(i).getName());
@@ -100,6 +102,11 @@ public class Outline extends JFrame implements ActionListener{
 				MainWindow.getItemOption().loadOptions();
 			}
 		}
+		
+		Component allButtons;
+		//IN DEV, HIGLY UNSTABLE
+		System.out.println("[DEBUG]" + AllButtons.indexOf(button) + " in :" + AllButtons.size());
+		MainWindow.selectItem(AllButtons.indexOf(button), true);
 		refresh();
 	}
 	

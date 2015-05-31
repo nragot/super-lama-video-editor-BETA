@@ -2,6 +2,7 @@ package tools;
 
 import items.Item;
 import items.ShapeRect;
+import items.TextItem;
 import items.VideoItem;
 
 import java.awt.Checkbox;
@@ -779,14 +780,29 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-			if (!allTextFields.get(1).getText().equals("")) MainWindow.getSelectedTextItem().setFontSize(Integer.parseInt(allTextFields.get(1).getText()));
-			MainWindow.getSelectedTextItem().reload();
+			updateStat();
 		}
 
 		@Override
 		public void removeUpdate(DocumentEvent e) {
-			if (!allTextFields.get(1).getText().equals("")) MainWindow.getSelectedTextItem().setFontSize(Integer.parseInt(allTextFields.get(1).getText()));
-			MainWindow.getSelectedTextItem().reload();
+			updateStat();
+		}
+		
+		public void updateStat () {
+			TextItem txti = MainWindow.getSelectedTextItem();
+			String str = txti.calculeVariable(allTextFields.get(FONTSIZE_FIELD).getText());
+			int res;
+			if (str.equals("!") || str.equals("0")) {
+				allTextFields.get(FONTSIZE_FIELD).setBackground(Color.red);
+			} else {
+				res = (int) Double.parseDouble(str);
+				System.out.println("[debug] res"+res +"str" + str);
+				allTextFields.get(FONTSIZE_FIELD).setBackground(Color.white);
+				txti.setFontSizeFormulaNoCache(allTextFields.get(FONTSIZE_FIELD).getText());
+				txti.setFontSize(res);
+				System.out.println("[DEBUG] txti :"+ txti.getText() + " str " + str + " FONTSIZE_FIELD " + FONTSIZE_FIELD);
+				MainWindow.getSelectedTextItem().reload();
+			}
 		}
 		
 	}

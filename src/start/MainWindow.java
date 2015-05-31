@@ -59,11 +59,12 @@ public class MainWindow extends JFrame{
 	JMenuItem jmi_video = new JMenuItem("video");
 
 	//really usefull stuff
-	static ArrayList<ImageItem>        images = new ArrayList<ImageItem>()       ;
-	static ArrayList<TextItem>         texts  = new ArrayList<TextItem>()        ;
-	static ArrayList<VideoItem>        videos = new ArrayList<VideoItem>()       ;
-	static ArrayList<Shape>            shapes = new ArrayList<Shape>()           ;
-	static ArrayList<ArrayListIndexer> index  = new ArrayList<ArrayListIndexer>(); 
+	static ArrayList<ImageItem>        images         = new ArrayList<ImageItem>()       ;
+	static ArrayList<TextItem>         texts          = new ArrayList<TextItem>()        ;
+	static ArrayList<VideoItem>        videos         = new ArrayList<VideoItem>()       ;
+	static ArrayList<Shape>            shapes         = new ArrayList<Shape>()           ;
+	static ArrayList<ArrayListIndexer> index          = new ArrayList<ArrayListIndexer>();
+	static ArrayList<Integer>          itemSelection  = new ArrayList<Integer>()         ;
 	static int selectedSprite = 0;
 	static int selectedText = 0;
 	static int selectedVideo = 0;
@@ -126,6 +127,18 @@ public class MainWindow extends JFrame{
 		KeyListener km = new MyKeyListener();
 		addKeyListener(km);
 		setVisible(true);
+	}
+	
+	/**
+	 * arguments choseOver define how you select a new item.
+	 * if choseOver = true then every selection will be erase to be replace with the new one. otherwise it will added from the already existing selection.
+	 * @param choseOver
+	 */
+	public static void selectItem (int i,boolean choseOver) {
+		if (choseOver) {
+			itemSelection.clear();
+			itemSelection.add(i);
+		}
 	}
 	
 	public static void addImageItem (ImageItem II) {
@@ -420,6 +433,7 @@ public class MainWindow extends JFrame{
 				d.drawRect((int) (videos.get(selectedText).getPosX()*viewerZoom), (int) (videos.get(selectedText).getPosY()*viewerZoom),(int) (videos.get(selectedText).getWidth() * viewerZoom), (int) (videos.get(selectedText).getHeight() * viewerZoom));
 				d.drawOval((int) (videos.get(selectedText).getPosX()*viewerZoom + (videos.get(selectedText).getWidth()*viewerZoom)/2 - 3), (int) (videos.get(selectedText).getPosY()*viewerZoom + (videos.get(selectedText).getHeight()*viewerZoom)/2 - 3), 6, 6);
 			}
+			
 			g.setColor(Color.BLACK);
 			g.drawRect((int) ((getWidth()-(cameraWidth * viewerZoom))/2),(int) ((getHeight()-(cameraHeight) * viewerZoom)/2),(int) (cameraWidth * viewerZoom),(int) (cameraHeight * viewerZoom));
 			g.setColor(new Color(0, 0, 120, 40));

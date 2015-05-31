@@ -324,7 +324,7 @@ public class Item extends JFrame{
 	}
 	
 	public String calculeVariable (String str) {
-		System.out.println("calculevariable");
+		//System.out.println("calculevariable");
 		if (str.isEmpty()) {
 			return 0+"";
 		} else {
