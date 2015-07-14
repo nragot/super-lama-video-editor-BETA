@@ -12,11 +12,13 @@ public class ShapeRect extends Shape {
 		m_id = 401;
 		nbofshape++;
 		m_name = "rect n#"+nbofshape;
+		setWidth(300);
+		setHeight(300);
 		reload();
 	}
 	
 	public void reload () {
-		bi = new BufferedImage(100, 100 , BufferedImage.TYPE_INT_ARGB);
+		bi = new BufferedImage(cacheWidth, cacheHeight , BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = bi.createGraphics();
 		g2d.setColor(Color.black);
 		g2d.fillRoundRect(0, 0, Integer.parseInt(m_width)-1, Integer.parseInt(m_height)-1, roundBoundX, roundBoundY);

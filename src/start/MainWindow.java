@@ -25,13 +25,17 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import tools.ArrayListIndexer;
+import tools.CommandFrame;
 import tools.ImageSelector;
 import tools.ItemOption;
 import tools.KeyframeTool;
@@ -74,6 +78,7 @@ public class MainWindow extends JFrame{
 	static Outline outline;
 	static ItemOption itemOptions;
 	static TimeLine timeline;
+	static CommandFrame cmd = new CommandFrame();
 	
 	static int cameraWidth = 854, cameraHeight = 480,cameraPosX, cameraPosY;
 	static double viewerZoom = 1;
@@ -89,6 +94,16 @@ public class MainWindow extends JFrame{
 		Mover mm = new Mover ();
 		addMouseListener(mm);
 		addMouseMotionListener(mm);
+		
+		
+		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK), "commandPromptReveal");
+		panel.getActionMap().put("commandPromptReveal", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cmd.setBounds(getX() + getWidth(), getY(), 530, 800);
+				cmd.setVisible(true);
+				System.out.println("open");
+		}});
 		
 		//Menu bar settings
 		Actions al = new Actions();
@@ -135,10 +150,16 @@ public class MainWindow extends JFrame{
 	 * @param choseOver
 	 */
 	public static void selectItem (int i,boolean choseOver) {
-		if (choseOver) {
+		if (!choseOver) {
 			itemSelection.clear();
-			itemSelection.add(i);
+		} else {
+			System.out.println("item selection size :" + itemSelection.size());
 		}
+		itemSelection.add(i);
+	}
+	
+	public static ArrayList<Integer> getItemSelection () {
+		return itemSelection;
 	}
 	
 	public static void addImageItem (ImageItem II) {
@@ -214,7 +235,6 @@ public class MainWindow extends JFrame{
 	
 	public static void addShapeRect (ShapeRect sr) { //add shape
 		shapes.add(sr);
-		System.out.print("2:" + shapes.size());
 		index.add(new ArrayListIndexer(401, shapes.size()));
 	}
 	
@@ -236,8 +256,7 @@ public class MainWindow extends JFrame{
 	
 	public static void addShapeOval (ShapeOval so) { //add shape
 		shapes.add(so);
-		System.out.print("2:" + shapes.size());
-		index.add(new ArrayListIndexer(401, shapes.size()));
+		index.add(new ArrayListIndexer(402, shapes.size()));
 	}
 	
 	
@@ -338,6 +357,9 @@ public class MainWindow extends JFrame{
 	}
 	
 	public static void ResolveIndexGap (int A, int B) {
+		
+		itemSelection.clear();
+		System.out.println("[debug]" + itemSelection.size());
 		int gapSolver = 0;
 		for (int i = 0;i < index.size();i++) {
 			if (A == index.get(i).getA() && index.get(i).getB() == B) {
@@ -348,7 +370,6 @@ public class MainWindow extends JFrame{
 			}
 		}
 		index.remove(gapSolver);
-		System.out.println("gapsolved at " + A + ";" + B);
 	}
 	
 	public static void refreshItemStatFromFormula () {
@@ -420,6 +441,7 @@ public class MainWindow extends JFrame{
 			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), (int) ((getHeight()-(cameraHeight*viewerZoom))/2 + cameraHeight*viewerZoom), (int) Math.round(I), (int) ((getHeight()-(cameraHeight*viewerZoom))/2));//down
 			d.setColor(Color.red);
 
+			/*
 			if (selectedItemId == 1) {
 				d.rotate(Math.toRadians(images.get(selectedSprite).getRotation()), images.get(selectedSprite).getPosX()*viewerZoom, images.get(selectedSprite).getPosY()*viewerZoom);
 				d.drawRect((int) (images.get(selectedSprite).getPosX()*viewerZoom - images.get(selectedSprite).getWidth()*viewerZoom/2), (int) (images.get(selectedSprite).getPosY()*viewerZoom - images.get(selectedSprite).getHeight()*viewerZoom/2),(int) (images.get(selectedSprite).getWidth() * viewerZoom), (int) (images.get(selectedSprite).getHeight() * viewerZoom));
@@ -429,9 +451,28 @@ public class MainWindow extends JFrame{
 				d.drawRect((int) (texts.get(selectedText).getPosX()*viewerZoom), (int) (texts.get(selectedText).getPosY()*viewerZoom),(int) (texts.get(selectedText).getWidth() * viewerZoom), (int) (texts.get(selectedText).getHeight() * viewerZoom));
 				d.drawOval((int) (texts.get(selectedText).getPosX()*viewerZoom + (texts.get(selectedText).getWidth()*viewerZoom)/2 - 3), (int) (texts.get(selectedText).getPosY()*viewerZoom + (texts.get(selectedText).getHeight()*viewerZoom)/2 - 3), 6, 6);
 			} else if (selectedItemId == 3) {
-				d.rotate(Math.toRadians(videos.get(selectedText).getRotation()), (videos.get(selectedText).getWidth()*viewerZoom)/2 + videos.get(selectedText).getPosX()*viewerZoom, (videos.get(selectedText).getHeight()*viewerZoom)/2 + videos.get(selectedText).getPosY()*viewerZoom);
-				d.drawRect((int) (videos.get(selectedText).getPosX()*viewerZoom), (int) (videos.get(selectedText).getPosY()*viewerZoom),(int) (videos.get(selectedText).getWidth() * viewerZoom), (int) (videos.get(selectedText).getHeight() * viewerZoom));
-				d.drawOval((int) (videos.get(selectedText).getPosX()*viewerZoom + (videos.get(selectedText).getWidth()*viewerZoom)/2 - 3), (int) (videos.get(selectedText).getPosY()*viewerZoom + (videos.get(selectedText).getHeight()*viewerZoom)/2 - 3), 6, 6);
+				d.rotate(Math.toRadians(videos.get(selectedVideo).getRotation()), (videos.get(selectedVideo).getWidth()*viewerZoom)/2 + videos.get(selectedVideo).getPosX()*viewerZoom, (videos.get(selectedVideo).getHeight()*viewerZoom)/2 + videos.get(selectedVideo).getPosY()*viewerZoom);
+				d.drawRect((int) (videos.get(selectedVideo).getPosX()*viewerZoom), (int) (videos.get(selectedVideo).getPosY()*viewerZoom),(int) (videos.get(selectedVideo).getWidth() * viewerZoom), (int) (videos.get(selectedVideo).getHeight() * viewerZoom));
+				d.drawOval((int) (videos.get(selectedVideo).getPosX()*viewerZoom + (videos.get(selectedVideo).getWidth()*viewerZoom)/2 - 3), (int) (videos.get(selectedVideo).getPosY()*viewerZoom + (videos.get(selectedVideo).getHeight()*viewerZoom)/2 - 3), 6, 6);
+			}
+			*/
+			
+			d.setColor(Color.blue);
+			for (int i = 0; i < itemSelection.size(); i++) {
+				ArrayListIndexer ali = index.get(itemSelection.get(i));
+				if (ali.getA() == 1) {
+					d.rotate(Math.toRadians(images.get(ali.getB()-1).getRotation()), images.get(ali.getB()-1).getPosX()*viewerZoom, images.get(ali.getB()-1).getPosY()*viewerZoom);
+					d.drawRect((int) (images.get(ali.getB()-1).getPosX()*viewerZoom - images.get(ali.getB()-1).getWidth()*viewerZoom/2), (int) (images.get(ali.getB()-1).getPosY()*viewerZoom - images.get(ali.getB()-1).getHeight()*viewerZoom/2),(int) (images.get(ali.getB()-1).getWidth() * viewerZoom), (int) (images.get(ali.getB()-1).getHeight() * viewerZoom));
+					d.drawOval((int) (images.get(ali.getB()-1).getPosX()*viewerZoom - 3), (int) (images.get(ali.getB()-1).getPosY()*viewerZoom - 3), 6, 6);
+				} else if (ali.getA() == 2) {
+					d.rotate(Math.toRadians(texts.get(ali.getB()-1).getRotation()), (texts.get(ali.getB()-1).getWidth()*viewerZoom)/2 + texts.get(ali.getB()-1).getPosX()*viewerZoom, (texts.get(ali.getB()-1).getHeight()*viewerZoom)/2 + texts.get(ali.getB()-1).getPosY()*viewerZoom);
+					d.drawRect((int) (texts.get(ali.getB()-1).getPosX()*viewerZoom), (int) (texts.get(ali.getB()-1).getPosY()*viewerZoom),(int) (texts.get(ali.getB()-1).getWidth() * viewerZoom), (int) (texts.get(ali.getB()-1).getHeight() * viewerZoom));
+					d.drawOval((int) (texts.get(ali.getB()-1).getPosX()*viewerZoom + (texts.get(ali.getB()-1).getWidth()*viewerZoom)/2 - 3), (int) (texts.get(ali.getB()-1).getPosY()*viewerZoom + (texts.get(ali.getB()-1).getHeight()*viewerZoom)/2 - 3), 6, 6);
+				} else if (ali.getA() == 3) {
+					d.rotate(Math.toRadians(videos.get(ali.getB()-1).getRotation()), (videos.get(ali.getB()-1).getWidth()*viewerZoom)/2 + videos.get(ali.getB()-1).getPosX()*viewerZoom, (videos.get(ali.getB()-1).getHeight()*viewerZoom)/2 + videos.get(ali.getB()-1).getPosY()*viewerZoom);
+					d.drawRect((int) (videos.get(ali.getB()-1).getPosX()*viewerZoom), (int) (videos.get(ali.getB()-1).getPosY()*viewerZoom),(int) (videos.get(ali.getB()-1).getWidth() * viewerZoom), (int) (videos.get(ali.getB()-1).getHeight() * viewerZoom));
+					d.drawOval((int) (videos.get(ali.getB()-1).getPosX()*viewerZoom + (videos.get(ali.getB()-1).getWidth()*viewerZoom)/2 - 3), (int) (videos.get(ali.getB()-1).getPosY()*viewerZoom + (videos.get(ali.getB()-1).getHeight()*viewerZoom)/2 - 3), 6, 6);
+				}
 			}
 			
 			g.setColor(Color.BLACK);

@@ -244,6 +244,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 						} else {
 							MainWindow.setSelectedItemId(0);
 							MainWindow.getListSprites().remove(MainWindow.getSelectedImageNumber());
+							MainWindow.getItemSelection().clear();
 						}
 						MainWindow.getOutline().refresh();
 
@@ -376,6 +377,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 						} else {
 							MainWindow.setSelectedItemId(0);
 							MainWindow.getListTextItem().remove(MainWindow.getSelectedTextItemNumber());
+							MainWindow.getItemSelection().clear();
 						}
 						MainWindow.getOutline().refresh();
 
@@ -475,6 +477,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 						} else {
 							MainWindow.setSelectedItemId(0);
 							MainWindow.getListVideo().remove(MainWindow.getSelectedVideoItemNumber());
+							MainWindow.getItemSelection().clear();
 						}
 						MainWindow.getOutline().refresh();
 

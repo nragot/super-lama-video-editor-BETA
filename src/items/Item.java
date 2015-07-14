@@ -9,10 +9,12 @@ import javax.script.ScriptException;
 import javax.swing.JFrame;
 
 import start.MainWindow;
+import tools.TimeLine;
 
 public class Item extends JFrame{
-	ArrayList<String> keyFrameTranslation = new ArrayList<String>();
-	ArrayList<String> keyFrameRotation = new ArrayList<String>();
+	ArrayList<String>  keyFrameTranslation = new ArrayList<String>();
+	ArrayList<String>  keyFrameRotation = new ArrayList<String>();
+	ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------
 	String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
 	int cachePosX, cachePosY, cacheWidth, cacheHeight, cacheRotation;
 	int m_id;
@@ -195,6 +197,40 @@ public class Item extends JFrame{
 	public void setRotationFormula (String str) {
 		m_rotation = str;
 		cache();
+	}
+	
+	public Integer isOn () {
+		for (int index = 0; index < keyFrameActiv.size(); index++) {
+			int testedTime = keyFrameActiv.get(index);
+			
+			if (testedTime > TimeLine.getTime()) {
+				return keyFrameActiv.get(index - 1);
+			}
+		}
+		return keyFrameActiv.get(keyFrameActiv.size()-1);
+	}
+	
+	public void addKeyFrameActiv (int time) {
+		int finalIndex = 0 ;
+		
+		a:for (int index = 0; index < keyFrameActiv.size();index++) {
+			int testedTime = keyFrameActiv.get(index);
+			if (time < testedTime) {
+				break a;
+			} else {
+				finalIndex += 1;
+			}
+		}
+		
+		keyFrameActiv.add(finalIndex, time);
+	}
+	
+	public void deleteKeyFrameActiv (int time) {
+		for (int index = 0; index < keyFrameActiv.size();index++) {
+			int testedTime = keyFrameActiv.get(index);
+			if (testedTime == time) 
+				keyFrameActiv.remove(index);
+		}
 	}
 	
 	public void addKeyFrameTranslate (int time,String x, String y, int type) {

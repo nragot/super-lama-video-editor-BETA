@@ -2,6 +2,7 @@ package tools;
 
 import items.ImageItem;
 import items.TextItem;
+import items.VideoItem;
 
 import java.awt.FlowLayout;
 import java.awt.MouseInfo;
@@ -78,7 +79,8 @@ public class KeyframeTool extends JFrame{
 			jb.addActionListener(new ActionListener() {
 
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
 					if (MainWindow.getSelectedItemId() == 1) {
 						ImageItem img = MainWindow.getSelectedImageItem();
 						img.deleteKeyFrameTranslationAt(MainWindow.getTimeLine().getTime());
@@ -87,6 +89,7 @@ public class KeyframeTool extends JFrame{
 						txt.deleteKeyFrameTranslationAt(MainWindow.getTimeLine().getTime());
 					}
 				}
+				
 			});
 			add(jb);
 
@@ -115,11 +118,30 @@ public class KeyframeTool extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					if (MainWindow.getSelectedItemId() == 1) {
 						ImageItem img = MainWindow.getSelectedImageItem();
-						MainWindow.getTimeLine();
 						img.addKeyFrameRotation(TimeLine.getTime(), img.getRotationFormula());
 					} else if (MainWindow.getSelectedItemId() == 2) {
 						TextItem txt = MainWindow.getSelectedTextItem();
 						txt.addKeyFrameRotation(TimeLine.getTime(), txt.getRotationFormula());
+					}
+				}
+			});
+			add(jb);
+			
+			jb = new JButton("add activation keyframe");
+			jb.setToolTipText("add activation keyframe");
+			jb.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (MainWindow.getSelectedItemId() == 1) {
+						ImageItem img = MainWindow.getSelectedImageItem();
+						img.addKeyFrameActiv(TimeLine.getTime());
+					} else if (MainWindow.getSelectedItemId() == 2) {
+						TextItem txt = MainWindow.getSelectedTextItem();
+						txt.addKeyFrameActiv(TimeLine.getTime());
+					} else if (MainWindow.getSelectedItemId() == 3) {
+						VideoItem vdi = MainWindow.getSelectedVideoItem();
+						vdi.addKeyFrameActiv(TimeLine.getTime());
 					}
 				}
 			});

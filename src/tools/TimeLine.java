@@ -2,12 +2,10 @@ package tools;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Arc2D;
-import java.awt.geom.QuadCurve2D;
-import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -20,9 +18,7 @@ public class TimeLine extends JFrame implements KeyListener{
 	static int time;
 	static int addX;
 	static short type;
-	ImageIcon iconImage = new ImageIcon(getClass().getResource("/icon timeline image.png")),
-			  iconText  = new ImageIcon(getClass().getResource("/icon timeline text.png")) ,
-			  iconVideo = new ImageIcon(getClass().getResource("/icon timeline video.png"));
+	static ArrayList<Point> items = new ArrayList<Point>();
 	
 	public TimeLine () {
 		setBounds (0,0,1920,80);
@@ -127,7 +123,6 @@ public class TimeLine extends JFrame implements KeyListener{
 			for (int i = 0; i < getHeight()/50+2; i ++) {
 				g.drawLine(0, i*50, getWidth(), i*50);
 			}
-			System.out.println(":)");
 			
 			g.setColor(new Color(150,20,20));
 			g.fillRect(getWidth()-170, 0, 60, 25);
@@ -140,9 +135,10 @@ public class TimeLine extends JFrame implements KeyListener{
 			g.fillArc(getWidth()-200, 0, 60, 50, 270, 90);
 			g.setColor(Color.black);
 			g.drawLine(50, 50, 50, getHeight());
-			g.drawImage(iconImage.getImage(),30,5,40,40,null);
-			g.drawImage(iconText.getImage(),100, 5,40,40,null);
-			g.drawImage(iconVideo.getImage(),170, 5,40,40,null);
+			g.setColor(new Color (40,40,40,80));
+			g.fillRect(0, 50, 50, getHeight());
+			g.fillRect(0, 50, getWidth(), 50);
+			
 		}
 	}
 	
@@ -159,7 +155,6 @@ public class TimeLine extends JFrame implements KeyListener{
 	}
 
 	public static void calculateItemsState () {
-		System.out.println("calculeItemState");
 		for (int i = 0; i < MainWindow.getListSprites().size() ; i++) {
 			{ // translation
 				String str1 = MainWindow.getListSprites().get(i).getLastKeyFrameTranslate(time);
