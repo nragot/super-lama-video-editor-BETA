@@ -8,18 +8,26 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.JFrame;
 
+import exceptions.NoItemFoundException;
+
 import start.MainWindow;
 import tools.TimeLine;
 
 public class Item extends JFrame{
 	ArrayList<String>  keyFrameTranslation = new ArrayList<String>();
 	ArrayList<String>  keyFrameRotation = new ArrayList<String>();
-	ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------
+	ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------activation
 	String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
 	int cachePosX, cachePosY, cacheWidth, cacheHeight, cacheRotation;
 	int m_id;
 	double m_ratio;
 	String m_name;
+	
+	public Item () {}
+	
+	public Item (String name) {
+		m_name = name;
+	}
 	
 	public int getPosXFromFormula () {
 		String str = calculeVariable(m_posX);
@@ -387,7 +395,7 @@ public class Item extends JFrame{
 	
 	public String findAndChangeVariables (String str) {
 		boolean b;
-		System.out.println("findandchangevariable");
+		//System.out.println("findandchangevariable");
 		do {
 			b = false;
 			if (str.indexOf("#time_frame") != -1) {
@@ -418,7 +426,7 @@ public class Item extends JFrame{
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
-				}
+				} catch (NoItemFoundException e) {}
 			}
 			if (str.indexOf("#item_height(") != -1) {
 				try {
@@ -427,7 +435,7 @@ public class Item extends JFrame{
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
-				}
+				} catch (NoItemFoundException e) {}
 			}
 			if (str.indexOf("#item_posX(") != -1) {
 				try {
@@ -436,7 +444,7 @@ public class Item extends JFrame{
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
-				}
+				} catch (NoItemFoundException e) {}
 			}
 			if (str.indexOf("#item_posAbsciss(") != -1) {
 				try {
@@ -445,7 +453,7 @@ public class Item extends JFrame{
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
-				}
+				} catch (NoItemFoundException e) {}
 			}
 			if (str.indexOf("#item_posY(") != -1) {
 				try {
@@ -454,7 +462,7 @@ public class Item extends JFrame{
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
-				}
+				} catch (NoItemFoundException e) {}
 			}
 			if (str.indexOf("#item_posOrdinate(") != -1) {
 				try {
@@ -463,7 +471,7 @@ public class Item extends JFrame{
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;
-				}
+				} catch (NoItemFoundException e) {}
 			}
 			if (str.endsWith(" ")) {
 				str = str.substring(0, str.length() - 1);

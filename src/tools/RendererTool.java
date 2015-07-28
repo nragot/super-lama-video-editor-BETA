@@ -37,7 +37,7 @@ public class RendererTool extends JPanel{
 		images = MainWindow.getListSprites();
 		texts = MainWindow.getListTextItem();
 		videos = MainWindow.getListVideo();
-		index = MainWindow.getListIndexer();
+		index = MainWindow.getIndex();
 		repaint();
 		BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB);
 		Graphics2D d = render.createGraphics();
@@ -55,7 +55,7 @@ public class RendererTool extends JPanel{
 		images = MainWindow.getListSprites();
 		texts = MainWindow.getListTextItem();
 		videos = MainWindow.getListVideo();
-		index = MainWindow.getListIndexer();
+		index = MainWindow.getIndex();
 		new Renderer().start();
 	}
 	

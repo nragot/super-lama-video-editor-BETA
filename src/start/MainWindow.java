@@ -34,6 +34,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import exceptions.NoItemFoundException;
+
 import tools.ArrayListIndexer;
 import tools.CommandFrame;
 import tools.ImageSelector;
@@ -100,9 +102,7 @@ public class MainWindow extends JFrame{
 		panel.getActionMap().put("commandPromptReveal", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cmd.setBounds(getX() + getWidth(), getY(), 530, 800);
-				cmd.setVisible(true);
-				System.out.println("open");
+				openCommand();
 		}});
 		
 		//Menu bar settings
@@ -217,7 +217,7 @@ public class MainWindow extends JFrame{
 		return videos;
 	}
 	
-	public static ArrayList<ArrayListIndexer> getListIndexer () {
+	public static ArrayList<ArrayListIndexer> getIndex () {
 		return index;
 	}
 	
@@ -320,7 +320,7 @@ public class MainWindow extends JFrame{
 		return shapes.size();
 	}
 	
-	public static Item getItemByName (String str) {
+	public static Item getItemByName (String str) throws NoItemFoundException {
 		for (int index = 0; index < images.size();index++) {
 			if (str.equals(images.get(index).getName())) {
 				return images.get(index);
@@ -341,7 +341,7 @@ public class MainWindow extends JFrame{
 				return shapes.get(index);
 			}
 		}
-		return new Item();
+		throw new NoItemFoundException();
 	}
 	
 	public static void secureRedrawerStop () {
@@ -354,6 +354,16 @@ public class MainWindow extends JFrame{
 	
 	public static void RedrawerSlow () {
 		redrawer.slow();
+	}
+	
+	public static void openCommand () {
+		cmd.setBounds(60, 60, 530, 800);
+		cmd.setVisible(true);
+	}
+	
+	public static void print (String str) {
+		if (cmd.isVisible()) cmd.setVisible(true);
+		cmd.print(str);
 	}
 	
 	public static void ResolveIndexGap (int A, int B) {

@@ -32,6 +32,7 @@ public class Outline extends JFrame implements ActionListener{
 		bindKey();
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		add(myPanel);
+		refresh();
 		setVisible(true);
 	}
 	

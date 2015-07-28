@@ -3,25 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacpp.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv-android-arm.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv-linux-x86.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv-macosx-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv-windows-x86.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-bin/javacv-windows-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/ffmpeg-2.1.1-android-arm.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/ffmpeg-2.1.1-linux-x86.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/ffmpeg-2.1.1-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/ffmpeg-2.1.1-macosx-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/ffmpeg-2.1.1-windows-x86.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/ffmpeg-2.1.1-windows-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/opencv-2.4.8-android-arm.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/opencv-2.4.8-linux-x86.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/opencv-2.4.8-linux-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/opencv-2.4.8-macosx-x86_64.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/opencv-2.4.8-windows-x86.jar"/>
-	<classpathentry kind="lib" path="/home/nathan/development/workspaces/workspace/super lama video editing/librairies/javacv-cppjars/opencv-2.4.8-windows-x86_64.jar"/>
+	<classpathentry kind="lib" path="librairies/javacv-bin/javacpp.jar"/>
+	<classpathentry kind="lib" path="librairies/javacv-bin/javacv-linux-x86_64.jar"/>
+	<classpathentry kind="lib" path="librairies/javacv-bin/javacv.jar"/>
+	<classpathentry kind="lib" path="librairies/javacv-cppjars/ffmpeg-2.1.1-linux-x86_64.jar"/>
+	<classpathentry kind="lib" path="librairies/javacv-cppjars/opencv-2.4.8-linux-x86_64.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

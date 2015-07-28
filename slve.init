@@ -1,0 +1,7 @@
+#give default path for some options"MAY BE REASON OF LUNCH CRASHES AND UNSTABILITY IF NOT DONE PROPERLY"
+echo "start loading slve.init"
+image.selector default.path "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/"
+render default.output "/home/Desktop/"
+echo "everything's good master"
+outline add image "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/characters/Dr house.png" A
+outline add image "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/characters/aCoolGuy.png" B
