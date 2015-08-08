@@ -113,7 +113,6 @@ public class VideoItem extends Item {
 			} else {
 				g.setFrameNumber(i);
 				img = g.grab().getBufferedImage();
-				System.out.println("i:"+i );
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

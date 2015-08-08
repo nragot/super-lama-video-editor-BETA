@@ -62,37 +62,24 @@ public class Outline extends JFrame implements ActionListener{
 		for (int i = 0; i < MainWindow.getListSprites().size();i++) {
 			JButton button = new JButton(MainWindow.getListSprites().get(i).getName());
 			button.addActionListener(this);
-			if (i == MainWindow.getSelectedImageNumber()) {
-				button.setBackground(Color.orange);
-			}
 			add(button);
 			AllButtons.add(button);
 		}
 		for (int i = 0; i < MainWindow.getListTextItem().size();i++) {
 			JButton button = new JButton(MainWindow.getListTextItem().get(i).getName());
 			button.addActionListener(this);
-			if (i == MainWindow.getSelectedTextItemNumber()) {
-				button.setBackground(Color.orange);
-			}
 			add(button);
 			AllButtons.add(button);
 		}
 		for (int i = 0;i < MainWindow.getListVideo().size();i++) {
 			JButton button = new JButton(MainWindow.getListVideo().get(i).getName());
 			button.addActionListener(this);
-			if (i == MainWindow.getSelectedVideoItemNumber()) {
-				button.setBackground(Color.orange);
-			}
 			add(button);
 			AllButtons.add(button);
 		}
-		System.out.println("shape:"+MainWindow.getListShapes().size());
 		for (int i = 0; i < MainWindow.getListShapes().size();i++) {
 			JButton button = new JButton(MainWindow.getListShapes().get(i).getName());
 			button.addActionListener(this);
-			if (i == MainWindow.getSelectedVideoItemNumber()) {
-				button.setBackground(Color.orange);
-			}
 			add(button);
 			AllButtons.add(button);
 		}
@@ -104,6 +91,7 @@ public class Outline extends JFrame implements ActionListener{
 		JButton button = (JButton) e.getSource();
 		String str = button.getText();
 		
+		/*
 		for (int index = 0; index < MainWindow.getListSprites().size();index ++) {
 			if (str.equals( MainWindow.getListSprites().get(index).getName())) {
 				MainWindow.setSelectedImageItem(index);
@@ -131,12 +119,11 @@ public class Outline extends JFrame implements ActionListener{
 				MainWindow.setSelectedItemId(MainWindow.getSelectedShape().getId());
 				MainWindow.getItemOption().loadOptions();
 			}
-		}
+		}*/
 		
-		System.out.println("keykistnerlenght:"+getKeyListeners().length);
 		//IN DEV, HIGLY UNSTABLE
-		System.out.println("[DEBUG]" + AllButtons.indexOf(button) + " in :" + AllButtons.size());
 		MainWindow.selectItem(AllButtons.indexOf(button), key[0]);
+		MainWindow.getItemOption().loadOptions();
 		refresh();
 	}
 	
@@ -148,7 +135,6 @@ public class Outline extends JFrame implements ActionListener{
 				key[0] = true;
 				setTitle(e.getKeyCode()+"");
 			}
-			System.out.println(":)" + key[0]);
 		}
 
 		@Override
@@ -157,7 +143,6 @@ public class Outline extends JFrame implements ActionListener{
 				key[0] = false;
 				setTitle(e.getKeyCode()+"~");
 			}
-			System.out.println(":(" + key[0]);
 		}
 
 		@Override

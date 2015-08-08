@@ -40,12 +40,10 @@ public class TextItem extends Item {
 			fontSize = (int) Double.parseDouble(str);
 		else 
 			fontSize = 1;
-		System.out.println("fontSizeFormula::"+fontSizeFormula);
 	}
 	
 	public void setFontSizeFormulaNoCache (String formula) {
 		fontSizeFormula = formula;
-		System.out.println("fontSizeFormula:::"+fontSizeFormula + "form " + formula);
 	}
 	/**
 	 * redraw the panel containing the text
@@ -78,20 +76,20 @@ public class TextItem extends Item {
 	}
 	
 	@Override
-	public void cache() {
-		super.cache();
-		System.out.println("fontSizeFormula:"+fontSizeFormula);
+	public boolean cache() {
+		boolean isEveryThingRight = super.cache();
 		String str = calculeVariable(fontSizeFormula);
-		System.out.println("str" + str + " fontSizeFormula:" + fontSizeFormula);
-		if (!str.equals("!"))
+		if (!str.equals("!")) {
 			fontSize = (int) Double.parseDouble(str);
-		else 
+			isEveryThingRight = false;
+		} else { 
 			fontSize = 1;
+		}
+		return isEveryThingRight;
 	}
 	
 	public void addKeyFrameText (int time,String x) {
 		String str = "m"+time+":"+x;
-		System.out.println("keyframe added :" + str );
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
 		int finalIndex = 0;

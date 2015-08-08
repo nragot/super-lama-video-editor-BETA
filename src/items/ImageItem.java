@@ -24,7 +24,8 @@ public class ImageItem extends Item{
 		m_ratio = width/(height*1.0);
 		m_id = 1;
 		addKeyFrameTranslate(0, posX+"", posY+"",1);
-		addKeyFrameRotation(0, 0+"");
+		addKeyFrameRotation(0, 0+"", 1);
+		addKeyFrameActiv(0);
 	}
 	
 	public ImageItem (Image img, String name, int posX, int posY) {
@@ -42,7 +43,8 @@ public class ImageItem extends Item{
 		m_ratio = getWidth()/(getHeight()*1.0);
 		m_id = 1;
 		addKeyFrameTranslate(0, posX+"", posY+"",1);
-		addKeyFrameRotation(0, 0+"");
+		addKeyFrameRotation(0, 0+"", 1);
+		addKeyFrameActiv(0);
 	}
 	
 	public Image getImage () {

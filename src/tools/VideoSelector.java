@@ -38,7 +38,6 @@ public class VideoSelector extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent arg0) {
 				path = path.substring(0,path.lastIndexOf("/",path.length()-2)+1);
 				setTitle(path);
-				System.out.println(path);
 				for (int i = 0; i < AllButtons.size();i++) {
 					remove(AllButtons.get(i));
 				}
@@ -79,7 +78,6 @@ public class VideoSelector extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		JButton but = (JButton) e.getSource();
 		path += but.getText() + "/";
-		System.out.println("moving :" + path);
 		if (new File(path).isDirectory()) {
 			setTitle(path);
 			for (int i = 0; i < AllButtons.size();i++) {
@@ -94,12 +92,9 @@ public class VideoSelector extends JFrame implements ActionListener{
 			String str = JOptionPane.showInputDialog(null,"give the name of the object you want to create","item #" + lastItemNumCreated);
 			if (str != null) {
 				lastItemNumCreated ++;
-				System.out.println("added video ** \n path :  " + path + " \n name gived :" + str + "\n**********");
-				MainWindow.addVideoItem(new VideoItem(path.substring(0, path.length() - 1),str,MainWindow.getTimeLine().getTime()));
+				MainWindow.addVideoItem(new VideoItem(path.substring(0, path.length() - 1),str, TimeLine.getTime()));
 				MainWindow.getOutline().refresh();
 				dispose();
-			} else {
-				System.out.println("added video ** \n rejected \n**********");
 			}
 		}
 	}

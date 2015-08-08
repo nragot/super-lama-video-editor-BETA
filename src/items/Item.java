@@ -19,6 +19,7 @@ public class Item extends JFrame{
 	ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------activation
 	String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
 	int cachePosX, cachePosY, cacheWidth, cacheHeight, cacheRotation;
+	boolean cacheOn = true;
 	int m_id;
 	double m_ratio;
 	String m_name;
@@ -27,6 +28,7 @@ public class Item extends JFrame{
 	
 	public Item (String name) {
 		m_name = name;
+		cache();
 	}
 	
 	public int getPosXFromFormula () {
@@ -105,32 +107,45 @@ public class Item extends JFrame{
 		m_name = name;
 	}
 	
-	public void cache () {
+	/**
+	 * return false if something went wrong
+	 */
+	public boolean cache () {
+		boolean isEveryThingsRight = true;
 		try {
 			cachePosX = (int) Double.parseDouble(calculeVariable(m_posX));
 		} catch (NumberFormatException e) {
 			cachePosX = 0;
+			isEveryThingsRight = false;
 		}
 		try {
 			cachePosY = (int) Double.parseDouble(calculeVariable(m_posY));
 		} catch (NumberFormatException e) {
 			cachePosY = 0;
+			isEveryThingsRight = false;
 		}
 		try {
 			cacheWidth = (int) Double.parseDouble(calculeVariable(m_width));
 		} catch (NumberFormatException e) {
 			cacheWidth = 0;
+			isEveryThingsRight = false;
 		}
 		try {
 			cacheHeight = (int) Double.parseDouble(calculeVariable(m_height));
 		} catch (NumberFormatException e) {
 			cacheHeight = 0;
+			isEveryThingsRight = false;
 		}
 		try {
 			cacheRotation = (int) Double.parseDouble(calculeVariable(m_rotation));
 		} catch (NumberFormatException e) {
 			cacheRotation = 0;
+			isEveryThingsRight = false;
 		}
+		{
+			cacheOn = cacheActiv();
+		}
+		return isEveryThingsRight;
 	}
 	
 	public String getName () {
@@ -182,40 +197,48 @@ public class Item extends JFrame{
 		return m_rotation;
 	}
 	
-	public void setPosXFormula (String str) {
+	public boolean setPosXFormula (String str) {
 		m_posX = str;
-		cache();
+		return cache();
 	}
 	
-	public void setPosYFormula (String str) {
+	public boolean setPosYFormula (String str) {
 		m_posY = str;
-		cache();
+		return cache();
 	}
 	
-	public void setWidthFormula (String str) {
+	public boolean setWidthFormula (String str) {
 		m_width = str;
-		cache();
+		return cache();
 	}
 	
-	public void setHeightFormula (String str) {
+	public boolean setHeightFormula (String str) {
 		m_height = str;
-		cache();
+		return cache();
 	}
 	
-	public void setRotationFormula (String str) {
+	public boolean setRotationFormula (String str) {
 		m_rotation = str;
-		cache();
+		return cache();
 	}
 	
-	public Integer isOn () {
-		for (int index = 0; index < keyFrameActiv.size(); index++) {
-			int testedTime = keyFrameActiv.get(index);
-			
-			if (testedTime > TimeLine.getTime()) {
-				return keyFrameActiv.get(index - 1);
+	public boolean isActiv () {
+		return cacheOn;
+	}
+	
+	public boolean cacheActiv () {
+		if (keyFrameActiv.size() > 0) {
+			for (int index = 0; index < keyFrameActiv.size(); index++) {
+				int testedTime = keyFrameActiv.get(index);
+
+				if (testedTime > TimeLine.getTime()) {
+					return !(index%2 == 0);
+				}
 			}
+			return !(keyFrameActiv.size()%2 == 0);
+		} else {
+			return true;
 		}
-		return keyFrameActiv.get(keyFrameActiv.size()-1);
 	}
 	
 	public void addKeyFrameActiv (int time) {
@@ -241,11 +264,40 @@ public class Item extends JFrame{
 		}
 	}
 	
+	public int getLastKeyFrameActiv (int i) {
+		for (int index = 0; index < keyFrameTranslation.size(); index++) {
+			int testedTime = keyFrameActiv.get(index);
+			
+			if (testedTime > i) {
+				return keyFrameActiv.get(index - 1);
+			}
+		}
+		return keyFrameActiv.get(keyFrameActiv.size()-1);
+	}
+	
+	public int getNextKeyFrameActiv (int i) {
+		for (int index = 0; index < keyFrameActiv.size(); index++) {
+			int testedTime = keyFrameActiv.get(index);
+			
+			if (testedTime > i) {
+				return keyFrameActiv.get(index);
+			}
+		}
+		return keyFrameActiv.get(keyFrameActiv.size()-1);
+	}
+	
+	public ArrayList<Integer> getAllKeyframeActiv () {
+		return keyFrameActiv;
+	}
+	
+	public Integer getKeyframeActiv (int i) {
+		return keyFrameActiv.get(i);
+	}
+	
 	public void addKeyFrameTranslate (int time,String x, String y, int type) {
 		String str = "";
 		if (type == 1) str = "t"+time+":"+x+","+y;
 		else str = "T" + time + ":" + x + "," + y;
-		System.out.println("keyframe added :" + str);
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
 		int finalIndex = 0;
@@ -305,9 +357,8 @@ public class Item extends JFrame{
 		}
 	}
 	
-	public void addKeyFrameRotation (int time, String string) {
+	public void addKeyFrameRotation (int time, String string, int type) {
 		String str = "r"+time+":"+string;
-		System.out.println("keyframe added :" + str);
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
 		int finalIndex = 0;
@@ -418,11 +469,18 @@ public class Item extends JFrame{
 				str = str.replace("#me_height", m_height+"");
 				b = true;
 			}
+			if (str.indexOf("#me_posX") != -1) {
+				str = str.replace("#me_posX", m_posX+"");
+				b = true;
+			}
+			if (str.indexOf("#me_posY") != -1) {
+				str = str.replace("#me_posY", m_posY+"");
+				b = true;
+			}
 			if (str.indexOf("#item_width(") != -1) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_width(") + 12, str.indexOf(')'));
 					str = str.replace("#item_width(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
-					System.out.println("str"+str+"::"+Thread.currentThread().getName());
 					b = true;
 				} catch (StringIndexOutOfBoundsException e) {
 					break;

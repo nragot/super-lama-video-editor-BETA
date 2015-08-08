@@ -7,16 +7,19 @@ import items.VideoItem;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sql.rowset.Joinable;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -25,11 +28,12 @@ import exceptions.NoItemFoundException;
 
 import start.AppProperties;
 import start.MainWindow;
+import start.Start;
 
 public class CommandFrame extends JFrame {
 	JPanel myPanel = new MyPanel ();
 	JTextField cmd = new JTextField();
-	final int cmdsLenght = 10;
+	final int cmdsLenght = 40;
 	String cmds[] = new String[cmdsLenght];
 	
 	public CommandFrame () {
@@ -48,14 +52,13 @@ public class CommandFrame extends JFrame {
 				command(cmd.getText());
 				cmd.setText("");
 				repaint();
-		}});
+			}});
 	}
 	
 	private class MyPanel extends JPanel {
 		
 		@Override
 		public void paintComponent (Graphics g) {
-			System.out.println("repaint");
 			g.fillRect(0, 0, getWidth(), getHeight());
 			for (int i = 0 ; i < cmdsLenght; i++) {
 				if (cmds[cmdsLenght - 1 -i].startsWith("[serge]")) g.setColor(Color.RED);
@@ -107,9 +110,27 @@ public class CommandFrame extends JFrame {
 		
 		switch (args.get(0)) {
 			case "help" :
-				print("[help] commands available :");
-				print("echo, list");
-				break;
+				try {
+					print ("[help] hello, welcome in the Command Prompt !");
+					Thread.sleep(1000);
+					print ("[help] here you will be able to enter commands to do a lot of stuff.");
+					print ("[help] in wich case we (the commands) will, sometime, answer you. Our answers are in green.");
+					print ("[help] your commands are in blue (look above).");
+					print ("[help] if something goes wrong, serge himself will tell you that an error occur. here is an exemple :");
+					print ("[serge] it is absolutly forbidden to use the help! ... let's say it is fine for now but i'm watching you.");
+					print ("[help] a command can be written as this");
+					print ("command argument1 \"argument 2\" ...");
+					print ("[help] hopefully many commands don't need any arguments, but many more might need you much information");
+					print ("[help] if you need to write an argument wich need spaces to be written, you will have to put ...");
+					print ("[help] ... \" \" to make sure it is considere as only one argument");
+					print ("[help] here is a great exemple of command you may use :");
+					print ("outline add image \"C:/image 1\"");
+					print("[help] commands available :");
+					print("echo, list");
+					break;
+				} catch (InterruptedException e) {
+
+				}
 			case "echo" :
 				for (int i = 1; i < args.size(); i++) {
 					print("[echo]"+args.get(i));
@@ -128,31 +149,45 @@ public class CommandFrame extends JFrame {
 						CommSpef.add(args.get(i));
 					}
 				}
-				if (ItemNames.size() == 0 || CommSpef.size() == 0) {
-					print ("[serge] missing argument(s)");
-				} else if (MainWindow.getIndex().size() == 0) {
+				if (MainWindow.getIndex().size() == 0) {
 					print ("[serge]there is no item to list or scan in the index");
 				}else {
 					int i = 0, y = 0, a = 0;
 					try {
-						for (y = 0; y < ItemNames.size(); y++) {
-							Item item = MainWindow.getItemByName(ItemNames.get(y));
+						if (ItemNames.size() > 0) {
+							for (y = 0; y < ItemNames.size(); y++) {
+								for (a = 0; a < CommSpef.size(); a++) {
+									switch (CommSpef.get(a)) {
+									case "keyframe" :
+									case "k" :
+										Item item = MainWindow.getItemByName(ItemNames.get(y));
+										print ("[list] -" + ItemNames.get(y));
+										if (item.getId() == 1 || item.getId() == 2 || item.getId() == 3 || item.getId() == 4) {
+											for (int i2 = 0; i2 < item.getAllKeyFramesTranslation().length ; i2 ++) {
+												print ("[list] -- " + item.getKeyFrameTranslate(i2));
+											}
+											for (int i2 = 0; i2 < item.getAllKeyFramesRotation().length ; i2 ++) {
+												print ("[list] -- " + item.getKeyFrameRotation(i2));
+											}
+											for (int i2 = 0; i2 < item.getAllKeyframeActiv().size(); i2 ++) {
+												print ("[list] -- " + item.getKeyframeActiv(i2));
+											}
+										}
+										break;
+									case "is.on" :
+									case "i.o" :
+
+									default :
+										print("[serge]the argument \"" + CommSpef.get(a) +"\" is invalid, please see : list help for more informations");
+									}
+								}
+							}
+						} else {
 							for (a = 0; a < CommSpef.size(); a++) {
 								switch (CommSpef.get(a)) {
-								case "keyframe" :
-								case "k" :
-									print ("[list] -" + ItemNames.get(y));
-									if (item.getId() == 1 || item.getId() == 2 || item.getId() == 3 || item.getId() == 4) {
-										for (int i2 = 0; i2 < item.getAllKeyFramesTranslation().length ; i2 ++) {
-											print ("[list] -- " + item.getKeyFrameTranslate(i2));
-										}
-										for (int i2 = 0; i2 < item.getAllKeyFramesRotation().length ; i2 ++) {
-											print ("[list] -- " + item.getKeyFrameRotation(i2));
-										}
-									}
-									break;
-								default :
-									print("[serge]the argument \"" + CommSpef.get(a) +"\" is invalid, please see : list help for more informations");
+									case "i" :
+									case "index" :
+										// TODO INDEX HERE
 								}
 							}
 						}
@@ -176,12 +211,29 @@ public class CommandFrame extends JFrame {
 					cmds[cmdsLenght - 1 - i] = " ";
 				}
 				break;
+			case "pause" :
+				boolean done = false;
+				JOptionPane.showMessageDialog(this, args.get(1));
+				break;
+			case "script" :
+				if (args.get(1).equals("read")) {
+					try {
+						ScriptReader.read(args.get(2));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				break;
 			case "Command.Prompt" :
-				if (args.get(1).startsWith("setTitle:")) setTitle (args.get(1).substring(9));
+				if (args.get(1).startsWith("set.title:")) setTitle (args.get(1).substring(9));
+				else if (args.get(1).equals("visible")) setVisible(true);
+				else if (args.get(1).equals("unvisible")) setVisible(false);
+				else return 1;
 				break;
 			case "outline" :
-				if (args.get(1).startsWith("setTitle:")) MainWindow.getOutline().setTitle (args.get(1).substring(9));
-				if (args.size() > 3 && args.get(1).equals("add")) {
+				if (args.get(1).startsWith("set.title:")) MainWindow.getOutline().setTitle (args.get(1).substring(9));
+				else if (args.size() > 3 && args.get(1).equals("add")) {
 					switch (args.get(2)) {
 						case "image":
 						case "img" :
@@ -204,17 +256,33 @@ public class CommandFrame extends JFrame {
 						// TODO shape
 					}
 				}
-				if (args.get(1).equals("reload")) {
+				else if (args.get(1).equals("remove") || args.get(1).equals("rm")) {
+					try {
+						MainWindow.removeItemByName(args.get(2));
+					} catch (NoItemFoundException e) {
+						print ("[serge] no item is called :" + args.get(2));
+					}
+				}
+				else if (args.get(1).equals("visible")) MainWindow.getOutline().setVisible(true);
+				else if (args.get(1).equals("unvisible")) MainWindow.getOutline().setVisible(false);
+				else if (args.get(1).equals("reload")) {
 					MainWindow.getOutline().refresh();
 				}
 				break;
 			case "timeline" :
-				if (args.get(1).startsWith("setTitle:")) MainWindow.getTimeLine().setTitle (args.get(1).substring(9));
+				if (args.get(1).startsWith("set.title:")) MainWindow.getTimeLine().setTitle (args.get(1).substring(9));
+				else if (args.get(1).equals("visible")) MainWindow.getTimeLine().setVisible(true);
+				else if (args.get(1).equals("unvisible")) MainWindow.getTimeLine().setVisible(false);
 				break;
 			case "item.options" :
-				if (args.get(1).startsWith("setTitle:")) MainWindow.getItemOption().setTitle (args.get(1).substring(9));
+				if (args.get(1).startsWith("set.title:")) MainWindow.getItemOption().setTitle (args.get(1).substring(9));
+				else if (args.get(1).equals("visible")) MainWindow.getItemOption().setVisible(true);
+				else if (args.get(1).equals("unvisible")) MainWindow.getItemOption().setVisible(false);
 				break;
 			case "main" :
+				if (args.get(1).startsWith("set.title:")) Start.getMainWindow().setTitle (args.get(1).substring(9));
+				else if (args.get(1).equals("visible")) Start.getMainWindow().setVisible(true);
+				else if (args.get(1).equals("unvisible")) Start.getMainWindow().setVisible(false);
 				break;
 			case "image.selector" :
 				if (args.get(1).equals("default.path")) {
@@ -227,7 +295,13 @@ public class CommandFrame extends JFrame {
 				}
 				break;
 			case "exit" :
-				System.exit(1);
+				if (args.get(1).equals("slve")) System.exit(1);
+				else if (args.get(1).equals ("cmd")) dispose();
+			case "label" :
+				return 0;
+			case "goto" :
+			case "GOTO" :
+				return 0;
 			default :
 				print("[serge] I don't know that command, i'm sorry. Are you sure you spelled it right ?");
 				return 1;
