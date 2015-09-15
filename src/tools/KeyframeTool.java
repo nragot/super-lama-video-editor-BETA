@@ -1,8 +1,6 @@
 package tools;
 
-import items.ImageItem;
 import items.TextItem;
-import items.VideoItem;
 
 import java.awt.FlowLayout;
 import java.awt.MouseInfo;
@@ -18,6 +16,7 @@ import exceptions.NoItemFoundException;
 import start.MainWindow;
 
 public class KeyframeTool extends JFrame{
+
 	public KeyframeTool () {
 		Point p = MouseInfo.getPointerInfo().getLocation();
 		setBounds((int)(p.getX() - 50),(int) (p.getY() - 20), 500, 230);
@@ -33,7 +32,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getSelectedItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getPosXFormula()), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getPosYFormula()), 1);
+						MainWindow.getTimeLine();
+						MainWindow.getSelectedItem().addKeyFrameTranslate(TimeLine.getTime(), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getPosXFormula()), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getPosYFormula()), 1);
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -49,7 +49,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getSelectedItem().deleteKeyFrameTranslationAt(MainWindow.getTimeLine().getTime());
+						MainWindow.getTimeLine();
+						MainWindow.getSelectedItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						e1.printStackTrace();
 					}
@@ -64,7 +65,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getSelectedItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getRotationFormula()) , 1);
+						MainWindow.getTimeLine();
+						MainWindow.getSelectedItem().addKeyFrameRotation(TimeLine.getTime(), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getRotationFormula()) , 1);
 					} catch (NoItemFoundException e1) {
 						
 					}
@@ -79,7 +81,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						MainWindow.getSelectedItem().deleteKeyFrameRotationAt(MainWindow.getTimeLine().getTime());
+						MainWindow.getTimeLine();
+						MainWindow.getSelectedItem().deleteKeyFrameRotationAt(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						e1.printStackTrace();
 					}
@@ -95,7 +98,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getSelectedItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedItem().getPosXFormula(), MainWindow.getSelectedItem().getPosYFormula(), 2);
+						MainWindow.getTimeLine();
+						MainWindow.getSelectedItem().addKeyFrameTranslate(TimeLine.getTime(), MainWindow.getSelectedItem().getPosXFormula(), MainWindow.getSelectedItem().getPosYFormula(), 2);
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

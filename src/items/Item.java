@@ -241,8 +241,14 @@ public class Item extends JFrame{
 		}
 	}
 	
-	public void addKeyFrameActiv (int time) {
+	public boolean addKeyFrameActiv (int time) {
 		int finalIndex = 0 ;
+		
+		try {
+			if (time == getLastKeyFrameActiv(time)) return false;
+		} catch (IndexOutOfBoundsException e) {
+			
+		}
 		
 		a:for (int index = 0; index < keyFrameActiv.size();index++) {
 			int testedTime = keyFrameActiv.get(index);
@@ -254,6 +260,7 @@ public class Item extends JFrame{
 		}
 		
 		keyFrameActiv.add(finalIndex, time);
+		return true;
 	}
 	
 	public void deleteKeyFrameActiv (int time) {
@@ -264,6 +271,9 @@ public class Item extends JFrame{
 		}
 	}
 	
+	/**
+	 * return the last ActivKeyFrame from time given, (if everything went fine). Otherwise it will return -1
+	 */
 	public int getLastKeyFrameActiv (int i) {
 		for (int index = 0; index < keyFrameTranslation.size(); index++) {
 			int testedTime = keyFrameActiv.get(index);
@@ -272,9 +282,16 @@ public class Item extends JFrame{
 				return keyFrameActiv.get(index - 1);
 			}
 		}
-		return keyFrameActiv.get(keyFrameActiv.size()-1);
+		try {
+			return keyFrameActiv.get(keyFrameActiv.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return -1;
+		}
 	}
 	
+	/**
+	 *return the next ActivkeyFrame from time given, (if everything went fine). Otherwise it will return -1
+	 **/
 	public int getNextKeyFrameActiv (int i) {
 		for (int index = 0; index < keyFrameActiv.size(); index++) {
 			int testedTime = keyFrameActiv.get(index);
@@ -283,7 +300,11 @@ public class Item extends JFrame{
 				return keyFrameActiv.get(index);
 			}
 		}
-		return keyFrameActiv.get(keyFrameActiv.size()-1);
+		try {
+			return keyFrameActiv.get(keyFrameActiv.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return -1;
+		}
 	}
 	
 	public ArrayList<Integer> getAllKeyframeActiv () {
@@ -294,8 +315,13 @@ public class Item extends JFrame{
 		return keyFrameActiv.get(i);
 	}
 	
-	public void addKeyFrameTranslate (int time,String x, String y, int type) {
-		String str = "";
+	public boolean addKeyFrameTranslate (int time,String x, String y, int type) {
+		String str = getLastKeyFrameTranslate(time);
+		try {
+			if (str.substring(1, str.indexOf(':')).equals(time+"")) return false;
+		} catch (StringIndexOutOfBoundsException e) {/*everything's fine :)*/}
+		
+		str = "";
 		if (type == 1) str = "t"+time+":"+x+","+y;
 		else str = "T" + time + ":" + x + "," + y;
 		
@@ -311,12 +337,16 @@ public class Item extends JFrame{
 			}
 		}
 		keyFrameTranslation.add(finalIndex, str);
+		return true;
 	}
 	
 	public String getKeyFrameTranslate (int i) {
 		return keyFrameTranslation.get(i);
 	}
 	
+	/**
+	 * return the last translationkeyFrame from time given, (if everything went fine). Otherwise it will return "!"
+	 */
 	public String getLastKeyFrameTranslate (int i) {
 		for (int index = 0; index < keyFrameTranslation.size(); index++) {
 			String str = keyFrameTranslation.get(index);
@@ -326,9 +356,16 @@ public class Item extends JFrame{
 				return keyFrameTranslation.get(index - 1);
 			}
 		}
-		return keyFrameTranslation.get(keyFrameTranslation.size()-1);
+		try {
+			return keyFrameTranslation.get(keyFrameTranslation.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "!";
+		}
 	}
 	
+	/**
+	 * return the next translationkeyFrame from time given, (if everything went fine). Otherwise it will return "!"
+	 */
 	public String getNextKeyFrameTranslate (int i) {
 		for (int index = 0; index < keyFrameTranslation.size(); index++) {
 			String str = keyFrameTranslation.get(index);
@@ -338,7 +375,11 @@ public class Item extends JFrame{
 				return keyFrameTranslation.get(index);
 			}
 		}
-		return keyFrameTranslation.get(keyFrameTranslation.size()-1);
+		try {
+			return keyFrameTranslation.get(keyFrameTranslation.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "!";
+		}
 	}
 	
 	public String[] getAllKeyFramesTranslation () {
@@ -357,8 +398,12 @@ public class Item extends JFrame{
 		}
 	}
 	
-	public void addKeyFrameRotation (int time, String string, int type) {
-		String str = "r"+time+":"+string;
+	public boolean addKeyFrameRotation (int time, String string, int type) {
+		String str = getLastKeyFrameRotation(time);
+		try {
+			if (str.substring(1, str.indexOf(':')).equals(time+"")) return false;
+		} catch (StringIndexOutOfBoundsException e) {}
+		str = "r"+time+":"+string;
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
 		int finalIndex = 0;
@@ -372,8 +417,12 @@ public class Item extends JFrame{
 			}
 		}
 		keyFrameRotation.add(finalIndex, str);
+		return true;
 	}
 	
+	/**
+	 * return the last rotationkeyFrame from time given, (if everything went fine). Otherwise it will return "!"
+	 */
 	public String getLastKeyFrameRotation (int i) {
 		for (int index = 0; index < keyFrameRotation.size(); index++) {
 			String str = keyFrameRotation.get(index);
@@ -383,9 +432,16 @@ public class Item extends JFrame{
 				return keyFrameRotation.get(index - 1);
 			}
 		}
-		return keyFrameRotation.get(keyFrameRotation.size()-1);
+		try {
+			return keyFrameRotation.get(keyFrameRotation.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "!";
+		}
 	}
 	
+	/**
+	 * return the next translationkeyFrame from time given, (if everything went fine). Otherwise it will return "!"
+	 */
 	public String getNextKeyFrameRotation (int i) {
 		for (int index = 0; index < keyFrameRotation.size(); index++) {
 			String str = keyFrameRotation.get(index);
@@ -394,9 +450,12 @@ public class Item extends JFrame{
 			if (testedTime > i) {
 				return keyFrameRotation.get(index);
 			}
+		}try {
+			return keyFrameRotation.get(keyFrameRotation.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "!";
 		}
-		return keyFrameRotation.get(keyFrameRotation.size()-1);
-	}
+	}	
 	
 	public void deleteKeyFrameRotationAt (int time) {
 		for (int index = 0; index < keyFrameRotation.size();index++) {

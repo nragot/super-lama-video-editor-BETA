@@ -43,11 +43,12 @@ public class RendererTool extends JPanel{
 		Graphics2D d = render.createGraphics();
 		paintComponent(d);
 		try {
-			ImageIO.write(render, "png", new File(AppProperties.getRenderOutputPath() + "frame-" + MainWindow.getTimeLine().getTime() + ".png"));
+			ImageIO.write(render, "png", new File(AppProperties.getRenderOutputPath() + "frame-" + TimeLine.getTime() + ".png"));
 		} catch (IOException e) {
 			System.err.println("Wow ! what have you done ? the image can't be written :/");
 		}
-		System.out.println("image shot ("+MainWindow.getTimeLine().getTime()+")");
+		MainWindow.getTimeLine();
+		System.out.println("image shot ("+TimeLine.getTime()+")");
 	}
 
 	public void renderVideo () {
@@ -73,7 +74,7 @@ public class RendererTool extends JPanel{
 				recorder.start();
 				
 				IplImage img = new IplImage();
-				MainWindow.getTimeLine().setTime(0);
+				TimeLine.setTime(0);
 				
 				for (int i = 0; i<PropertiesWindow.getEndVideo();i++) {
 					repaint();
@@ -83,8 +84,8 @@ public class RendererTool extends JPanel{
 					img = IplImage.createFrom(render);
 					recorder.record(img);
 					System.out.println("recording images :"+i);
-					MainWindow.getTimeLine().addTime(1);
-					MainWindow.getTimeLine().calculateItemsState();
+					TimeLine.addTime(1);
+					TimeLine.calculateItemsState();
 				}
 				
 				recorder.stop();

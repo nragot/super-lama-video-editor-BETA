@@ -88,8 +88,10 @@ public class TextItem extends Item {
 		return isEveryThingRight;
 	}
 	
-	public void addKeyFrameText (int time,String x) {
-		String str = "m"+time+":"+x;
+	public boolean addKeyFrameText (int time,String x) {
+		String str = getLastKeyFrameText(time);
+		if (str.substring(1, str.indexOf(':')).equals(time+"")) return false;
+		str = "m"+time+":"+x;
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));
 		int finalIndex = 0;
@@ -103,12 +105,16 @@ public class TextItem extends Item {
 			}
 		}
 		keyFrameText.add(finalIndex, str);
+		return true;
 	}
 	
 	public String getKeyFrameText (int i) {
 		return keyFrameText.get(i);
 	}
 	
+	/**
+	 * return the last TextkeyFrame from time given, (if everything went fine). Otherwise it will return "!"
+	 */
 	public String getLastKeyFrameText (int i) {
 		for (int index = 0; index < keyFrameText.size(); index++) {
 			String str = keyFrameText.get(index);
@@ -118,9 +124,16 @@ public class TextItem extends Item {
 				return keyFrameText.get(index - 1);
 			}
 		}
-		return keyFrameText.get(keyFrameText.size()-1);
+		try {
+			return keyFrameText.get(keyFrameText.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "!";
+		}
 	}
-
+	
+	/**
+	 * return the next translationkeyFrame from time given, (if everything went fine). Otherwise it will return "!"
+	 */
 	public String getNextKeyFrameText (int i) {
 		for (int index = 0; index < keyFrameText.size(); index++) {
 			String str = keyFrameText.get(index);
@@ -130,7 +143,11 @@ public class TextItem extends Item {
 				return keyFrameText.get(index);
 			}
 		}
-		return keyFrameText.get(keyFrameText.size()-1);
+		try {
+			return keyFrameText.get(keyFrameText.size()-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "!";
+		}
 	}
 	
 	public void deleteKeyFrameTextAt (int time) {

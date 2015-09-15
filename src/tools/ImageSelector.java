@@ -37,6 +37,7 @@ public class ImageSelector extends JFrame implements ActionListener{
 		setBounds(100, 100, 700, 400);
 		setTitle(path);
 		setLayout(new FlowLayout());
+		setAlwaysOnTop(true);
 		setVisible(true);
 		
 		JButton back = new JButton ("..");

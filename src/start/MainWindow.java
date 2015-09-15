@@ -383,9 +383,8 @@ public class MainWindow extends JFrame implements FocusListener{
 		index.remove(gapSolver);
 	}
 	
-	
+	 // windows event
 	boolean focusCycle = false;
-	
 	@Override
 	public void focusGained(FocusEvent e) {
 		focusCycle = !focusCycle;
