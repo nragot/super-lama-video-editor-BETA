@@ -2,8 +2,9 @@
 Command.Prompt visible
 echo "start loading slve.init"
 image.selector default.path "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/"
-render default.output "/home/Desktop/"
-echo "everything's good master"
+echo "image selector default path loaded"
+render default.output "/home/nathan/Bureau/"
+echo "renderer default output loaded" "everything's good master"
 #these commands are debug use only
 outline add image "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/characters/Dr house.png" A
 pause "OK to continue"

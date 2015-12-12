@@ -97,41 +97,31 @@ public class TimeLine extends JFrame implements KeyListener {
 					g.drawLine(0, i*50, getWidth(), i*50);
 				}
 
-				g.setColor(new Color(150,20,20));
-				g.fillRect(getWidth()-170, 0, 60, 25);
-				g.fillRect(0, 0, getWidth()-170, 50);
-				g.setColor(new Color(255,100,100));
-				g.fillArc(getWidth()-140, 0, 60, 50, 180, -90);
-				g.fillRect(getWidth()-170, 25, 200, 25);
-				g.fillRect(getWidth()-120, 0, 120, 25);
-				g.setColor(new Color(150,20,20));
-				g.fillArc(getWidth()-200, 0, 60, 50, 270, 90);
 				g.setColor(Color.black);
 				g.drawLine(200, 50, 200, getHeight());
 				g.setColor(new Color (40,40,40,80));
-				g.fillRect(0, 50, 200, getHeight());
-				g.fillRect(0, 50, getWidth(), 50);
+				g.fillRect(0, 0, 200, getHeight());
+				g.fillRect(0, 0, getWidth(), 50);
 
 				g.setColor(Color.black);
 				for (int i = 0 ; i < MainWindow.getItemSelection().size();i++) {
 					try {
-						g.drawString(MainWindow.getSelectedItem(i).getName(), 5, 50*(i+1) + 70);
+						g.drawString(MainWindow.getSelectedItem(i).getName(), 5, 50*(i) + 70);
 						int y = 0;
 						for (y = 0; y < MainWindow.getSelectedItem(i).getAllKeyframeActiv().size()-1; y++) {
 							if (y%2 == 1)
-								g.fillRect(MainWindow.getSelectedItem(i).getKeyframeActiv(y)*10+200, 100+50*i, MainWindow.getSelectedItem(i).getKeyframeActiv(y+1)*10 - MainWindow.getSelectedItem(i).getKeyframeActiv(y)*10, 50);
+								g.fillRect(MainWindow.getSelectedItem(i).getKeyframeActiv(y)*10+200, 50*(i+1), MainWindow.getSelectedItem(i).getKeyframeActiv(y+1)*10 - MainWindow.getSelectedItem(i).getKeyframeActiv(y)*10, 50);
 						}
 						if (y%2 == 1) {
-							g.fillRect(200+MainWindow.getSelectedItem(i).getKeyframeActiv(MainWindow.getSelectedItem(i).getAllKeyframeActiv().size()-1)*10, 100+50*i, getWidth(), 50);
+							g.fillRect(200+MainWindow.getSelectedItem(i).getKeyframeActiv(MainWindow.getSelectedItem(i).getAllKeyframeActiv().size()-1)*10, 50*(i+1), getWidth(), 50);
 						}
-					} catch (ArrayIndexOutOfBoundsException
-							| NoItemFoundException e) {
+					} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e) {
 						e.printStackTrace();
 					}
 				}
 				
 				g.setColor(Color.GREEN);
-				g.drawLine(200 + time*10, 100, 200 + time*10, getHeight());
+				g.drawLine(200 + time*10, 50, 200 + time*10, getHeight());
 			}
 		}
 
@@ -289,6 +279,7 @@ public class TimeLine extends JFrame implements KeyListener {
 			} else if (e.getKeyChar() == '1' ) {
 				
 			} else if (e.getKeyChar() == '2') {
+				setContentPane(new VideoFramePanel());
 				cond:do {
 					if (getHeight() - 450 < 21 && getHeight() - 450 > -21) {
 						setBounds(TimeLine.this.getX(),0,getWidth(),450);
@@ -296,7 +287,7 @@ public class TimeLine extends JFrame implements KeyListener {
 					}else if (getHeight() < 450) {
 						setSize(getWidth(), getHeight() + 20);
 					} else if (getHeight() > 450) {
-						setSize(getWidth(), getHeight() - 20);
+						setSize(getWidth(), 450);
 					} else {
 						break cond;
 					}
@@ -307,7 +298,6 @@ public class TimeLine extends JFrame implements KeyListener {
 						e1.printStackTrace();
 					}
 				} while (true);
-			setContentPane(new VideoFramePanel());
 			}
 			
 		}
