@@ -1,20 +1,14 @@
 package tools;
 
-import items.ImageItem;
-import items.Item;
-import items.TextItem;
-import items.VideoItem;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.sql.rowset.Joinable;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -25,12 +19,18 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import exceptions.NoItemFoundException;
-
+import items.ImageItem;
+import items.Item;
+import items.TextItem;
+import items.VideoItem;
 import start.AppProperties;
 import start.MainWindow;
 import start.Start;
 
 public class CommandFrame extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	
 	JPanel myPanel = new MyPanel ();
 	JTextField cmd = new JTextField();
 	final int cmdsLenght = 40;
@@ -46,6 +46,9 @@ public class CommandFrame extends JFrame {
 		}
 		myPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0), "enterCmd");
 		myPanel.getActionMap().put("enterCmd", new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				print(cmd.getText());
@@ -57,6 +60,8 @@ public class CommandFrame extends JFrame {
 	
 	private class MyPanel extends JPanel {
 		
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public void paintComponent (Graphics g) {
 			g.fillRect(0, 0, getWidth(), getHeight());
@@ -212,7 +217,6 @@ public class CommandFrame extends JFrame {
 				}
 				break;
 			case "pause" :
-				boolean done = false;
 				JOptionPane.showMessageDialog(this, args.get(1));
 				break;
 			case "script" :
@@ -225,14 +229,16 @@ public class CommandFrame extends JFrame {
 					}
 				}
 				break;
-			case "Command.Prompt" :
-				if (args.get(1).startsWith("set.title:")) setTitle (args.get(1).substring(9));
+			case "command.prompt" :
+				if (args.get(1).startsWith("set.title:")) setTitle (args.get(1).substring(10));
 				else if (args.get(1).equals("visible")) setVisible(true);
 				else if (args.get(1).equals("unvisible")) setVisible(false);
+				else if (args.get(1).equals("set.size")) setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
+				else if (args.get(1).equals("set.position")) setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
 				else return 1;
 				break;
 			case "outline" :
-				if (args.get(1).startsWith("set.title:")) MainWindow.getOutline().setTitle (args.get(1).substring(9));
+				if (args.get(1).startsWith("set.title:")) Start.getOutline().setTitle (args.get(1).substring(10));
 				else if (args.size() > 3 && args.get(1).equals("add")) {
 					switch (args.get(2)) {
 						case "image":
@@ -260,29 +266,37 @@ public class CommandFrame extends JFrame {
 					try {
 						MainWindow.removeItemByName(args.get(2));
 					} catch (NoItemFoundException e) {
-						print ("[serge] no item is called :" + args.get(2));
+						print ("[serge] no existing item with the name :" + args.get(2));
 					}
 				}
-				else if (args.get(1).equals("visible")) MainWindow.getOutline().setVisible(true);
-				else if (args.get(1).equals("unvisible")) MainWindow.getOutline().setVisible(false);
+				else if (args.get(1).equals("visible")) Start.getOutline().setVisible(true);
+				else if (args.get(1).equals("unvisible")) Start.getOutline().setVisible(false);
 				else if (args.get(1).equals("reload")) {
-					MainWindow.getOutline().refresh();
+					Start.getOutline().refresh();
 				}
+				else if (args.get(1).equals("set.size")) Start.getOutline().setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
+				else if (args.get(1).equals("set.position")) Start.getOutline().setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
 				break;
 			case "timeline" :
-				if (args.get(1).startsWith("set.title:")) MainWindow.getTimeLine().setTitle (args.get(1).substring(9));
-				else if (args.get(1).equals("visible")) MainWindow.getTimeLine().setVisible(true);
-				else if (args.get(1).equals("unvisible")) MainWindow.getTimeLine().setVisible(false);
+				if (args.get(1).startsWith("set.title:")) Start.getTimeLine().setTitle (args.get(1).substring(10));
+				else if (args.get(1).equals("visible")) Start.getTimeLine().setVisible(true);
+				else if (args.get(1).equals("unvisible")) Start.getTimeLine().setVisible(false);
+				else if (args.get(1).equals("set.size")) Start.getTimeLine().setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
+				else if (args.get(1).equals("set.position")) Start.getTimeLine().setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
 				break;
 			case "item.options" :
-				if (args.get(1).startsWith("set.title:")) MainWindow.getItemOption().setTitle (args.get(1).substring(9));
-				else if (args.get(1).equals("visible")) MainWindow.getItemOption().setVisible(true);
-				else if (args.get(1).equals("unvisible")) MainWindow.getItemOption().setVisible(false);
+				if (args.get(1).startsWith("set.title:")) Start.getItemOption().setTitle (args.get(1).substring(10));
+				else if (args.get(1).equals("visible")) Start.getItemOption().setVisible(true);
+				else if (args.get(1).equals("unvisible")) Start.getItemOption().setVisible(false);
+				else if (args.get(1).equals("set.size")) Start.getItemOption().setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
+				else if (args.get(1).equals("set.position")) Start.getItemOption().setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
 				break;
 			case "main" :
-				if (args.get(1).startsWith("set.title:")) Start.getMainWindow().setTitle (args.get(1).substring(9));
+				if (args.get(1).startsWith("set.title:")) Start.getMainWindow().setTitle (args.get(1).substring(10));
 				else if (args.get(1).equals("visible")) Start.getMainWindow().setVisible(true);
 				else if (args.get(1).equals("unvisible")) Start.getMainWindow().setVisible(false);
+				else if (args.get(1).equals("set.size")) Start.getMainWindow().setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
+				else if (args.get(1).equals("set.position")) Start.getMainWindow().setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
 				break;
 			case "image.selector" :
 				if (args.get(1).equals("default.path")) {

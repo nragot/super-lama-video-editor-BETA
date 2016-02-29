@@ -13,24 +13,31 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import exceptions.NoItemFoundException;
-
 import start.MainWindow;
 
 public class TimeLine extends JFrame implements KeyListener {
+
+	private static final long serialVersionUID = 1L;
+
 	static int time;
 	static int addX;
 	static short type;
 	static ArrayList<Point> items = new ArrayList<Point>();
-
+	
 	public TimeLine () {
-		setBounds (0,0,1920,80);
+		setTitle("timeline");
+	}
+
+	public void GO() {
 		setContentPane(new KeyframePanel());
 		addKeyListener(this);
-		setTitle("timeline");
 		setVisible(true);
 	}
 
 	private class KeyframePanel extends JPanel{
+		
+		private static final long serialVersionUID = 1L;
+
 		public void paintComponent (Graphics g) {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, getWidth(), getHeight());
@@ -64,8 +71,11 @@ public class TimeLine extends JFrame implements KeyListener {
 						else g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 12);
 					}
 				}
-			} catch (NumberFormatException | NoItemFoundException | ArrayIndexOutOfBoundsException e) {
-			}
+				if (MainWindow.getSelectedItem().getAllKeyFramesTranslation().length > 0) {
+					String str1 = MainWindow.getSelectedItem().getKeyFrameTranslate(0);
+					g.fillRect(Integer.parseInt(str1.substring(1,str1.indexOf(':')))*10 + addX + 1 , 8, 8, 8);
+				}
+			} catch (NumberFormatException | NoItemFoundException | ArrayIndexOutOfBoundsException e) {}
 			g.setColor(Color.green);
 			try {
 				for (int index = 1; index < MainWindow.getSelectedItem().getAllKeyFramesRotation().length; index ++) {
@@ -89,6 +99,9 @@ public class TimeLine extends JFrame implements KeyListener {
 	}
 
 		private class VideoFramePanel extends JPanel{
+
+			private static final long serialVersionUID = 1L;
+
 			public void paintComponent (Graphics g) {
 				g.setColor(Color.white);
 				g.fillRect(0, 0, getWidth(), getHeight());
@@ -277,27 +290,11 @@ public class TimeLine extends JFrame implements KeyListener {
 					
 				}
 			} else if (e.getKeyChar() == '1' ) {
-				
+				setContentPane(new KeyframePanel());
+				revalidate();
 			} else if (e.getKeyChar() == '2') {
 				setContentPane(new VideoFramePanel());
-				cond:do {
-					if (getHeight() - 450 < 21 && getHeight() - 450 > -21) {
-						setBounds(TimeLine.this.getX(),0,getWidth(),450);
-						break cond;
-					}else if (getHeight() < 450) {
-						setSize(getWidth(), getHeight() + 20);
-					} else if (getHeight() > 450) {
-						setSize(getWidth(), 450);
-					} else {
-						break cond;
-					}
-					try {
-						Thread.sleep(40);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				} while (true);
+				revalidate();
 			}
 			
 		}

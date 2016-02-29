@@ -17,6 +17,8 @@ import start.MainWindow;
 
 public class KeyframeTool extends JFrame{
 
+	private static final long serialVersionUID = 1L;
+
 	public KeyframeTool () {
 		Point p = MouseInfo.getPointerInfo().getLocation();
 		setBounds((int)(p.getX() - 50),(int) (p.getY() - 20), 500, 230);

@@ -509,7 +509,8 @@ public class Item extends JFrame{
 		do {
 			b = false;
 			if (str.indexOf("#time_frame") != -1) {
-				str = str.replace("#time_frame", MainWindow.getTimeLine().getTime()+"");
+				MainWindow.getTimeLine();
+				str = str.replace("#time_frame", TimeLine.getTime()+"");
 				b = true;
 			}
 			if (str.indexOf("#camera_width") != -1) {

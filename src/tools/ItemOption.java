@@ -44,13 +44,21 @@ public class ItemOption extends JFrame implements ComponentListener{
 	int ROTATION_FIELD = -1, POSX_FIELD = -1, POSY_FIELD = -1, WIDTH_FIELD = -1, HEIGHT_FIELD = -1, STRINGTEXT_FIELD = -1, FONTSIZE_FIELD = -1;
 	int numberOfField;
 	
-	public ItemOption () {
-		setBounds(1200,600,800,400);
+	public void itemOptions () {
 		setTitle("options");
+	}
+	
+	public void GO () {
 		setLayout(new FlowLayout());
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addComponentListener(this);
 		setVisible(true);
+	}
+	
+	@Override
+	public void setLocation (int x, int y) {
+		super.setLocation(x, y);
+		System.out.println(x + " " + y);
 	}
 	
 	public void addTextField (JTextField comp) {
@@ -590,6 +598,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 			JSlider js = new JSlider ();
 			js.setMinimum(-360);
 			js.setMaximum(360);
+			js.setValue(0);
 			js.setPreferredSize(new Dimension(getWidth() - 10, 20));
 			js.addChangeListener(new ChangeListener() {
 				@Override

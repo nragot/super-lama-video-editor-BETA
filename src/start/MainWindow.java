@@ -1,21 +1,10 @@
 package start;
 
-import items.ImageItem;
-import items.Item;
-import items.Shape;
-import items.ShapeOval;
-import items.ShapeRect;
-import items.TextItem;
-import items.VideoItem;
-
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -24,8 +13,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
@@ -37,9 +24,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import exceptions.NoItemFoundException;
-
+import items.ImageItem;
+import items.Item;
+import items.Shape;
+import items.ShapeOval;
+import items.ShapeRect;
+import items.TextItem;
+import items.VideoItem;
 import tools.ArrayListIndexer;
 import tools.CommandFrame;
 import tools.ImageSelector;
@@ -52,6 +46,8 @@ import tools.TimeLine;
 import tools.VideoSelector;
 
 public class MainWindow extends JFrame implements FocusListener{
+	
+	private static final long serialVersionUID = 1L;
 	
 	static WorkingPanel panel;
 	//menu bar
@@ -83,12 +79,18 @@ public class MainWindow extends JFrame implements FocusListener{
 	
 	static int cameraWidth = 854, cameraHeight = 480,cameraPosX, cameraPosY;
 	static double viewerZoom = 1;
+	int viewerX = 0, viewerY = 0;
 	
 	static Redrawer redrawer;
 	
 	public MainWindow () {
-		setBounds(0, 150, 1000, 600);
 		setTitle("super lama video editor");
+	}
+	
+	/**
+	 *  startup the tool
+	 */
+	public void GO (Outline outline, ItemOption itemoptions, TimeLine timeline) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		panel = new WorkingPanel();
 		setContentPane(panel);
@@ -100,6 +102,9 @@ public class MainWindow extends JFrame implements FocusListener{
 		
 		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK), "commandPromptReveal");
 		panel.getActionMap().put("commandPromptReveal", new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				openCommand();
@@ -132,9 +137,13 @@ public class MainWindow extends JFrame implements FocusListener{
 		setJMenuBar(jmb);
 
 		//loading tools
-		outline = new Outline();
-		itemOptions = new ItemOption();
-		timeline = new TimeLine();
+		MainWindow.outline = outline;
+		MainWindow.itemOptions = itemoptions;
+		MainWindow.timeline = timeline;
+		
+		MainWindow.itemOptions.GO();
+		MainWindow.outline.GO();
+		MainWindow.timeline.GO();
 
 		//prgm lunching
 		redrawer = new Redrawer();
@@ -409,6 +418,9 @@ public class MainWindow extends JFrame implements FocusListener{
 	 */
 	
 	private class WorkingPanel extends JPanel{
+		
+		private static final long serialVersionUID = 1L;
+		
 		Font helpFont = new Font("Dialog", Font.PLAIN, 16);
 		Font drawFont = new Font("Dialog", Font.PLAIN, 16);
 		public WorkingPanel () {
@@ -422,6 +434,8 @@ public class MainWindow extends JFrame implements FocusListener{
 			Graphics2D d = (Graphics2D) g.create();
 			d.translate((int) ((getWidth()-(cameraWidth*viewerZoom))/2), (int) ((getHeight()-(cameraHeight*viewerZoom))/2));
 			AffineTransform old = d.getTransform();
+			d.translate(viewerX, viewerY);
+			
 			g.setFont(helpFont);
 			d.setFont(drawFont);
 			g.setColor(Color.black);
@@ -446,30 +460,15 @@ public class MainWindow extends JFrame implements FocusListener{
 					d.rotate(Math.toRadians(-shapes.get(B).getRotation()), (shapes.get(B).getWidth()*viewerZoom)/2 + shapes.get(B).getPosX()*viewerZoom, (shapes.get(B).getHeight()*viewerZoom)/2 + shapes.get(B).getPosY()*viewerZoom);
 				}
 			}
-			
-			g.setColor(new Color(30, 30, 30, 110));
-			g.fillRect(0, 0, (int) ((getWidth()-(cameraWidth*viewerZoom))/2), 1080);//left
-			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2 + ((cameraWidth) * viewerZoom)), 0, (int) ((getWidth() - cameraWidth * viewerZoom)/2 ) + 2, getHeight());//right
-			double I = ((int) ((getWidth()-(cameraWidth*viewerZoom))/2 + ((cameraWidth) * viewerZoom) - (getWidth()-(cameraWidth*viewerZoom))/2));
-			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), 0,(int) Math.round(I), (int) ((getHeight()-(cameraHeight * viewerZoom))/2));//up
-			g.fillRect((int) ((getWidth()-(cameraWidth*viewerZoom))/2), (int) ((getHeight()-(cameraHeight*viewerZoom))/2 + cameraHeight*viewerZoom), (int) Math.round(I), (int) ((getHeight()-(cameraHeight*viewerZoom))/2));//down
-			d.setColor(Color.red);
-
-			/*
-			if (selectedItemId == 1) {
-				d.rotate(Math.toRadians(images.get(selectedSprite).getRotation()), images.get(selectedSprite).getPosX()*viewerZoom, images.get(selectedSprite).getPosY()*viewerZoom);
-				d.drawRect((int) (images.get(selectedSprite).getPosX()*viewerZoom - images.get(selectedSprite).getWidth()*viewerZoom/2), (int) (images.get(selectedSprite).getPosY()*viewerZoom - images.get(selectedSprite).getHeight()*viewerZoom/2),(int) (images.get(selectedSprite).getWidth() * viewerZoom), (int) (images.get(selectedSprite).getHeight() * viewerZoom));
-				d.drawOval((int) (images.get(selectedSprite).getPosX()*viewerZoom - 3), (int) (images.get(selectedSprite).getPosY()*viewerZoom - 3), 6, 6);
-			} else if (selectedItemId == 2) {
-				d.rotate(Math.toRadians(texts.get(selectedText).getRotation()), (texts.get(selectedText).getWidth()*viewerZoom)/2 + texts.get(selectedText).getPosX()*viewerZoom, (texts.get(selectedText).getHeight()*viewerZoom)/2 + texts.get(selectedText).getPosY()*viewerZoom);
-				d.drawRect((int) (texts.get(selectedText).getPosX()*viewerZoom), (int) (texts.get(selectedText).getPosY()*viewerZoom),(int) (texts.get(selectedText).getWidth() * viewerZoom), (int) (texts.get(selectedText).getHeight() * viewerZoom));
-				d.drawOval((int) (texts.get(selectedText).getPosX()*viewerZoom + (texts.get(selectedText).getWidth()*viewerZoom)/2 - 3), (int) (texts.get(selectedText).getPosY()*viewerZoom + (texts.get(selectedText).getHeight()*viewerZoom)/2 - 3), 6, 6);
-			} else if (selectedItemId == 3) {
-				d.rotate(Math.toRadians(videos.get(selectedVideo).getRotation()), (videos.get(selectedVideo).getWidth()*viewerZoom)/2 + videos.get(selectedVideo).getPosX()*viewerZoom, (videos.get(selectedVideo).getHeight()*viewerZoom)/2 + videos.get(selectedVideo).getPosY()*viewerZoom);
-				d.drawRect((int) (videos.get(selectedVideo).getPosX()*viewerZoom), (int) (videos.get(selectedVideo).getPosY()*viewerZoom),(int) (videos.get(selectedVideo).getWidth() * viewerZoom), (int) (videos.get(selectedVideo).getHeight() * viewerZoom));
-				d.drawOval((int) (videos.get(selectedVideo).getPosX()*viewerZoom + (videos.get(selectedVideo).getWidth()*viewerZoom)/2 - 3), (int) (videos.get(selectedVideo).getPosY()*viewerZoom + (videos.get(selectedVideo).getHeight()*viewerZoom)/2 - 3), 6, 6);
-			}
-			*/
+			g.setColor(new Color(30,30,30,110));
+			int left = (int) ((getWidth()-(cameraWidth*viewerZoom))/2) + viewerX,
+					right = (int) ((getWidth()-(cameraWidth*viewerZoom))/2 + ((cameraWidth) * viewerZoom)) + viewerX,
+					up = (int) ((getHeight()-(cameraHeight * viewerZoom))/2) + viewerY,
+					down = (int) ((getHeight()-(cameraHeight*viewerZoom))/2 + cameraHeight*viewerZoom) + viewerY;
+			g.fillRect(0, 0, left, 1080);//left
+			g.fillRect(right, 0, getWidth() - right, getHeight());//right
+			g.fillRect(left, 0, right - left, up); // up
+			g.fillRect(left, down, right - left, getHeight() - down); //down
 			
 			d.setColor(Color.blue);
 			for (int i = 0; i < itemSelection.size(); i++) {
@@ -490,7 +489,7 @@ public class MainWindow extends JFrame implements FocusListener{
 			}
 			
 			g.setColor(Color.BLACK);
-			g.drawRect((int) ((getWidth()-(cameraWidth * viewerZoom))/2),(int) ((getHeight()-(cameraHeight) * viewerZoom)/2),(int) (cameraWidth * viewerZoom),(int) (cameraHeight * viewerZoom));
+			g.drawRect(left,up,right - left,down - up);
 			g.setColor(new Color(0, 0, 120, 40));
 			g.drawRect((int) ((getWidth()-(cameraWidth))/2),(int) ((getHeight()-(cameraHeight))/2),(int) (cameraWidth),(int) (cameraHeight));
 			g.setColor(Color.black);
@@ -503,7 +502,7 @@ public class MainWindow extends JFrame implements FocusListener{
 			} catch (ArrayIndexOutOfBoundsException e) {
 				g.drawString("here are the par of the last selected item", 20, getHeight() - 4);
 			}
-			g.drawString("Zoom :" + viewerZoom, getWidth() - 120, getHeight() - 4);
+			g.drawString("Zoom :" + (viewerZoom+"").substring(0, 3), getWidth() - 120, getHeight() - 4);
 		}	
 	}
 	
@@ -554,7 +553,7 @@ public class MainWindow extends JFrame implements FocusListener{
 			if (e.getModifiers() == KeyEvent.SHIFT_DOWN_MASK) {
 				if (e.getKeyChar() == 'i') {
 					try {
-						getSelectedItem().deleteKeyFrameTranslationAt(timeline.getTime());
+						getSelectedItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -597,15 +596,22 @@ public class MainWindow extends JFrame implements FocusListener{
 
 		@Override
 		public void mouseDragged(java.awt.event.MouseEvent e) {
-			if (!itemOptions.getOptionType(0, 1)) {
-				for (int i = 0; i < itemSelection.size(); i++) {
-					try {
-						getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - a)/viewerZoom));
-						getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - b)/viewerZoom));
-					} catch (NoItemFoundException exc) {
-						
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				if (!itemOptions.getOptionType(0, 1)) {
+					for (int i = 0; i < itemSelection.size(); i++) {
+						try {
+							getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - a)/viewerZoom));
+							getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - b)/viewerZoom));
+						} catch (NoItemFoundException exc) {
+
+						}
 					}
 				}
+			} else if (SwingUtilities.isMiddleMouseButton(e)) {
+				viewerX += (e.getX() - a);
+				viewerY += (e.getY() - b);
+				a = e.getX();
+				b = e.getY();
 			}
 		}
 

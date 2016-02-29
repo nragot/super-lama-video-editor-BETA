@@ -1,24 +1,24 @@
 package tools;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.JComponent;
 
 import start.MainWindow;
 
 public class Outline extends JFrame implements ActionListener{
+	
+	private static final long serialVersionUID = 1L;
+	
 	ArrayList<JButton> AllButtons = new ArrayList<JButton>();
 	private JPanel myPanel = new JPanel();
 	boolean[] key = {
@@ -26,8 +26,10 @@ public class Outline extends JFrame implements ActionListener{
 			};
 	
 	public Outline () {
-		setBounds(1200, 150, 500, 400);
 		setTitle("Outline");
+	}
+	
+	public void GO () {
 		setLayout(new FlowLayout());
 		bindKey();
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -39,6 +41,9 @@ public class Outline extends JFrame implements ActionListener{
 	private void bindKey() {
 		myPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT,KeyEvent.SHIFT_DOWN_MASK), "outline_shiftPressed");
 		myPanel.getActionMap().put("outline_shiftPressed", new AbstractAction() {
+			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				key[0] = true;
@@ -46,6 +51,9 @@ public class Outline extends JFrame implements ActionListener{
 		}});
 		myPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT,0, true), "outline_shiftReleased");
 		myPanel.getActionMap().put("outline_shiftReleased", new AbstractAction() {
+			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				key[0] = false;
@@ -89,7 +97,6 @@ public class Outline extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton button = (JButton) e.getSource();
-		String str = button.getText();
 		
 		/*
 		for (int index = 0; index < MainWindow.getListSprites().size();index ++) {
@@ -125,30 +132,6 @@ public class Outline extends JFrame implements ActionListener{
 		MainWindow.selectItem(AllButtons.indexOf(button), key[0]);
 		MainWindow.getItemOption().loadOptions();
 		refresh();
-	}
-	
-	private class MyKeyboardListener implements KeyListener{
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == 16) {
-				key[0] = true;
-				setTitle(e.getKeyCode()+"");
-			}
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			if (e.getKeyCode() == 16) {
-				key[0] = false;
-				setTitle(e.getKeyCode()+"~");
-			}
-		}
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-		}
-		
 	}
 	
 }

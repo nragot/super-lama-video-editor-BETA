@@ -1,10 +1,27 @@
 #this file gives command before the app init "
-Command.Prompt visible
+command.prompt visible
 echo "start loading slve.init"
-image.selector default.path "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/"
+image.selector default.path "C:\Users\nathanael\Documents\mes creations"\
 echo "image selector default path loaded"
 render default.output "/home/nathan/Bureau/"
 echo "renderer default output loaded" "everything's good master"
+# setting up the windows
+echo "setting up the windows ..."
+command.prompt set.size 400 400
+command.prompt set.position 0 0
+main set.title:"j'aime changer le titre des fenetres sans raison"
+main set.size 900 600
+main set.position 0 100
+outline set.title:"je suis un titre"
+outline set.size 400 200
+outline set.position 900 100
+timeline set.title:"doctor whoooooooo"
+timeline set.size 1300 100
+timeline set.position 0 0
+item.options set.title:":D"
+item.options set.size 400 200
+item.options set.position 900 300
+echo "done setting up the windows"
 #these commands are debug use only
 outline add image "/home/nathan/Documents/mes creations/mes creations/java/a simple java game/characters/Dr house.png" A
 pause "OK to continue"

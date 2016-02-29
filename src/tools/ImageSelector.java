@@ -37,7 +37,7 @@ public class ImageSelector extends JFrame implements ActionListener{
 		setBounds(100, 100, 700, 400);
 		setTitle(path);
 		setLayout(new FlowLayout());
-		setAlwaysOnTop(true);
+		//setAlwaysOnTop(true);
 		setVisible(true);
 		
 		JButton back = new JButton ("..");
@@ -90,6 +90,7 @@ public class ImageSelector extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		JButton but = (JButton) e.getSource();
 		path += but.getText() + "/";
+		System.out.println(path + " " + new File(path).isDirectory());
 		if (new File(path).isDirectory()) {
 			setTitle(path);
 			for (int i = 0; i < AllButtons.size();i++) {
