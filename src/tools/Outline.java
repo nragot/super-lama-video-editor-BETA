@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import exceptions.NoItemFoundException;
 import start.MainWindow;
 
 public class Outline extends JFrame implements ActionListener{
@@ -129,7 +130,11 @@ public class Outline extends JFrame implements ActionListener{
 		}*/
 		
 		//IN DEV, HIGLY UNSTABLE
-		MainWindow.selectItem(AllButtons.indexOf(button), key[0]);
+		try {
+			MainWindow.selectItem(MainWindow.getItemByNameFromIndex(AllButtons.get(AllButtons.indexOf(button)).getText()), key[0]);
+		} catch (NoItemFoundException e1) {
+			e1.printStackTrace();
+		}
 		MainWindow.getItemOption().loadOptions();
 		refresh();
 	}

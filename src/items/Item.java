@@ -1,6 +1,5 @@
 package items;
 
-import java.awt.Image;
 import java.util.ArrayList;
 
 import javax.script.ScriptEngine;
@@ -9,11 +8,13 @@ import javax.script.ScriptException;
 import javax.swing.JFrame;
 
 import exceptions.NoItemFoundException;
-
 import start.MainWindow;
 import tools.TimeLine;
 
 public class Item extends JFrame{
+
+	private static final long serialVersionUID = 1L;
+	
 	ArrayList<String>  keyFrameTranslation = new ArrayList<String>();
 	ArrayList<String>  keyFrameRotation = new ArrayList<String>();
 	ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------activation

@@ -180,8 +180,9 @@ public class TimeLine extends JFrame implements KeyListener {
 
 						}
 					} else {
-						MainWindow.getListSprites().get(i).setPosX((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
-						MainWindow.getListSprites().get(i).setPosY((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1))));
+						//TODO : if working -> erase !
+						//MainWindow.getListSprites().get(i).setPosX((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
+						//MainWindow.getListSprites().get(i).setPosY((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1))));
 					}
 				}
 				{ //rotation

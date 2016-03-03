@@ -66,488 +66,6 @@ public class ItemOption extends JFrame implements ComponentListener{
 		allTextFields.add(comp);
 		numberOfField ++;
 	}
-	/*
-	public void loadOptions () {
-		getContentPane().removeAll();
-		allButtons.clear();
-		allSliders.clear();
-		allTextFields.clear();
-		allCheckbox.clear();
-		
-		JTextField jtf;
-		numberOfField = -1;
-		ROTATION_FIELD = -1;POSX_FIELD = -1; POSY_FIELD = -1; WIDTH_FIELD = -1; HEIGHT_FIELD = -1; STRINGTEXT_FIELD = -1; FONTSIZE_FIELD = -1;
-		try {
-			if (MainWindow.getSelectedItem().getId() == 1) {
-				if (!b[0][0]) {
-					js.setMaximum(359);
-					js.setMinimum(-359);
-					js.setToolTipText("Change rotation of the selected Object");
-					js.setPreferredSize(new Dimension(getWidth() - 10, 20));
-					js.setValue(0);
-					js.addChangeListener(new ChangeListener() {
-
-						@Override
-						public void stateChanged(ChangeEvent e) {
-							MainWindow.getSelectedImageItem().setRotation(js.getValue());
-						}
-					});
-					allSliders.add(js);
-					add(js);
-				} else {
-					jtf = new JTextField();
-					jtf.setToolTipText("set rotation");
-					jtf.setText(MainWindow.getSelectedImageItem().getRotationFormula());
-					jtf.setPreferredSize(new Dimension(getWidth() - 10, 20));
-					jtf.setHorizontalAlignment(JTextField.CENTER);
-					jtf.getDocument().addDocumentListener(new DocumentListener() {
-						
-						@Override
-						public void removeUpdate(DocumentEvent arg0) {updateStat();}
-						@Override
-						public void insertUpdate(DocumentEvent arg0) {updateStat();}
-						@Override
-						public void changedUpdate(DocumentEvent arg0) {}
-						public void updateStat () {
-							String str = "";
-							try {
-								Item item = new Item();
-								str = item.calculeVariable(allTextFields.get(ROTATION_FIELD).getText());
-								MainWindow.getSelectedImageItem().setRotationFormula(allTextFields.get(ROTATION_FIELD).getText());
-							} catch (NumberFormatException e){
-								System.err.println("rotate " + str);
-							}
-						}
-					});
-					addTextField(jtf);
-					ROTATION_FIELD = numberOfField;
-					allTextFields.add(jtf);
-				}
-
-
-				jcb.setText("respect ratio");
-				jcb.setToolTipText("if the width is change, the height is also change to fit the new size");
-				add(jcb);
-				allCheckbox.add(jcb);
-				
-				if (b[0][1]) {
-					jtf = new JTextField();
-					jtf.setToolTipText("set posX");
-					jtf.setText(MainWindow.getSelectedImageItem().getPosXFormula());
-					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-					jtf.getDocument().addDocumentListener(new DocumentListener() {
-						@Override
-						public void removeUpdate(DocumentEvent e) { updateStat();}
-						@Override
-						public void insertUpdate(DocumentEvent e) { updateStat();}
-						@Override
-						public void changedUpdate(DocumentEvent e) {}
-						public void updateStat () {
-							try {
-								MainWindow.getSelectedImageItem().setPosXFormula(allTextFields.get(POSX_FIELD).getText());
-							} catch (NumberFormatException e) {
-								
-							}
-						}
-					});
-					addTextField(jtf);
-					POSX_FIELD = numberOfField;
-					allTextFields.add(jtf);
-					
-					jtf = new JTextField();
-					jtf.setToolTipText("set posY");
-					jtf.setText(MainWindow.getSelectedImageItem().getPosYFormula());
-					jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-					jtf.getDocument().addDocumentListener(new DocumentListener() {
-						@Override
-						public void removeUpdate(DocumentEvent e) { updateStat();}
-						@Override
-						public void insertUpdate(DocumentEvent e) { updateStat();}
-						@Override
-						public void changedUpdate(DocumentEvent e) {}
-						public void updateStat () {
-							try {
-								MainWindow.getSelectedImageItem().setPosYFormula(allTextFields.get(POSY_FIELD).getText());
-							} catch (NumberFormatException e) {
-								
-							}
-						}
-					});
-					addTextField(jtf);
-					POSY_FIELD = numberOfField;
-					allTextFields.add(jtf);
-				}
-
-				jtf = new JTextField();
-				jtf.setToolTipText("set witdh");
-				jtf.setText(MainWindow.getSelectedImageItem().getWidthFormula());
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
-				addTextField(jtf);
-				WIDTH_FIELD = numberOfField;
-				allTextFields.add(jtf);
-
-				JTextField jtf2 = new JTextField();
-				jtf2.setToolTipText("set height");
-				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				jtf2.setText(MainWindow.getSelectedImageItem().getHeightFormula());
-				jtf2.getDocument().addDocumentListener(new TextFieldHeightDocument());
-				addTextField(jtf2);
-				HEIGHT_FIELD = numberOfField;
-				allTextFields.add(jtf2);
-
-				JButton jb;
-				jb = new JButton("delete");
-				jb.setBackground(Color.red);
-				jb.setPreferredSize(new Dimension(getWidth()-10,20));
-				jb.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						for (int i = 0; i < MainWindow.getItemSelection().size (); i++) {
-							try {
-								MainWindow.removeItemByName(MainWindow.getItem(MainWindow.getIndex().get(MainWindow.getItemSelection().get(i))).getName());
-							} catch (NoItemFoundException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						MainWindow.getOutline().refresh();
-
-						loadOptions();
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-				
-				jb = new JButton("change item type");
-				jb.setBackground(Color.blue);
-				jb.setPreferredSize(new Dimension(getWidth()-10,20));
-				jb.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						new ChooseOptionsType(1);
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-			} else if (MainWindow.getSelectedItem().getId() == 2) {
-				js = new JSlider();
-				js.setMaximum(359);
-				js.setMinimum(-359);
-				js.setToolTipText("Change rotation of the selected Object");
-				js.setPreferredSize(new Dimension(getWidth() - 10, 20));
-				js.setValue(0);
-				js.addChangeListener(new ChangeListener() {
-
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						MainWindow.getSelectedTextItem().setRotation(js.getValue());
-					}
-				});
-				allSliders.add(js);
-				add(js);
-
-				jtf = new JTextField();
-				jtf.setToolTipText("set text");
-				jtf.setText(MainWindow.getSelectedTextItem().getText()+"");
-				jtf.getDocument().addDocumentListener(new TextFieldTextDocument());
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				addTextField(jtf);
-				STRINGTEXT_FIELD = numberOfField;
-				allTextFields.add(jtf);
-				
-				jtf = new JTextField();
-				jtf.setToolTipText("set font size");
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				jtf.setText(MainWindow.getSelectedTextItem().getFontSize()+"");
-				jtf.getDocument().addDocumentListener(new TextFieldTextSizeDocument());
-				addTextField(jtf);
-				FONTSIZE_FIELD = numberOfField;
-				allTextFields.add(jtf);
-				
-				jtf = new JTextField();
-				jtf.setToolTipText("set width");
-				jtf.setText(MainWindow.getSelectedTextItem().getWidth()+"");
-				jtf.getDocument().addDocumentListener(new TextFieldWidthDocument());
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				addTextField(jtf);
-				WIDTH_FIELD = numberOfField;
-				allTextFields.add(jtf);
-				
-				jtf = new JTextField();
-				jtf.setToolTipText("set height");
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				jtf.setText(MainWindow.getSelectedTextItem().getHeight()+"");
-				jtf.getDocument().addDocumentListener(new TextFieldHeightDocument());
-				addTextField(jtf);
-				HEIGHT_FIELD = numberOfField;
-				allTextFields.add(jtf);
-				
-				JButton jb = new JButton("add a translation keyframe");
-				jb.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedTextItem().addKeyFrameTranslate(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedTextItem().getPosXFormula()+"", MainWindow.getSelectedTextItem().getPosYFormula()+"",1);
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-				
-				jb = new JButton("delete translation Keyframe");
-				jb.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedTextItem().deleteKeyFrameTranslationAt(MainWindow.getTimeLine().getTime());
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-				
-				jb = new JButton("add a rotation keyframe");
-				jb.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedTextItem().addKeyFrameRotation(MainWindow.getTimeLine().getTime(), MainWindow.getSelectedTextItem().getRotationFormula());
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-				
-				jb = new JButton("delete rotation Keyframe");
-				jb.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedTextItem().deleteKeyFrameRotationAt(MainWindow.getTimeLine().getTime());
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-				
-				jb = new JButton("delete");
-				jb.setBackground(Color.red);
-				jb.setPreferredSize(new Dimension(getWidth()-10,20));
-				jb.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						if (MainWindow.getSelectedTextItemNumber() > 0) {
-							MainWindow.setSelectedTextItem(MainWindow.getSelectedTextItemNumber() - 1);
-							MainWindow.ResolveIndexGap(1, MainWindow.getSelectedImageNumber() + 1);
-							MainWindow.getListTextItem().remove(MainWindow.getSelectedTextItemNumber() + 1);
-						} else {
-							MainWindow.setSelectedItemId(0);
-							MainWindow.getListTextItem().remove(MainWindow.getSelectedTextItemNumber());
-							MainWindow.getItemSelection().clear();
-						}
-						MainWindow.getOutline().refresh();
-
-						loadOptions();
-					}
-				});
-				add(jb);
-				allButtons.add(jb);
-				revalidate ();
-			} else if (MainWindow.getSelectedItem().getId() == 3) {
-				js = new JSlider();
-				js.setMaximum(359);
-				js.setMinimum(-359);
-				js.setToolTipText("Change rotation of the selected Object");
-				js.setPreferredSize(new Dimension(getWidth() - 10, 20));
-				js.setValue(0);
-				js.addChangeListener(new ChangeListener() {
-
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						MainWindow.getSelectedVideoItem().setRotation(js.getValue());
-					}
-				});
-				allSliders.add(js);
-				add(js);
-
-				jtf = new JTextField();
-				jtf.setToolTipText("set witdh");
-				jtf.setText(MainWindow.getSelectedVideoItem().getWidth()+"");
-				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				jtf.getDocument().addDocumentListener(new DocumentListener() {
-					
-					@Override
-					public void removeUpdate(DocumentEvent arg0) {
-						MainWindow.getSelectedVideoItem().setWidth(Integer.parseInt(allTextFields.get(WIDTH_FIELD).getText()));
-					}
-					@Override
-					public void insertUpdate(DocumentEvent arg0) {
-						MainWindow.getSelectedVideoItem().setWidth(Integer.parseInt(allTextFields.get(WIDTH_FIELD).getText()));
-					}
-					@Override
-					public void changedUpdate(DocumentEvent arg0) {}
-				});
-				addTextField(jtf);
-				WIDTH_FIELD = numberOfField;
-				allTextFields.add(jtf);
-				
-				JTextField jtf2 = new JTextField();
-				jtf2.setToolTipText("set height");
-				jtf2.setPreferredSize(new Dimension(getWidth()/2 - 100,20));
-				jtf2.setText(MainWindow.getSelectedVideoItem().getHeight()+"");
-				jtf2.getDocument().addDocumentListener(new DocumentListener() {
-					@Override
-					public void removeUpdate(DocumentEvent e) {
-						MainWindow.getSelectedVideoItem().setHeight(Integer.parseInt(allTextFields.get(HEIGHT_FIELD).getText()));
-					}
-					@Override
-					public void insertUpdate(DocumentEvent e) {
-						MainWindow.getSelectedVideoItem().setHeight(Integer.parseInt(allTextFields.get(HEIGHT_FIELD).getText()));
-					}
-					
-					@Override
-					public void changedUpdate(DocumentEvent e) {}
-				});
-				addTextField(jtf2);
-				HEIGHT_FIELD = numberOfField;
-				allTextFields.add(jtf2);
-				
-				JButton jb;
-				jb = new JButton("cut");
-				jb.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						VideoItem vd = MainWindow.getSelectedVideoItem();
-						vd.setStop(TimeLine.getTime());
-						MainWindow.addVideoItem(new VideoItem(vd.getPath(), vd.getName() + "~", TimeLine.getTime(), TimeLine.getTime() - vd.getBorn()));
-						MainWindow.getOutline().refresh();
-						System.out.println("hello world");
-					}
-				});
-				allButtons.add(jb);
-				add(jb);
-				
-				jb = new JButton("delete");
-				jb.setBackground(Color.red);
-				jb.setPreferredSize(new Dimension(getWidth()-10,20));
-				jb.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						MainWindow.getSelectedVideoItem().stopStream();
-						if (MainWindow.getSelectedVideoItemNumber() > 0) {
-							MainWindow.setSelectedVideoItem(MainWindow.getSelectedVideoItemNumber() - 1);
-							MainWindow.ResolveIndexGap(1, MainWindow.getSelectedVideoItemNumber() + 1);
-							MainWindow.getListVideo().remove(MainWindow.getSelectedVideoItemNumber() + 1);
-						} else {
-							MainWindow.setSelectedItemId(0);
-							MainWindow.getListVideo().remove(MainWindow.getSelectedVideoItemNumber());
-							MainWindow.getItemSelection().clear();
-						}
-						MainWindow.getOutline().refresh();
-
-						loadOptions();
-					}
-				});
-				allButtons.add(jb);
-				add(jb);
-				
-				revalidate();
-			} else if (MainWindow.getSelectedItem().getId() == 401) {
-				if (!b[0][0]) {
-					js.setMaximum(359);
-					js.setMinimum(-359);
-					js.setToolTipText("Change rotation of the selected Object");
-					js.setPreferredSize(new Dimension(getWidth() - 10, 20));
-					js.setValue(0);
-					js.addChangeListener(new ChangeListener() {
-
-						@Override
-						public void stateChanged(ChangeEvent e) {
-							MainWindow.getSelectedShape().setRotation(js.getValue());
-							System.out.println("[debug] rotation" + MainWindow.getSelectedShape().getRotation() + ":"+js.getMaximum());
-						}
-					});
-					allSliders.add(js);
-					add(js);
-				} else {
-					jtf = new JTextField();
-					jtf.setToolTipText("set rotation");
-					jtf.setText(MainWindow.getSelectedShape().getRotationFormula());
-					jtf.setPreferredSize(new Dimension(getWidth() - 10, 20));
-					jtf.setHorizontalAlignment(JTextField.CENTER);
-					jtf.getDocument().addDocumentListener(new DocumentListener() {
-						
-						@Override
-						public void removeUpdate(DocumentEvent arg0) {updateStat();}
-						@Override
-						public void insertUpdate(DocumentEvent arg0) {updateStat();}
-						@Override
-						public void changedUpdate(DocumentEvent arg0) {}
-						public void updateStat () {
-							String str = "";
-							try {
-								Item item = new Item();
-								str = item.calculeVariable(allTextFields.get(ROTATION_FIELD).getText());
-								MainWindow.getSelectedImageItem().setRotationFormula(allTextFields.get(ROTATION_FIELD).getText());
-							} catch (NumberFormatException e){
-								System.err.println("rotate " + str);
-							}
-						}
-					});
-					addTextField(jtf);
-					ROTATION_FIELD = numberOfField;
-					allTextFields.add(jtf);
-				}
-				
-				{
-					final JSlider js2 = new JSlider();
-					js2.setMaximum(MainWindow.getSelectedShape().getWidth());
-					js2.setMinimum(0);
-					js2.setToolTipText("change bound");
-					js2.setPreferredSize(new Dimension(getWidth() - 30, 20));
-					js2.addChangeListener(new ChangeListener() {
-
-						@Override
-						public void stateChanged(ChangeEvent e) {
-							ShapeRect sp = (ShapeRect) MainWindow.getSelectedShape();
-							sp.setRoundBoundX(js2.getValue());
-							sp.reload(); 
-							System.out.println("[debug] bound" + js2.getValue());
-						}
-					});
-					allSliders.add(js2);
-					add(js2);
-				}
-				{
-					final JSlider js2 = new JSlider();
-					js2.setMaximum(MainWindow.getSelectedShape().getHeight());
-					js2.setMinimum(0);
-					js2.setToolTipText("change bound");
-					js2.setPreferredSize(new Dimension(getWidth() - 30, 20));
-					js2.addChangeListener(new ChangeListener() {
-
-						@Override
-						public void stateChanged(ChangeEvent e) {
-							ShapeRect sp = (ShapeRect) MainWindow.getSelectedShape();
-							sp.setRoundBoundY(js2.getValue());
-							sp.reload(); 
-							System.out.println("[debug] bound" + js2.getValue());
-						}
-					});
-					allSliders.add(js2);
-					add(js2);
-				}
-			}
-		} catch (java.lang.IndexOutOfBoundsException e) {
-			System.err.print("Index out of bounds exception ");
-			StringWriter stringWriter = new StringWriter();
-			e.printStackTrace(new PrintWriter(stringWriter));
-			System.out.println(stringWriter.toString());
-		}
-		revalidate();
-	}*/
 	
 	public void loadOptions () {
 		getContentPane().removeAll();
@@ -559,12 +77,72 @@ public class ItemOption extends JFrame implements ComponentListener{
 		numberOfField = 0;
 		ROTATION_FIELD = -1;POSX_FIELD = -1; POSY_FIELD = -1; WIDTH_FIELD = -1; HEIGHT_FIELD = -1; STRINGTEXT_FIELD = -1; FONTSIZE_FIELD = -1;
 		
+		try {
+			TextItem text = (TextItem) MainWindow.getSelectedItem();
+			if (MainWindow.getSelectedItem().getId() == 2) {
+				JTextField jtf = new JTextField();
+				jtf.setText(text.getText());
+				jtf.setPreferredSize(new Dimension(100, 20));
+				jtf.getDocument().addDocumentListener(new DocumentListener() {
+					
+					@Override
+					public void changedUpdate(DocumentEvent arg0) {}
+					@Override
+					public void insertUpdate(DocumentEvent arg0) {update();}
+					@Override
+					public void removeUpdate(DocumentEvent arg0) {update();}
+					
+					public void update () {
+						TextItem item;
+						try {
+							item = (TextItem) MainWindow.getSelectedItem();
+							item.setText(allTextFields.get(STRINGTEXT_FIELD).getText());
+							item.reload();
+						} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e) {
+							e.printStackTrace();
+						}
+					}
+					
+				});
+				STRINGTEXT_FIELD = numberOfField;
+				addTextField(jtf);
+				
+				jtf = new JTextField();
+				jtf.setText(text.getFontSizeFormula());
+				jtf.setPreferredSize(new Dimension(100, 20));
+				jtf.getDocument().addDocumentListener(new DocumentListener() {
+					
+					@Override
+					public void changedUpdate(DocumentEvent arg0) {}
+					@Override
+					public void insertUpdate(DocumentEvent arg0) {update ();}
+					@Override
+					public void removeUpdate(DocumentEvent arg0) {update ();}
+					
+					public void update () {
+						TextItem item;
+						try {
+							item = (TextItem) MainWindow.getSelectedItem();
+							item.setFontSizeFormula(allTextFields.get(FONTSIZE_FIELD).getText());
+							item.reload();
+						} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e) {
+							e.printStackTrace();
+						}
+					}
+					
+				});
+				FONTSIZE_FIELD = numberOfField;
+				addTextField(jtf);
+			}
+		} catch (NoItemFoundException | ArrayIndexOutOfBoundsException | ClassCastException exc) {}
+		
+		
 		if (b[0][0]) {
 			try {
 				JTextField jtf = new JTextField();
 				jtf.setToolTipText("set rotation");
 				jtf.setText(MainWindow.getSelectedItem().getRotationFormula());
-				jtf.setPreferredSize(new Dimension(getWidth() - 10, 20));
+				jtf.setPreferredSize(new Dimension(getWidth() - 20, 20));
 				jtf.getDocument().addDocumentListener(new DocumentListener() {
 					@Override
 					public void removeUpdate(DocumentEvent arg0) {

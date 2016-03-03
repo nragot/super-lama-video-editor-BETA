@@ -315,6 +315,34 @@ public class MainWindow extends JFrame implements FocusListener{
 		throw new NoItemFoundException();
 	}
 	
+	public static int getItemByNameFromIndex (String str) throws NoItemFoundException {
+		for (int i = 0; i < index.size(); i++) {
+			int a = index.get(i).getA();
+			
+			if (a==1) {
+				if (images.get( index.get(i).getB()-1 ).getName().equals(str)) {
+					return i;
+				}
+			}
+			else if (a==2) {
+				if (texts.get( index.get(i).getB()-1 ).getName().equals(str)) {
+					return i;
+				}
+			}
+			else if (a==3) {
+				if (videos.get( index.get(i).getB()-1 ).getName().equals(str)) {
+					return i;
+				}
+			}
+			else if (a==4) {
+				if (shapes.get( index.get(i).getB()-1 ).getName().equals(str)) {
+					return i;
+				}
+			}
+		}
+		throw new NoItemFoundException();
+	}
+	
 	public static void removeItemByName (String str) throws NoItemFoundException{
 		for (int index = 0; index < images.size();index++) {
 			if (str.equals(images.get(index).getName())) {

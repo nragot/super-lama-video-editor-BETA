@@ -62,6 +62,7 @@ public class RendererTool extends JPanel{
 	
 	class Renderer extends Thread {
 		public void run () {
+			System.out.println("trying to render in :" + AppProperties.getRenderOutputPath() + "film.mp4");
 			FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(AppProperties.getRenderOutputPath() + "film.mp4", MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
 			MainWindow.secureRedrawerStop();
 			

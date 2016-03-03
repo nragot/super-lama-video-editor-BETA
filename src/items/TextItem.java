@@ -35,11 +35,13 @@ public class TextItem extends Item {
 	
 	public void setFontSizeFormula (String formula) {
 		fontSizeFormula = formula;
+		if (formula.equals("")) return;
 		String str = calculeVariable(formula);
 		if (!str.equals("!"))
 			fontSize = (int) Double.parseDouble(str);
-		else 
+		else {
 			fontSize = 1;
+		}
 	}
 	
 	public void setFontSizeFormulaNoCache (String formula) {
@@ -54,7 +56,20 @@ public class TextItem extends Item {
 		Graphics2D g2d = bi.createGraphics();
 		g2d.setFont(new Font("Dialog", Font.PLAIN, fontSize));
 		canvasWidth = g2d.getFontMetrics().stringWidth(newTxt);
-		bi =new BufferedImage(canvasWidth, fontSize+fontSize/4, BufferedImage.TYPE_INT_ARGB);
+		try {
+			bi =new BufferedImage(canvasWidth, fontSize+fontSize/4, BufferedImage.TYPE_INT_ARGB);
+		} catch (IllegalArgumentException exc) {
+			g2d.setFont(new Font("Dialog", Font.PLAIN, 20));
+			canvasWidth = g2d.getFontMetrics().stringWidth("!");
+			bi =new BufferedImage(canvasWidth, 20, BufferedImage.TYPE_INT_ARGB);
+			
+			g2d = bi.createGraphics();
+			g2d.setColor(Color.black);
+			g2d.setFont(new Font("Dialog", Font.PLAIN, 20));
+			g2d.drawString(newTxt, 0,20);
+			g2d.dispose();
+			return;
+		}
 		
 		g2d = bi.createGraphics();
 		g2d.setColor(Color.black);
@@ -69,6 +84,10 @@ public class TextItem extends Item {
 	
 	public int getFontSize () {
 		return fontSize;
+	}
+	
+	public String getFontSizeFormula () {
+		return fontSizeFormula;	
 	}
 	
 	public BufferedImage getImage () {
@@ -90,7 +109,7 @@ public class TextItem extends Item {
 	
 	public boolean addKeyFrameText (int time,String x) {
 		String str = getLastKeyFrameText(time);
-		if (str.substring(1, str.indexOf(':')).equals(time+"")) return false;
+		if (!str.equals("!")&&str.substring(1, str.indexOf(':')).equals(time+"")) return false;
 		str = "m"+time+":"+x;
 		
 		int T = Integer.parseInt(str.substring(1, str.indexOf(':')));

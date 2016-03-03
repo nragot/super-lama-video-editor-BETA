@@ -261,6 +261,7 @@ public class CommandFrame extends JFrame {
 							break;
 						// TODO shape
 					}
+					//MainWindow.getOutline().refresh();
 				}
 				else if (args.get(1).equals("remove") || args.get(1).equals("rm")) {
 					try {
