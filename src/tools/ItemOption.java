@@ -343,6 +343,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					MainWindow.removeItemByName(MainWindow.getSelectedItem().getName());
+					System.out.println("index size:" + MainWindow.getIndex().size());
 				} catch (NoItemFoundException | ArrayIndexOutOfBoundsException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

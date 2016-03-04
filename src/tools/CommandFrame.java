@@ -192,7 +192,9 @@ public class CommandFrame extends JFrame {
 								switch (CommSpef.get(a)) {
 									case "i" :
 									case "index" :
-										// TODO INDEX HERE
+										for (int d = 0; d < MainWindow.getIndex().size();d++) {
+											print ("[list] index("+d+")= a:" + MainWindow.getIndex().get(d).getA() + " b:" + MainWindow.getIndex().get(d).getB() + "name:" /*+ MainWindow.getItem(MainWindow.getIndex().get(d)).getName()*/);
+										}
 								}
 							}
 						}

@@ -93,6 +93,11 @@ public class TimeLine extends JFrame implements KeyListener {
 						else g.drawLine(str1T*10 + addX + 5, 20, str2T*10 + addX + 5, 22);
 					}
 				}
+				
+				if (MainWindow.getSelectedItem().getAllKeyFramesRotation().length > 0) {
+					String str1 = MainWindow.getSelectedItem().getKeyFrameRotation(0);
+					g.fillRect(Integer.parseInt(str1.substring(1,str1.indexOf(':')))*10 + addX + 1 , 18, 8, 8);
+				}
 			} catch (NumberFormatException | NoItemFoundException | ArrayIndexOutOfBoundsException e) {
 			}
 		}
@@ -180,9 +185,8 @@ public class TimeLine extends JFrame implements KeyListener {
 
 						}
 					} else {
-						//TODO : if working -> erase !
-						//MainWindow.getListSprites().get(i).setPosX((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
-						//MainWindow.getListSprites().get(i).setPosY((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1))));
+						MainWindow.getListSprites().get(i).setPosX((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
+						MainWindow.getListSprites().get(i).setPosY((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1))));
 					}
 				}
 				{ //rotation

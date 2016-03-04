@@ -131,6 +131,7 @@ public class Outline extends JFrame implements ActionListener{
 		
 		//IN DEV, HIGLY UNSTABLE
 		try {
+			System.out.println("asking for :" + AllButtons.get(AllButtons.indexOf(button)).getText());
 			MainWindow.selectItem(MainWindow.getItemByNameFromIndex(AllButtons.get(AllButtons.indexOf(button)).getText()), key[0]);
 		} catch (NoItemFoundException e1) {
 			e1.printStackTrace();

@@ -380,6 +380,7 @@ public class MainWindow extends JFrame implements FocusListener{
 				return;
 			}
 		}
+		
 		throw new NoItemFoundException();
 	}
 	
@@ -408,7 +409,7 @@ public class MainWindow extends JFrame implements FocusListener{
 	public static void ResolveIndexGap (int A, int B) {
 		
 		itemSelection.clear();
-		int gapSolver = 0;
+		int gapSolver = -1;
 		for (int i = 0;i < index.size();i++) {
 			if (A == index.get(i).getA() && index.get(i).getB() == B) {
 				gapSolver = i;
@@ -417,7 +418,15 @@ public class MainWindow extends JFrame implements FocusListener{
 				index.get(i).setB(index.get(i).getB() - 1);
 			}
 		}
-		index.remove(gapSolver);
+		if (gapSolver == -1) {
+			for (int i = 0; i < index.size();i++) {
+				if (A == index.get(i).getA() && B == index.get(i).getB()+1) {
+					index.remove(i);
+				}
+			}
+		} else {
+			index.remove(gapSolver);
+		}
 	}
 	
 	 // windows event
