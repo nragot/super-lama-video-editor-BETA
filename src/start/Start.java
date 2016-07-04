@@ -1,5 +1,7 @@
 package start;
 
+import java.io.File;
+
 import tools.ItemOption;
 import tools.Outline;
 import tools.TimeLine;
@@ -15,12 +17,16 @@ public class Start {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println("hello world");
-		mainWindow = new MainWindow();
-		timeline = new TimeLine();
-		outline = new Outline();
-		itemoptions = new ItemOption();
-		if (AppProperties.loadProperties()) mainWindow.GO(outline, itemoptions, timeline);
+		if ( ! new File ("slve.init").exists() || new File ("initme").exists()) 
+			new inittools.MainWindow();
+		else {
+			System.out.println("hello world");
+			mainWindow = new MainWindow();
+			timeline = new TimeLine();
+			outline = new Outline();
+			itemoptions = new ItemOption();
+			if (AppProperties.loadProperties()) mainWindow.GO(outline, itemoptions, timeline);
+		}
 	}
 	
 	public static MainWindow getMainWindow () {

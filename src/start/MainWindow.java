@@ -99,7 +99,6 @@ public class MainWindow extends JFrame implements FocusListener{
 		addMouseMotionListener(mm);
 		addFocusListener((FocusListener) this);
 		
-		
 		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK), "commandPromptReveal");
 		panel.getActionMap().put("commandPromptReveal", new AbstractAction() {
 
