@@ -31,6 +31,11 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import start.AppProperties;
+
+import browser.BrowserActions;
+import browser.FileBrowser;
+
 public class MainWindow extends JFrame implements WindowListener{
 	JCheckBox showConsole;
 	JTextField renderDefOutput;
@@ -48,6 +53,12 @@ public class MainWindow extends JFrame implements WindowListener{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		addWindowListener(this);
 		done = true;
+		
+		try {
+			new File ("initme").createNewFile();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 			A:do {
@@ -84,13 +95,51 @@ public class MainWindow extends JFrame implements WindowListener{
 		
 		renderDefOutput = new JTextField("set render output path");
 		renderDefOutput.setToolTipText("<html>where does super lama video editor when you want to save ?<br/>put \"~\" if you want to use your \"users\" file (depends of your OS)</html>");
-		renderDefOutput.setPreferredSize(new Dimension(getWidth() - 50, 20));
+		renderDefOutput.setPreferredSize(new Dimension(getWidth() - 200, 20));
 		add(renderDefOutput);
+		
+		JButton browser1 = new JButton("...");
+		browser1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new FileBrowser(new BrowserActions() {
+					
+					@Override
+					public void done(String path) {
+						renderDefOutput.setText(path);
+					}
+					
+					@Override
+					public void close(String path) {}
+				}).go(true, "I'm in the folder I like",false);
+			}
+		});
+		add(browser1);
 		
 		imgSelPath = new JTextField("open path for the image selector");
 		imgSelPath.setToolTipText("<html>where the file selector should start when you open it ? <br/>put \"~\" if you want to use your \"users\" file (depends of your OS)</html>");
-		imgSelPath.setPreferredSize(new Dimension(getWidth() - 50, 20));
+		imgSelPath.setPreferredSize(new Dimension(getWidth() - 200, 20));
 		add(imgSelPath);
+		
+		JButton browser2 = new JButton("...");
+		browser2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new FileBrowser(new BrowserActions() {
+					
+					@Override
+					public void done(String path) {
+						imgSelPath.setText(path);
+					}
+					
+					@Override
+					public void close(String path) {}
+				}).go(true, "I'm in the folder I like",false);
+			}
+		});
+		add(browser2);
 		
 		pause = new JCheckBox("do a pause before super lama video editor end reading the init script, waiting for you to press OK or ENTER");
 		pause.setMnemonic('p');
@@ -132,6 +181,8 @@ public class MainWindow extends JFrame implements WindowListener{
 		System.out.println("removing initme");
 		File initmaker = new File ("initme");
 		if (initmaker.exists()) initmaker.delete();
+		initmaker = new File ("initme.txt");
+		if (initmaker.exists()) initmaker.delete();
 		System.out.println("write init");
 		//checking if everything went right about image selector's and render's default path
 		if (!( new File(imgSelPath.getText()).isDirectory()) && !(imgSelPath.getText().equals("~"))) {
@@ -139,7 +190,6 @@ public class MainWindow extends JFrame implements WindowListener{
 			return false;
 		} else {
 			imgSelPath.setBackground(new JTextField().getBackground());
-			System.out.println("img sel path is ok");
 		}
 		if (!( new File (renderDefOutput.getText()).isDirectory()) && !(renderDefOutput.getText().equals("~"))) {
 			renderDefOutput.setBackground(Color.red);
@@ -157,27 +207,34 @@ public class MainWindow extends JFrame implements WindowListener{
 			e.printStackTrace();
 		}
 		write ("#this script fire right before super lama video even open a window, its goal is to give to slve");
-		write ("#every piece of information he needs and your personal settings");
+		write ("#every pieces of information he needs and your personal settings");
 		write ("#**********thank you and have a nice day :-)    ~Serge the lama");
 		//setup cmd
-		write ("command.prompt set.size 400 400\ncommand.prompt set.position 0 0\ncommand.prompt set.title \"hello, we are loadig\"");
+		write ("echo \"hello world !\"");
+		write ("command.prompt set.size 400 400\ncommand.prompt set.position 0 0\ncommand.prompt set.title \"hello, we are loading\"");
 		if (showConsole.isSelected()) {
-			write ("command.Prompt visible");
-		}
+			write ("command.prompt visible");
+		} 
 		if (imgSelPath.getText().equals ("~")) {
 			write ("image.selector default.path \"" + System.getProperty("user.home") + "/\"");
 		} else {
 			write ("image.selector default.path \"" + imgSelPath.getText()+"\"");
 		}
+		write ("echo \"set up render output to " + renderDefOutput.getText() + "\"");
 		if (renderDefOutput.getText().equals("~")) {
 			write ("render default.output \"" + System.getProperty("user.home")+"/\"");
 		} else {
 			write ("render default.output \"" + renderDefOutput.getText()+"\"");
 		}
 		write ("main set.title \"super lama video editor\"\nmain set.size 900 600\nmain set.position 0 100");
-		write ("outline set.title \"outline\"\noutline set.size 400 200\noutline set.position 900 100");
-		write ("timeline set.title \"doctor whoooooooo\"\ntimeline set.size 1300 100\ntimeline set.position 0 0");
-		write ("item.options set.title \":D\"\nitem.options set.size 400 200\nitem.options set.position 900 300");
+		write ("echo \"main setup done\"");
+		write ("outline set.title \"outline\"\noutline set.size 400 200\noutline set.position 900 130");
+		write ("echo \"outline setup done\"");
+		write ("timeline set.title \"timeline\"\ntimeline set.size 1300 100\ntimeline set.position 0 0");
+		write ("echo \"timeline window setup done\"");
+		write ("item.options set.title \"item option\"\nitem.options set.size 400 200\nitem.options set.position 900 360");
+		write ("echo \"item option dialog setup done\"");
+		write ("echo \"all done, ready to start\"");
 		if (pause.isSelected()) {
 			write ("pause \"ready to start\"");
 		}
@@ -252,7 +309,6 @@ public class MainWindow extends JFrame implements WindowListener{
 				g.drawString("you check the checkbox \" show console\" that will describe" , 5, 880);
 				g.drawString("what is going on. if you don't know what it is or you don't", 5, 910);
 				g.drawString("care let it uncheck", 5 , 940);
-				System.out.println(" repaint i:" );
 			}
 		}
 	}

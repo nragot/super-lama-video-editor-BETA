@@ -4,6 +4,7 @@ import java.io.File;
 
 import tools.ItemOption;
 import tools.Outline;
+import tools.SourceWindow;
 import tools.TimeLine;
 
 public class Start {
@@ -12,12 +13,13 @@ public class Start {
 	static TimeLine timeline;
 	static Outline outline;
 	static ItemOption itemoptions;
+	static SourceWindow srcWindow;
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		if ( ! new File ("slve.init").exists() || new File ("initme").exists()) 
+		if ( ! new File ("slve.init").exists() || new File ("initme").exists() || new File("initme.txt").exists()) 
 			new inittools.MainWindow();
 		else {
 			System.out.println("hello world");
@@ -25,6 +27,7 @@ public class Start {
 			timeline = new TimeLine();
 			outline = new Outline();
 			itemoptions = new ItemOption();
+			srcWindow = new SourceWindow();
 			if (AppProperties.loadProperties()) mainWindow.GO(outline, itemoptions, timeline);
 		}
 	}
@@ -43,6 +46,10 @@ public class Start {
 	
 	public static ItemOption getItemOption() {
 		return itemoptions;
+	}
+	
+	public static SourceWindow getSourceWindow () {
+		return srcWindow;
 	}
 
 }

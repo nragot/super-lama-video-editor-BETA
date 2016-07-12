@@ -613,6 +613,8 @@ public class MainWindow extends JFrame implements FocusListener{
 					TimeLine.addTime(1);
 					setTitle("timeline ("+TimeLine.getTime()+")");
 					TimeLine.calculateItemsState();
+				} else if (e.getKeyChar() == 's') {
+					Start.getSourceWindow().active();
 				}
 			}
 			System.out.println("key pressed :" + e.getKeyChar() + " code :" + e.getKeyCode());
