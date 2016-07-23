@@ -41,6 +41,7 @@ public class CommandFrame extends JFrame {
 		setLayout(new BorderLayout());
 		add(cmd,BorderLayout.SOUTH);
 		setTitle ("command prompt");
+		setBounds(0, 0, 530, 800);
 		for (int i = 0; i < cmdsLenght; i++) {
 			cmds[i] = " ";
 		}
@@ -54,7 +55,6 @@ public class CommandFrame extends JFrame {
 				print(cmd.getText());
 				command(cmd.getText());
 				cmd.setText("");
-				repaint();
 			}});
 	}
 	
@@ -75,11 +75,16 @@ public class CommandFrame extends JFrame {
 		}
 	}
 	
+	public void activate () {
+		setVisible(true);
+	}
+	
 	public void print (String str) {
 		for (int i = 0; i < cmdsLenght - 1 ; i++) {
 			cmds[cmdsLenght - 1 -i] = cmds[cmdsLenght - 2 -i];
 		}
 		cmds[0] = str;
+		repaint();
 	}
 	
 	public int command (String str) {
@@ -247,6 +252,8 @@ public class CommandFrame extends JFrame {
 						case "img" :
 						case "i" :
 						case "1" :
+							print (args.get(3) + " " + args.get(4));
+							System.out.println(args.get(3) + " " + args.get(4));
 							MainWindow.addImageItem(new ImageItem(new ImageIcon(args.get(3)).getImage(), args.get(4), 0, 0));
 							break;
 						case "text" :

@@ -1,5 +1,13 @@
 package start;
 
+import items.ImageItem;
+import items.Item;
+import items.Shape;
+import items.ShapeOval;
+import items.ShapeRect;
+import items.TextItem;
+import items.VideoItem;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -22,18 +30,11 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import exceptions.NoItemFoundException;
-import items.ImageItem;
-import items.Item;
-import items.Shape;
-import items.ShapeOval;
-import items.ShapeRect;
-import items.TextItem;
-import items.VideoItem;
 import tools.ArrayListIndexer;
 import tools.CommandFrame;
 import tools.ImageSelector;
@@ -42,8 +43,12 @@ import tools.KeyframeTool;
 import tools.Outline;
 import tools.PropertiesWindow;
 import tools.RendererTool;
+import tools.SourceWindow;
+import tools.SourceWindow.SourceActions;
+import tools.SourceWindow.srcFolder;
 import tools.TimeLine;
 import tools.VideoSelector;
+import exceptions.NoItemFoundException;
 
 public class MainWindow extends JFrame implements FocusListener{
 	
@@ -63,6 +68,7 @@ public class MainWindow extends JFrame implements FocusListener{
 	JMenuItem jmi_property = new JMenuItem("properties");
 	JMenuItem jmi_shot = new JMenuItem("shot");
 	JMenuItem jmi_video = new JMenuItem("video");
+	
 
 	//really usefull stuff
 	static ArrayList<ImageItem>        images         = new ArrayList<ImageItem>()       ;
@@ -549,7 +555,22 @@ public class MainWindow extends JFrame implements FocusListener{
 			JMenuItem jmi= (JMenuItem)e.getSource();
 			
 			if (jmi == jmi_add_image) {
-				new ImageSelector();
+				Start.getSourceWindow().active(new SourceActions() {
+					
+					@Override
+					public void userChooseImage(SourceWindow source, JFrame window) {
+						addImageItem(new ImageItem(source.getSelectedItem().preview(), JOptionPane.showInputDialog(null,"give the name of the object you want to create","item #" + (index.size()+1))
+								, cameraWidth/2, cameraHeight/2));
+						selectItem(index.size()-1, true);
+						window.dispose();
+						outline.refresh();
+					}
+					
+					@Override
+					public void userChooseFolder(SourceWindow source, JFrame window) {
+						source.getSelectedItemAsFolder().toggleOpen();
+					}
+				});
 			}
 			else if (jmi == jmi_add_text) {
 				addTextItem(new TextItem("TEXT"));
@@ -614,7 +635,17 @@ public class MainWindow extends JFrame implements FocusListener{
 					setTitle("timeline ("+TimeLine.getTime()+")");
 					TimeLine.calculateItemsState();
 				} else if (e.getKeyChar() == 's') {
-					Start.getSourceWindow().active();
+					Start.getSourceWindow().active(new SourceActions() {
+						
+						@Override
+						public void userChooseImage(SourceWindow source, JFrame jf) {
+						}
+						
+						@Override
+						public void userChooseFolder(SourceWindow source, JFrame jf) {
+							Start.getSourceWindow().getSelectedItemAsFolder().toggleOpen();
+						}
+					});
 				}
 			}
 			System.out.println("key pressed :" + e.getKeyChar() + " code :" + e.getKeyCode());

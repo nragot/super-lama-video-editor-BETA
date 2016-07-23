@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import start.MainWindow;
 
-public class ImageItem extends Item{
+public class ImageItem extends SlveItem{
 	int focusImage = 0;
 	ArrayList<Image> images = new ArrayList<Image>();
 	
@@ -49,6 +49,11 @@ public class ImageItem extends Item{
 	
 	public Image getImage () {
 		return images.get(focusImage);
+	}
+	
+	public void setImage (Image image) {
+		images.remove(0);
+		images.add(image);
 	}
 
 }

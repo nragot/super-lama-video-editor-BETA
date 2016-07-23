@@ -29,24 +29,39 @@ public class SourceWindow {
 	private static final long serialVersionUID = 1L;
 	
 	srcFolder root = new srcFolder("/");
-	MyWindow window = new MyWindow();
 	Image folderIcon = new ImageIcon(getClass().getResource("/icon folder.png")).getImage();
 	int selectedNumber = 0; SourceItem selectedItem;
 	
 	public SourceWindow () {}
 	
-	public void active () {
-		window.setVisible(true);
+	public void active (SourceActions actions) {
+		new MyWindow(actions).setVisible(true);
+	}
+	
+	public SourceItem getSelectedItem () {
+		return selectedItem;
+	}
+	
+	public srcImg getSelectedItemAsImg () {
+		return (srcImg) selectedItem;
+	}
+	
+	public srcFolder getSelectedItemAsFolder () {
+		return (srcFolder) selectedItem;
 	}
 	
 	private class MyWindow extends JFrame implements KeyListener{
+		
+		SourceActions actions;
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu add = new JMenu("add");
 		JMenuItem mi_image = new JMenuItem("image");
 		JMenuItem mi_mkdir = new JMenuItem("create folder");
 		
-		public MyWindow () {
+		public MyWindow (SourceActions actions) {
+			this.actions = actions;
+			
 			setBounds(20, 20, 800, 800);
 			addKeyListener(this);
 			setContentPane(new MyPanel());
@@ -139,7 +154,9 @@ public class SourceWindow {
 				break;
 			case 10:
 				if (selectedItem.id == 1) {
-					((srcFolder) selectedItem).toggleOpen();
+					actions.userChooseFolder(SourceWindow.this, this);
+				} else if (selectedItem.id == 2) {
+					actions.userChooseImage(SourceWindow.this, this);
 				}
 				break;
 			}
@@ -155,7 +172,7 @@ public class SourceWindow {
 		}
 	}
 	
-	private abstract class SourceItem {
+	public abstract class SourceItem {
 		
 		String name;
 		srcFolder parentFolder;
@@ -180,7 +197,7 @@ public class SourceWindow {
 		}
 	}
 	
-	private class srcFolder extends SourceItem {
+	public class srcFolder extends SourceItem {
 		
 		boolean open = false;
 		
@@ -220,7 +237,7 @@ public class SourceWindow {
 		
 	}
 	
-	private class srcImg extends SourceItem {
+	public class srcImg extends SourceItem {
 
 		Image image;
 		
@@ -235,6 +252,11 @@ public class SourceWindow {
 			return image;
 		}
 		
+	}
+	
+	public interface SourceActions {
+		public void userChooseImage (SourceWindow source, JFrame window);
+		public void userChooseFolder (SourceWindow source, JFrame window);
 	}
 
 }

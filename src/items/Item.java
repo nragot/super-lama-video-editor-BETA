@@ -24,6 +24,9 @@ public class Item extends JFrame{
 	int m_id;
 	double m_ratio;
 	String m_name;
+	String parentMod; // Every item come from either a mod or slve directly
+						//This tells us from where it comes from
+						//It also allows same id's from different mod
 	
 	public Item () {}
 	
@@ -436,6 +439,7 @@ public class Item extends JFrame{
 		try {
 			return keyFrameRotation.get(keyFrameRotation.size()-1);
 		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
 			return "!";
 		}
 	}

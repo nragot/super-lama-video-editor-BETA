@@ -62,6 +62,10 @@ public class RendererTool extends JPanel{
 	
 	class Renderer extends Thread {
 		public void run () {
+			CommandFrame printer = new CommandFrame();
+			printer.activate();
+			printer.print("rendering will be starting in a instant");
+			
 			System.out.println("trying to render in :" + AppProperties.getRenderOutputPath() + "film.mp4");
 			FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(AppProperties.getRenderOutputPath() + "film.mp4", MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
 			MainWindow.secureRedrawerStop();
@@ -76,10 +80,13 @@ public class RendererTool extends JPanel{
 				
 				IplImage img = new IplImage();
 				TimeLine.setTime(0);
+				BufferedImage render;
+				printer.print("rendering start, mainWindow is hibernating");
+				printer.print("****************************");
 				
 				for (int i = 0; i<PropertiesWindow.getEndVideo();i++) {
 					repaint();
-					BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_3BYTE_BGR);
+					render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_3BYTE_BGR);
 					Graphics2D d = render.createGraphics();
 					paintComponent(d);
 					img = IplImage.createFrom(render);
@@ -87,9 +94,12 @@ public class RendererTool extends JPanel{
 					System.out.println("recording images :"+i);
 					TimeLine.addTime(1);
 					TimeLine.calculateItemsState();
+					printer.print("frame " + TimeLine.getTime() + "/" + PropertiesWindow.getEndVideo());
 				}
-				
+				printer.print("****************************");
 				recorder.stop();
+				printer.print("rendering stoped");
+				printer.print("done :)");
 			} catch (Exception e) {
 				System.err.println("exception catched" + e.getMessage());
 			}

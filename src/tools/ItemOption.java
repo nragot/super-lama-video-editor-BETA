@@ -1,9 +1,7 @@
 package tools;
 
-import items.Item;
-import items.ShapeRect;
+import items.ImageItem;
 import items.TextItem;
-import items.VideoItem;
 
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -15,8 +13,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -29,9 +25,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import exceptions.NoItemFoundException;
-
 import start.MainWindow;
+import start.Start;
+import tools.SourceWindow.SourceActions;
+import exceptions.NoItemFoundException;
 
 public class ItemOption extends JFrame implements ComponentListener{
 	ArrayList<JButton> allButtons = new ArrayList<JButton>();
@@ -333,6 +330,41 @@ public class ItemOption extends JFrame implements ComponentListener{
 			addTextField(jtf);
 		} catch (NoItemFoundException | ArrayIndexOutOfBoundsException e) {
 			
+		}
+		
+		
+		try {
+			if (MainWindow.getSelectedItem().getId() == 1) {
+				JButton jb = new JButton("change image");
+				jb.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						Start.getSourceWindow().active(new SourceActions() {
+							
+							@Override
+							public void userChooseImage(SourceWindow source, JFrame jf) {
+								try {
+									((ImageItem) MainWindow.getSelectedItem()).setImage(source.getSelectedItemAsImg().preview());
+								} catch (ArrayIndexOutOfBoundsException
+										| NoItemFoundException e) {
+									e.printStackTrace();
+								}
+								jf.dispose();
+							}
+							
+							@Override
+							public void userChooseFolder(SourceWindow source, JFrame jf) {
+								source.getSelectedItemAsFolder().toggleOpen();
+							}
+						});
+					}
+				});
+				add(jb);
+			}
+		} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e1) {
+			e1.printStackTrace();
+			System.err.println("error catched no problemo :)");
 		}
 		
 		JButton jb = new JButton ("delete");

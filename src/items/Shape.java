@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-public class Shape extends Item {
+public class Shape extends SlveItem {
 	Color color = new Color (0, 0, 0, 255);
 	BufferedImage bi;
 	int angle;

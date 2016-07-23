@@ -1,30 +1,28 @@
-#this script fire right before super lama video even open a window, its goal is to give to slve
-#every pieces of information he needs and your personal settings
-#**********thank you and have a nice day :-)    ~Serge the lama
-echo "hello world !"
+#this file gives command before the app init "
+command.prompt visible
+echo "start loading slve.init"
+image.selector default.path "/home/nathan/Bureau/"
+echo "image selector default path loaded"
+render default.output "/home/nathan/Bureau/"
+echo "renderer default output loaded" "everything's good master"
+# setting up the windows
+echo "setting up the windows ..."
 command.prompt set.size 400 400
 command.prompt set.position 0 0
-command.prompt set.title "hello, we are loading"
-command.prompt visible
-image.selector default.path "/home/nathan/Bureau/"
-echo "set up render output to /home/nathan/Bureau/"
-render default.output "/home/nathan/Bureau/"
-main set.title "super lama video editor"
+main set.title "j'aime changer le titre des fenetres sans raison"
 main set.size 900 600
 main set.position 0 100
-echo "main setup done"
-outline set.title "outline"
+outline set.title "je suis un titre"
 outline set.size 400 200
-outline set.position 900 130
-echo "outline setup done"
-timeline set.title "timeline"
+outline set.position 900 100
+timeline set.title "doctor whoooooooo"
 timeline set.size 1300 100
 timeline set.position 0 0
-echo "timeline window setup done"
-item.options set.title "item option"
+item.options set.title ":D"
 item.options set.size 400 200
-item.options set.position 900 360
-echo "item option dialog setup done"
-echo "all done, ready to start"
-pause "ready to start"
-#:)
+item.options set.position 900 300
+echo "done setting up every windows"
+#these commands are debug use only
+outline add image "/home/nathan/Bureau/téléchargement.png" A
+outline add text TEXT
+pause "OK to continue"

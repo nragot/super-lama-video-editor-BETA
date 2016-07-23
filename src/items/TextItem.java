@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class TextItem extends Item {
+public class TextItem extends SlveItem {
 	
 	String text = "";
 	static int lastText;
@@ -52,6 +52,7 @@ public class TextItem extends Item {
 	 */
 	public void reload () {
 		String newTxt = calculeVariableNoChange(text);
+		System.out.println("text:"+text);
 		bi = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = bi.createGraphics();
 		g2d.setFont(new Font("Dialog", Font.PLAIN, fontSize));
