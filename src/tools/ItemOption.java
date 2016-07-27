@@ -1,7 +1,5 @@
 package tools;
 
-import items.ImageItem;
-import items.TextItem;
 
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -24,6 +22,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import mod.slve.items.ImageItem;
+import mod.slve.items.TextItem;
 
 import start.MainWindow;
 import start.Start;
@@ -363,8 +364,6 @@ public class ItemOption extends JFrame implements ComponentListener{
 				add(jb);
 			}
 		} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e1) {
-			e1.printStackTrace();
-			System.err.println("error catched no problemo :)");
 		}
 		
 		JButton jb = new JButton ("delete");

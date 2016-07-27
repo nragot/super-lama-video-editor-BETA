@@ -1,4 +1,4 @@
-package items;
+package mod.slve.items;
 
 import java.awt.Image;
 

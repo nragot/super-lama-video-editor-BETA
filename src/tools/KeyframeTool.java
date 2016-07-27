@@ -1,6 +1,5 @@
 package tools;
 
-import items.TextItem;
 
 import java.awt.FlowLayout;
 import java.awt.MouseInfo;
@@ -10,6 +9,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
+import mod.slve.items.TextItem;
 
 import exceptions.NoItemFoundException;
 

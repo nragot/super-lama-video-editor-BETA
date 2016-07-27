@@ -1,12 +1,5 @@
 package start;
 
-import items.ImageItem;
-import items.Item;
-import items.Shape;
-import items.ShapeOval;
-import items.ShapeRect;
-import items.TextItem;
-import items.VideoItem;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,6 +27,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
+import mod.slve.items.ImageItem;
+import mod.slve.items.Shape;
+import mod.slve.items.ShapeOval;
+import mod.slve.items.ShapeRect;
+import mod.slve.items.TextItem;
+import mod.slve.items.VideoItem;
+
+import API.Item;
 
 import tools.ArrayListIndexer;
 import tools.CommandFrame;

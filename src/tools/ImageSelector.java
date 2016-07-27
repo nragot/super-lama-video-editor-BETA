@@ -1,6 +1,5 @@
   package tools;
 
-import items.ImageItem;
 
 import java.awt.Button;
 import java.awt.Color;
@@ -23,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.SliderUI;
+
+import mod.slve.items.ImageItem;
 
 import start.AppProperties;
 import start.MainWindow;

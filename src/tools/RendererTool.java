@@ -1,8 +1,5 @@
 package tools;
 
-import items.ImageItem;
-import items.TextItem;
-import items.VideoItem;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,6 +13,10 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import mod.slve.items.ImageItem;
+import mod.slve.items.TextItem;
+import mod.slve.items.VideoItem;
 
 import com.googlecode.javacv.FFmpegFrameRecorder;
 import com.googlecode.javacv.FrameRecorder.Exception;

@@ -3,66 +3,67 @@ package inittools;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import javax.swing.ImageIcon;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import start.AppProperties;
 
 import browser.BrowserActions;
 import browser.FileBrowser;
 
 public class MainWindow extends JFrame implements WindowListener{
+	private static final long serialVersionUID = 1L;
 	JCheckBox showConsole;
 	JTextField renderDefOutput;
 	JTextField imgSelPath;
 	JCheckBox pause;
 	JButton okAndClose;
 	JButton help;
+	JButton modsWindowUp;
+	
 	RandomAccessFile file ;
+	String slvePath;
+	ArrayList<String> modulesFound = new ArrayList<String>();
+	ArrayList<JCheckBox> modulesFoundCheck = new ArrayList<JCheckBox>();
+	int entryMod = 0;
 	
 	boolean done;
 	
-	public MainWindow () {
+	public MainWindow (String path) {
 		setBounds (0,0,850,300);
 		setTitle ("init script");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		addWindowListener(this);
+		
+		slvePath = path;
+		
 		done = true;
 		
 		try {
-			new File ("initme").createNewFile();
+			new File (slvePath + "initme").createNewFile();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
 		try {
 			A:do {
-				File test = new File ("./slve.init");
+				File test = new File (slvePath + "slve.init");
 				if (!test.exists() || test.isDirectory()) {
 					int i = JOptionPane.showConfirmDialog(this, "slve.init not found (which is normal if it is the first time you run super lama video editor).\n do you want to build it now ?");
 					System.out.println(i);
@@ -162,26 +163,83 @@ public class MainWindow extends JFrame implements WindowListener{
 		okAndClose.setPreferredSize(new Dimension(getWidth() - 50, 35));
 		add(okAndClose);
 		
-		help = new JButton("help me ! I don't now what all this mean :(");
-		help.setPreferredSize(new Dimension(getWidth() - 50, 50));
-		help.setMnemonic('h');
-		help.addActionListener(new ActionListener() {
+		//loading modules for slve
+		try {
+			System.out.println("loading modules");
+			URL url = this.getClass().getProtectionDomain().getCodeSource().getLocation();
+			URL jar = url;
+			ZipInputStream zip = new ZipInputStream(jar.openStream());
+			String lastModNameFound="";
+			while(true) {
+				ZipEntry e = zip.getNextEntry();
+				if (e == null)
+					break;
+				String name = e.getName();
+				if (name.startsWith("mod/") && name.length() > 4) {
+					name = name.substring(4);
+					name = name.substring(0, name.indexOf(File.separator));
+					if (!lastModNameFound.equals(name)) {
+						lastModNameFound = name;
+						modulesFound.add(name);
+						modulesFoundCheck.add(new JCheckBox(name));
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		modsWindowUp = new JButton("mods");
+		modsWindowUp.addActionListener(new ActionListener() {
+			
 			@Override
-			public void actionPerformed(ActionEvent arg0) {new HelpWindow();}
+			public void actionPerformed(ActionEvent arg0) {
+				new JFrame() {
+					private static final long serialVersionUID = 1L;
+
+					public void go () {
+						setLayout(new FlowLayout());
+						setBounds(0, 0, 800, 800);
+						ButtonGroup group = new ButtonGroup();
+						for (int i = 0; i < modulesFound.size();i++) {
+							MyJRadioButton radio = new MyJRadioButton(i);
+							radio.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									entryMod = ((MyJRadioButton)e.getSource()).i;
+								}
+							});
+							group.add(radio);
+							add(radio);
+							add(modulesFoundCheck.get(i));
+						}
+						setVisible(true);
+					}
+				}.go();
+			}
 		});
-		add(help);
+		add(modsWindowUp);
 		
 		init();
 		setVisible(true);
+	}
+	
+	private class MyJRadioButton extends JRadioButton {
+		private static final long serialVersionUID = 1L;
+		public int i = 0;
+		
+		public MyJRadioButton (int i) {
+			this.i = i;
+		}
 	}
 	
 	public boolean writeInit () {
 		done = false;
 		
 		System.out.println("removing initme");
-		File initmaker = new File ("initme");
+		File initmaker = new File (slvePath + "initme");
 		if (initmaker.exists()) initmaker.delete();
-		initmaker = new File ("initme.txt");
+		initmaker = new File (slvePath + "initme.txt");
 		if (initmaker.exists()) initmaker.delete();
 		System.out.println("write init");
 		//checking if everything went right about image selector's and render's default path
@@ -201,8 +259,8 @@ public class MainWindow extends JFrame implements WindowListener{
 		//writing the file
 		try {
 			file.close();
-			new File ("./slve.init").delete();
-			file = new RandomAccessFile (new File ("./slve.init"), "rw");
+			new File (slvePath + "./slve.init").delete();
+			file = new RandomAccessFile (new File (slvePath + "./slve.init"), "rw");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -210,6 +268,11 @@ public class MainWindow extends JFrame implements WindowListener{
 		write ("#every pieces of information he needs and your personal settings");
 		write ("#**********thank you and have a nice day :-)    ~Serge the lama");
 		//setup cmd
+		for (int i = 0; i < modulesFound.size();i++) {
+			if (modulesFoundCheck.get(i).isSelected())
+				write ("loadmod " + modulesFound.get(i));
+		}
+		write ("mod " + modulesFound.get(entryMod));
 		write ("echo \"hello world !\"");
 		write ("command.prompt set.size 400 400\ncommand.prompt set.position 0 0\ncommand.prompt set.title \"hello, we are loading\"");
 		if (showConsole.isSelected()) {
@@ -282,34 +345,6 @@ public class MainWindow extends JFrame implements WindowListener{
 				str = file.readLine();
 			}
 		} catch (IOException e) {	e.printStackTrace();
-		}
-	}
-	
-	public class HelpWindow extends JFrame{
-
-		private static final long serialVersionUID = 1L;
-		
-		ImageIcon console_Help = new ImageIcon (getClass().getResource("/console_help.png")),
-				head_help = new ImageIcon(getClass().getResource("/help_head.png"));
-		
-		public HelpWindow () {
-			setBounds(50, 50, 650, 800);
-			setVisible(true);
-			setContentPane(new MyPanel());
-		}
-		
-		public class MyPanel extends JPanel{
-			private static final long serialVersionUID = 1L;
-
-			public void paintComponent (Graphics g) {
-				g.drawImage(head_help.getImage(), 0, 0, this);
-				g.drawImage(console_Help.getImage(), 5, 420, this);
-				g.setFont(new Font("Dialog", Font.PLAIN, 20));
-				g.drawString("the \"console\" (or command prompt) is a window that, as long ", 5, 850);
-				g.drawString("you check the checkbox \" show console\" that will describe" , 5, 880);
-				g.drawString("what is going on. if you don't know what it is or you don't", 5, 910);
-				g.drawString("care let it uncheck", 5 , 940);
-			}
 		}
 	}
 	

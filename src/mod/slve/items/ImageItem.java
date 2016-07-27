@@ -1,9 +1,7 @@
-package items;
+package mod.slve.items;
 
 import java.awt.Image;
 import java.util.ArrayList;
-
-import start.MainWindow;
 
 public class ImageItem extends SlveItem{
 	int focusImage = 0;

@@ -1,4 +1,4 @@
-package items;
+package API;
 
 import java.util.ArrayList;
 
@@ -15,16 +15,16 @@ public class Item extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	
-	ArrayList<String>  keyFrameTranslation = new ArrayList<String>();
-	ArrayList<String>  keyFrameRotation = new ArrayList<String>();
-	ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------activation
-	String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
-	int cachePosX, cachePosY, cacheWidth, cacheHeight, cacheRotation;
-	boolean cacheOn = true;
-	int m_id;
-	double m_ratio;
-	String m_name;
-	String parentMod; // Every item come from either a mod or slve directly
+	protected ArrayList<String>  keyFrameTranslation = new ArrayList<String>();
+	protected ArrayList<String>  keyFrameRotation = new ArrayList<String>();
+	protected ArrayList<Integer> keyFrameActiv = new ArrayList<Integer>();                   //<--------activation
+	protected String m_posX = "", m_posY = "", m_width = "", m_height = "", m_rotation = "";
+	protected int cachePosX, cachePosY, cacheWidth, cacheHeight, cacheRotation;
+	protected boolean cacheOn = true;
+	protected int m_id;
+	protected double m_ratio;
+	protected String m_name;
+	protected String parentMod; // Every item come from either a mod or slve directly
 						//This tells us from where it comes from
 						//It also allows same id's from different mod
 	
@@ -439,7 +439,6 @@ public class Item extends JFrame{
 		try {
 			return keyFrameRotation.get(keyFrameRotation.size()-1);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
 			return "!";
 		}
 	}
