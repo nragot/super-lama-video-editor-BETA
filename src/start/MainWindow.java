@@ -36,6 +36,8 @@ import mod.slve.items.TextItem;
 import mod.slve.items.VideoItem;
 
 import API.Item;
+import API.Layer;
+import API.SlveButton;
 
 import tools.ArrayListIndexer;
 import tools.CommandFrame;
@@ -58,6 +60,7 @@ public class MainWindow extends JFrame implements FocusListener{
 	
 	static WorkingPanel panel;
 	//menu bar
+	/*
 	JMenuBar jmb = new JMenuBar();
 	JMenu jm_add= new JMenu("add");
 	JMenu jm_render = new JMenu("render");
@@ -69,7 +72,7 @@ public class MainWindow extends JFrame implements FocusListener{
 	JMenu jm_add_shape = new JMenu("shape");
 	JMenuItem jmi_property = new JMenuItem("properties");
 	JMenuItem jmi_shot = new JMenuItem("shot");
-	JMenuItem jmi_video = new JMenuItem("video");
+	JMenuItem jmi_video = new JMenuItem("video");*/
 	
 
 	//really usefull stuff
@@ -79,6 +82,7 @@ public class MainWindow extends JFrame implements FocusListener{
 	static ArrayList<Shape>            shapes         = new ArrayList<Shape>()           ;
 	static ArrayList<ArrayListIndexer> index          = new ArrayList<ArrayListIndexer>();
 	static ArrayList<Integer>          itemSelection  = new ArrayList<Integer>()         ;
+	static ArrayList<Layer>            layers         = new ArrayList<Layer>()           ;
 	
 	static Outline outline;
 	static ItemOption itemOptions;
@@ -88,6 +92,9 @@ public class MainWindow extends JFrame implements FocusListener{
 	static int cameraWidth = 854, cameraHeight = 480,cameraPosX, cameraPosY;
 	static double viewerZoom = 1;
 	int viewerX = 0, viewerY = 0;
+	int userClickedOnX = -1, userClickedOnY = -1; //-1:did not cliked anywhere
+	int viewerXLayer = 0, viewerYLayer = 0;
+	int panelStatus = 1; //0:drawing layer; 1:drawing layer manager 
 	
 	static Redrawer redrawer;
 	
@@ -103,8 +110,8 @@ public class MainWindow extends JFrame implements FocusListener{
 		panel = new WorkingPanel();
 		setContentPane(panel);
 		Mover mm = new Mover ();
-		addMouseListener(mm);
-		addMouseMotionListener(mm);
+		panel.addMouseListener(mm);
+		panel.addMouseMotionListener(mm);
 		addFocusListener((FocusListener) this);
 		
 		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK), "commandPromptReveal");
@@ -117,8 +124,13 @@ public class MainWindow extends JFrame implements FocusListener{
 				openCommand();
 		}});
 		
+		//FIXME:remove unnecessary comments
+		//FIXME:remove unnecessary methode
+		//TODO:check for optimization
+		//TODO:git that shit
+		
 		//Menu bar settings
-		Actions al = new Actions();
+		/*Actions al = new Actions();
 		jmi_add_image.addActionListener(al);
 		jmi_add_text.addActionListener(al);
 		jmi_add_video.addActionListener(al);
@@ -141,7 +153,7 @@ public class MainWindow extends JFrame implements FocusListener{
 		jmb.add(jm_add);
 		
 		jmb.setPreferredSize(new Dimension(jmb.getWidth(),25));
-		setJMenuBar(jmb);
+		setJMenuBar(jmb);*/
 
 		//loading tools
 		MainWindow.outline = outline;
@@ -184,6 +196,19 @@ public class MainWindow extends JFrame implements FocusListener{
 			return shapes.get(al.getB()-1);
 		}
 		throw new NoItemFoundException();
+	}
+	
+	public ArrayList<Layer> getLayers () {
+		return layers;
+	}
+	
+	public void removeLayerByName (String str) {
+		for (int i = 0; i < layers.size(); i++) {
+			System.out.println(str + " " + layers.get(i).getName());
+			if (layers.get(i).getName().equals(str)) {
+				layers.remove(i);
+			}
+		}
 	}
 	
 	public static Item getSelectedItem () throws NoItemFoundException, ArrayIndexOutOfBoundsException {
@@ -472,8 +497,56 @@ public class MainWindow extends JFrame implements FocusListener{
 		}
 		
 		@Override
-		public void paintComponent (Graphics g) {
-			g.setColor(Color.white);
+		public void paintComponent (Graphics graphics) {
+			Graphics2D g = (Graphics2D) graphics.create();
+			if (panelStatus == 0) {
+				for (Layer layer : layers) {
+					if (layer.doRenderInside())
+						layer.render(g);
+				}
+			} else if (panelStatus == 1) {
+				g.setColor(Color.gray);
+				g.fillRect(0, 0, getWidth(), getHeight());
+				for (int i = 0; i < layers.size(); i++) {
+					g.setColor(Color.WHITE);
+					g.fillRect(getWidth()/2 - 50, 50+i*200, 100, 150); //TODO:affiche name, give choice, move item
+					g.setColor(Color.BLACK);
+					g.drawString(layers.get(i).getName(), getWidth()/2 + 100, 100+i*200);
+					int x = 0;
+					for (SlveButton button : layers.get(i).getLeftButtons()) {
+						x += button.getWidth();
+						if (button.getIcon() == null)
+							g.drawString(button.getName(), getWidth()/2 - 50 - x, 85+i*200);
+						else 
+							g.drawImage(button.getIcon().getImage(), getWidth()/2 - 50 - x, 75+i*200, null);
+						if (userClickedOnX != -1 
+								&& userClickedOnX > getWidth()/2 - 50 - x && userClickedOnX < getWidth()/2 - 50 - x + button.getWidth()
+								&& userClickedOnY > 75 + i*200 && userClickedOnY < 75 + i*200 + button.getHeight())
+							{
+								button.push();
+								userClickedOnX = userClickedOnY = 0;
+							}
+					}
+					x = 0;
+					for (SlveButton button : layers.get(i).getRightButtons()) {
+						if (button.getIcon() == null)
+							g.drawString(button.getName(), getWidth()/2 + 50 + x, 190+i*200);
+						else 
+							g.drawImage(button.getIcon().getImage(), getWidth()/2 +100 + x, 180+i*200, null);
+						if (userClickedOnX != -1 
+								&& userClickedOnX > getWidth()/2 + 50 + x && userClickedOnX < getWidth()/2 + 50 + x + button.getWidth()
+								&& userClickedOnY > 180 + i*200 && userClickedOnY < 180 + i*200 + button.getHeight())
+							{
+								button.push();
+								userClickedOnX = userClickedOnY = 0;
+							}
+							;
+						x += button.getWidth();
+					}
+				}
+			}
+			
+			/*g.setColor(Color.white);
 			g.fillRect(0, 0, 1920, 1080);
 			Graphics2D d = (Graphics2D) g.create();
 			d.translate((int) ((getWidth()-(cameraWidth*viewerZoom))/2), (int) ((getHeight()-(cameraHeight*viewerZoom))/2));
@@ -546,7 +619,7 @@ public class MainWindow extends JFrame implements FocusListener{
 			} catch (ArrayIndexOutOfBoundsException e) {
 				g.drawString("here are the par of the last selected item", 20, getHeight() - 4);
 			}
-			g.drawString("Zoom :" + (viewerZoom+"").substring(0, 3), getWidth() - 120, getHeight() - 4);
+			g.drawString("Zoom :" + (viewerZoom+"").substring(0, 3), getWidth() - 120, getHeight() - 4);*/
 		}	
 	}
 	
@@ -556,6 +629,7 @@ public class MainWindow extends JFrame implements FocusListener{
 		public void actionPerformed(ActionEvent e) {
 			JMenuItem jmi= (JMenuItem)e.getSource();
 			
+			/*
 			if (jmi == jmi_add_image) {
 				Start.getSourceWindow().active(new SourceActions() {
 					
@@ -599,7 +673,7 @@ public class MainWindow extends JFrame implements FocusListener{
 			else if (jmi == jmi_add_shape_oval) {
 				addShapeOval(new ShapeOval());
 				outline.refresh();
-			}
+			}*/
 		}
 		
 	}
@@ -609,46 +683,50 @@ public class MainWindow extends JFrame implements FocusListener{
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getModifiers() == KeyEvent.SHIFT_DOWN_MASK) {
-				if (e.getKeyChar() == 'i') {
-					try {
-						getSelectedItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
-					} catch (NoItemFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+			if (panelStatus == 0) {
+				if (e.getModifiers() == KeyEvent.SHIFT_DOWN_MASK) {
+					if (e.getKeyChar() == 'i') {
+						try {
+							getSelectedItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
+						} catch (NoItemFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					} else if (e.getKeyChar() == '-') {
+						viewerZoom += 0.1;
 					}
-				} else if (e.getKeyChar() == '-') {
-					viewerZoom += 0.1;
 				}
-			}
-			else {
-				if (e.getKeyChar() == 'i') {
+				else {
+					if (e.getKeyChar() == 'i') {
 						new KeyframeTool();
-				} else if (e.getKeyChar() == '-') {
-					viewerZoom -= 0.1;
-				} else if (e.getKeyChar() == '+') {
-					viewerZoom += 0.1;
-				} else if (e.getKeyCode() == 37) {
-					TimeLine.addTime(-1);
-					setTitle("timeline ("+TimeLine.getTime()+")");
-					TimeLine.calculateItemsState();
-				} else if (e.getKeyCode() == 39) {
-					TimeLine.addTime(1);
-					setTitle("timeline ("+TimeLine.getTime()+")");
-					TimeLine.calculateItemsState();
-				} else if (e.getKeyChar() == 's') {
-					Start.getSourceWindow().active(new SourceActions() {
-						
-						@Override
-						public void userChooseImage(SourceWindow source, JFrame jf) {
-						}
-						
-						@Override
-						public void userChooseFolder(SourceWindow source, JFrame jf) {
-							Start.getSourceWindow().getSelectedItemAsFolder().toggleOpen();
-						}
-					});
+					} else if (e.getKeyChar() == '-') {
+						viewerZoom -= 0.1;
+					} else if (e.getKeyChar() == '+') {
+						viewerZoom += 0.1;
+					} else if (e.getKeyCode() == 37) {
+						TimeLine.addTime(-1);
+						setTitle("timeline ("+TimeLine.getTime()+")");
+						TimeLine.calculateItemsState();
+					} else if (e.getKeyCode() == 39) {
+						TimeLine.addTime(1);
+						setTitle("timeline ("+TimeLine.getTime()+")");
+						TimeLine.calculateItemsState();
+					} else if (e.getKeyChar() == 's') {
+						Start.getSourceWindow().active(new SourceActions() {
+
+							@Override
+							public void userChooseImage(SourceWindow source, JFrame jf) {
+							}
+
+							@Override
+							public void userChooseFolder(SourceWindow source, JFrame jf) {
+								Start.getSourceWindow().getSelectedItemAsFolder().toggleOpen();
+							}
+						});
+					}
 				}
+			} else if (panelStatus == 1) {
+				
 			}
 			System.out.println("key pressed :" + e.getKeyChar() + " code :" + e.getKeyCode());
 			
@@ -667,22 +745,24 @@ public class MainWindow extends JFrame implements FocusListener{
 
 		@Override
 		public void mouseDragged(java.awt.event.MouseEvent e) {
-			if (SwingUtilities.isLeftMouseButton(e)) {
-				if (!itemOptions.getOptionType(0, 1)) {
-					for (int i = 0; i < itemSelection.size(); i++) {
-						try {
-							getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - a)/viewerZoom));
-							getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - b)/viewerZoom));
-						} catch (NoItemFoundException exc) {
+			if (panelStatus == 0) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					if (!itemOptions.getOptionType(0, 1)) {
+						for (int i = 0; i < itemSelection.size(); i++) {
+							try {
+								getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - a)/viewerZoom));
+								getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - b)/viewerZoom));
+							} catch (NoItemFoundException exc) {
 
+							}
 						}
 					}
+				} else if (SwingUtilities.isMiddleMouseButton(e)) {
+					viewerX += (e.getX() - a);
+					viewerY += (e.getY() - b);
+					a = e.getX();
+					b = e.getY();
 				}
-			} else if (SwingUtilities.isMiddleMouseButton(e)) {
-				viewerX += (e.getX() - a);
-				viewerY += (e.getY() - b);
-				a = e.getX();
-				b = e.getY();
 			}
 		}
 
@@ -700,17 +780,23 @@ public class MainWindow extends JFrame implements FocusListener{
 
 		@Override
 		public void mousePressed(java.awt.event.MouseEvent e) {
-			a = e.getX();
-			b = e.getY();
-			c = new int[itemSelection.size()];
-			d = new int[itemSelection.size()];
-			for (int i = 0; i < itemSelection.size(); i++) {
-				try {
-					c[i] = getSelectedItem(i).getPosX();
-					d[i] = getSelectedItem(i).getPosY();
-				} catch (NoItemFoundException e1) {
-					e1.printStackTrace();
+			if (panelStatus == 0) {
+				a = e.getX();
+				b = e.getY();
+				c = new int[itemSelection.size()];
+				d = new int[itemSelection.size()];
+				for (int i = 0; i < itemSelection.size(); i++) {
+					try {
+						c[i] = getSelectedItem(i).getPosX();
+						d[i] = getSelectedItem(i).getPosY();
+					} catch (NoItemFoundException e1) {
+						e1.printStackTrace();
+					}
 				}
+			} else if (panelStatus == 1) {
+				userClickedOnX = e.getX();
+				userClickedOnY = e.getY();
+				System.out.println("x:"+ userClickedOnX + " y:" + userClickedOnY);
 			}
 		}
 

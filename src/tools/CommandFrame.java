@@ -144,9 +144,13 @@ public class CommandFrame extends JFrame {
 				print ("mod succesfully loaded : " + AppProperties.getMods().get(AppProperties.getMods().size()-1).getName());
 				return 0;
 			} else {
-				print ("mod not find");
+				print ("mod not found");
 				return 2;
 			}
+		case "loadbar":
+		case "ldbr":
+			Start.makeJBar();
+			return 0;
 		default:
 			if (args.get(0).equals("*")) {
 				for (Mod mod : AppProperties.getMods()) {

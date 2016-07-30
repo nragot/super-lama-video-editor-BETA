@@ -272,7 +272,8 @@ public class MainWindow extends JFrame implements WindowListener{
 			if (modulesFoundCheck.get(i).isSelected())
 				write ("loadmod " + modulesFound.get(i));
 		}
-		write ("mod " + modulesFound.get(entryMod));
+		if (modulesFound.size() > 0)
+			write ("mod " + modulesFound.get(entryMod));
 		write ("echo \"hello world !\"");
 		write ("command.prompt set.size 400 400\ncommand.prompt set.position 0 0\ncommand.prompt set.title \"hello, we are loading\"");
 		if (showConsole.isSelected()) {

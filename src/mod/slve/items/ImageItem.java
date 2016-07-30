@@ -3,7 +3,7 @@ package mod.slve.items;
 import java.awt.Image;
 import java.util.ArrayList;
 
-public class ImageItem extends SlveItem{
+public class ImageItem extends ItemThatReturnAnImage{
 	int focusImage = 0;
 	ArrayList<Image> images = new ArrayList<Image>();
 	
@@ -45,6 +45,7 @@ public class ImageItem extends SlveItem{
 		addKeyFrameActiv(0);
 	}
 	
+	@Override
 	public Image getImage () {
 		return images.get(focusImage);
 	}

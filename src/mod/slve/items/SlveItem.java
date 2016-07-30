@@ -4,8 +4,8 @@ import API.Item;
 
 public class SlveItem extends Item {
 	
-	public SlveItem () {
-		parentMod = "slve";
+	public SlveItem (String str) {
+		super(str, "slve");
 	}
 	
 	/*

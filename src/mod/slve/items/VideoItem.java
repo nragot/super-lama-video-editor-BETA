@@ -8,7 +8,7 @@ import tools.TimeLine;
 import com.googlecode.javacv.FFmpegFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
 
-public class VideoItem extends SlveItem {
+public class VideoItem extends ItemThatReturnAnImage {
 	FFmpegFrameGrabber g;
 	Image img;
 	String path;
@@ -93,6 +93,7 @@ public class VideoItem extends SlveItem {
 		return path;
 	}
 	
+	@Override
 	public Image getImage () {
 		return img;
 	}

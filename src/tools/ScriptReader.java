@@ -71,6 +71,7 @@ public class ScriptReader {
 					cmdf.print("[serge] an exception (very bad error) occured at line :" + i);
 					cmdf.print("[serge] the line was :" + line);
 					cmdf.print("exception info :" + e.getClass() + "->" + e.getMessage());
+					e.printStackTrace();
 					return false;
 				}
 

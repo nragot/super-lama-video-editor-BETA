@@ -2,32 +2,112 @@ package mod.slve.start;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import mod.slve.items.ImageItem;
+import mod.slve.items.ItemThatReturnAnImage;
+import mod.slve.items.ShapeOval;
+import mod.slve.items.ShapeRect;
+import mod.slve.items.SlveItem;
 import mod.slve.items.TextItem;
 import mod.slve.items.VideoItem;
 import start.AppProperties;
+import start.BasicLayer;
 import start.MainWindow;
 import start.Start;
 import tools.CommandFrame;
 import tools.ScriptReader;
+import tools.SourceWindow;
+import tools.SourceWindow.SourceActions;
 import API.Item;
+import API.Layer;
 import API.Mod;
+import API.SlveMenuItem;
 import exceptions.NoItemFoundException;
 
 public class start extends Mod{
 
 	public start() {
 		super("slve");
+		
+		SlveMenuItem addImage = new SlveMenuItem("image", new String[]{"add"});
+		SlveMenuItem addText = new SlveMenuItem("text", new String[]{"add"});
+		SlveMenuItem addVideo = new SlveMenuItem("video", new String[]{"add"});
+		SlveMenuItem addRect = new SlveMenuItem("oval", new String[]{"add", "shape"});
+		SlveMenuItem addOval = new SlveMenuItem("rectangle", new String[]{"add", "shape"});
+		SlveMenuItem addEmpty = new SlveMenuItem("empty", new String[]{"add"});
+		SlveMenuItem addLayer = new SlveMenuItem("layer", new String[0]);
+		addImage.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Start.getSourceWindow().active(new SourceActions() {
+					
+					@Override
+					public void userChooseImage(SourceWindow source, JFrame window) {
+						System.out.println("bleep");
+					}
+					
+					@Override
+					public void userChooseFolder(SourceWindow source, JFrame window) {
+						source.getSelectedItemAsFolder().toggleOpen();
+					}
+				});
+				/*Start.getSourceWindow().active(new SourceActions() {
+					
+					@Override
+					public void userChooseImage(SourceWindow source, JFrame window) {
+						addImageItem(new ImageItem(source.getSelectedItem().preview(), JOptionPane.showInputDialog(null,"give the name of the object you want to create","item #" + (index.size()+1))
+								, cameraWidth/2, cameraHeight/2));
+						selectItem(index.size()-1, true);
+						window.dispose();
+						outline.refresh();
+					}
+					
+					@Override
+					public void userChooseFolder(SourceWindow source, JFrame window) {
+						source.getSelectedItemAsFolder().toggleOpen();
+					}
+				});*/
+			}
+		});
+		addLayer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Start.getMainWindow().getLayers().add(new BasicLayer(JOptionPane.showInputDialog(null,"give the name of the object you want to create")));
+			}
+		});
+		Start.addMenuBarItem(addImage);
+		Start.addMenuBarItem(addText);
+		Start.addMenuBarItem(addVideo);
+		Start.addMenuBarItem(addRect);
+		Start.addMenuBarItem(addOval);
+		Start.addMenuBarItem(addEmpty);
+		Start.addMenuBarItem(addLayer);
 	}
 	
 	@Override
 	public void render(Item item, Graphics2D g) {
+		g.rotate(Math.toRadians(item.getRotation()));
+		if (item.getId() == 401) {
+			ShapeRect rect = (ShapeRect) item;
+			g.fillRoundRect(rect.getX() - rect.getWidth()/2, rect.getY() - rect.getHeight()/2, rect.getWidth(), rect.getHeight(), rect.getRoundBoundX(), rect.getRoundBoundY());
+		}else if (item.getId() == 402) {
+			ShapeOval ovl = (ShapeOval) item;
+			g.fillOval(ovl.getX() - ovl.getWidth()/2, ovl.getY() - ovl.getHeight()/2, ovl.getWidth(), ovl.getHeight());
+		} else {
+			ItemThatReturnAnImage img = (ItemThatReturnAnImage) item;
+			g.drawImage(img.getImage(), img.getX() - img.getWidth()/2, img.getY() - img.getHeight()/2, img.getWidth(), img.getHeight(), null);
+		}
+		g.rotate(Math.toRadians(-item.getRotation()));
 	}
 
 	@Override
@@ -225,6 +305,7 @@ public class start extends Mod{
 			else if (args.get(1).equals("unvisible")) Start.getMainWindow().setVisible(false);
 			else if (args.get(1).equals("set.size")) Start.getMainWindow().setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
 			else if (args.get(1).equals("set.position")) Start.getMainWindow().setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
+			else if (args.get(1).equals("new.layer")) Start.getMainWindow().getLayers().add(new BasicLayer(args.get(2)));
 			break;
 		case "image.selector" :
 			if (args.get(1).equals("default.path")) {

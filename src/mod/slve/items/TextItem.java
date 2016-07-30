@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class TextItem extends SlveItem {
+public class TextItem extends ItemThatReturnAnImage {
 	
 	String text = "";
 	static int lastText;
@@ -91,6 +91,7 @@ public class TextItem extends SlveItem {
 		return fontSizeFormula;	
 	}
 	
+	@Override
 	public BufferedImage getImage () {
 		return bi;
 	}

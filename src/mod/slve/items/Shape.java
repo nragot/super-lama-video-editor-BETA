@@ -10,6 +10,7 @@ public class Shape extends SlveItem {
 	int angle;
 	
 	public Shape() {
+		super("not named");
 		m_width = 100+"";
 		m_height = 100+"";
 		bi = new BufferedImage(100, 100 , BufferedImage.TYPE_INT_ARGB);

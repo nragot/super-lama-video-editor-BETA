@@ -8,6 +8,7 @@ import javax.script.ScriptException;
 import javax.swing.JFrame;
 
 import exceptions.NoItemFoundException;
+import start.AppProperties;
 import start.MainWindow;
 import tools.TimeLine;
 
@@ -24,7 +25,7 @@ public class Item extends JFrame{
 	protected int m_id;
 	protected double m_ratio;
 	protected String m_name;
-	protected String parentMod; // Every item come from either a mod or slve directly
+	protected Mod parentMod; // Every item come from either a mod or slve directly
 						//This tells us from where it comes from
 						//It also allows same id's from different mod
 	
@@ -33,6 +34,18 @@ public class Item extends JFrame{
 	public Item (String name) {
 		m_name = name;
 		cache();
+	}
+	
+	public Item (String name, String parentModName) {
+		m_name = name;
+		for (Mod mod : AppProperties.getMods()) {
+			parentMod = mod;
+		}
+		cache();
+	}
+	
+	public Mod getParentMod () {
+		return parentMod;
 	}
 	
 	public int getPosXFromFormula () {
