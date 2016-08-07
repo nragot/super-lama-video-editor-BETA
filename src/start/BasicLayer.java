@@ -1,11 +1,15 @@
 package start;
 
 
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import exceptions.NoItemFoundException;
+import javax.swing.JButton;
 
 import API.Item;
 import API.Layer;
@@ -22,7 +26,11 @@ public class BasicLayer extends Layer {
 			
 			@Override
 			public void push() {
-				//TODO: render in and out status switch -> MAKE IT WORK
+				doRenderInside = !doRenderInside;
+				if (doRenderInside) 
+					name = "in";
+				else 
+					name = "[in]";
 			}
 			
 		});
@@ -31,7 +39,11 @@ public class BasicLayer extends Layer {
 			
 			@Override
 			public void push() {
-				System.out.println("render2");
+				doRenderOutSide = !doRenderOutSide;
+				if (doRenderOutSide) 
+					name = "out";
+				else 
+					name = "[out]";
 			}
 			
 		});
@@ -46,20 +58,43 @@ public class BasicLayer extends Layer {
 		});
 	}
 	
-
+	public void addItem (Item item) {
+		items.add(item);
+	}
+	
 	ArrayList<Item> items = new ArrayList<Item>();
 	
 	@Override
-	public void render(BufferedImage canvas) {
+	public void render(BufferedImage canvas, int x, int y, int w, int h, int cw, int ch, double z) {
 		Graphics2D g = canvas.createGraphics();
-		render (g);
+		render (g,x,y,w,h,cw,ch,z);
 	}
 	
 	@Override
-	public void render(Graphics2D g) {
+	public void render(Graphics2D g, int x, int y, int w, int h, int cw, int ch, double z) {
 		for (Item item : items) {
-			item.getParentMod().render(item, g);
+			item.getParentMod().render(item, g, x, y, w , h, cw, ch, z);
 		}
+	}
+	
+	@Override
+	public Container getOutline () {
+		Container cont = new Container();
+		for (final Item item : items) {
+			JButton button = new JButton(item.getName());
+			button.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					Start.getMainWindow().getItemSelection().add(item);
+					Start.getItemOption().loadOptions();
+				}
+			});
+			
+			cont.add(button);
+		}
+		cont.setLayout(new FlowLayout());
+		return cont;
 	}
 
 }

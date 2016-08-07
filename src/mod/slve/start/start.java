@@ -4,9 +4,11 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -15,11 +17,11 @@ import mod.slve.items.ImageItem;
 import mod.slve.items.ItemThatReturnAnImage;
 import mod.slve.items.ShapeOval;
 import mod.slve.items.ShapeRect;
-import mod.slve.items.SlveItem;
 import mod.slve.items.TextItem;
 import mod.slve.items.VideoItem;
 import start.AppProperties;
 import start.BasicLayer;
+import start.GuiLayer;
 import start.MainWindow;
 import start.Start;
 import tools.CommandFrame;
@@ -27,7 +29,6 @@ import tools.ScriptReader;
 import tools.SourceWindow;
 import tools.SourceWindow.SourceActions;
 import API.Item;
-import API.Layer;
 import API.Mod;
 import API.SlveMenuItem;
 import exceptions.NoItemFoundException;
@@ -52,7 +53,10 @@ public class start extends Mod{
 					
 					@Override
 					public void userChooseImage(SourceWindow source, JFrame window) {
-						System.out.println("bleep");
+						ImageItem img = new ImageItem(source.getSelectedItem().preview(), JOptionPane.showInputDialog(null,"give the name of the object you want to create","item #"), 10, 10);
+						((BasicLayer) Start.getMainWindow().getSelectedLayer()).addItem((Item)img);
+						window.dispose();
+						Start.getOutline().refresh();
 					}
 					
 					@Override
@@ -95,17 +99,17 @@ public class start extends Mod{
 	}
 	
 	@Override
-	public void render(Item item, Graphics2D g) {
+	public void render(Item item, Graphics2D g, int x, int y, int w, int h, int cw, int ch, double z) {
 		g.rotate(Math.toRadians(item.getRotation()));
 		if (item.getId() == 401) {
 			ShapeRect rect = (ShapeRect) item;
-			g.fillRoundRect(rect.getX() - rect.getWidth()/2, rect.getY() - rect.getHeight()/2, rect.getWidth(), rect.getHeight(), rect.getRoundBoundX(), rect.getRoundBoundY());
+			g.fillRoundRect(rect.getX() - rect.getWidth()/2 + x, rect.getY() - rect.getHeight()/2 + y, rect.getWidth(), rect.getHeight(), rect.getRoundBoundX(), rect.getRoundBoundY());
 		}else if (item.getId() == 402) {
 			ShapeOval ovl = (ShapeOval) item;
-			g.fillOval(ovl.getX() - ovl.getWidth()/2, ovl.getY() - ovl.getHeight()/2, ovl.getWidth(), ovl.getHeight());
+			g.fillOval(ovl.getX() - ovl.getWidth()/2 + x, ovl.getY() - ovl.getHeight()/2 + y, ovl.getWidth(), ovl.getHeight());
 		} else {
 			ItemThatReturnAnImage img = (ItemThatReturnAnImage) item;
-			g.drawImage(img.getImage(), img.getX() - img.getWidth()/2, img.getY() - img.getHeight()/2, img.getWidth(), img.getHeight(), null);
+			g.drawImage(img.getImage(), img.getPosX() - img.getWidth()/2 + x, img.getPosY() - img.getHeight()/2 + y, img.getWidth(), img.getHeight(), null);
 		}
 		g.rotate(Math.toRadians(-item.getRotation()));
 	}
@@ -244,38 +248,47 @@ public class start extends Mod{
 			else return 2;
 			break;
 		case "outline" :
-			if (args.get(1).startsWith("set.title")) Start.getOutline().setTitle (args.get(2));
-			else if (args.size() > 3 && args.get(1).equals("add")) {
+			if (args.get(1).startsWith("set.title")) {
+				Start.getOutline().setTitle (args.get(2)); 
+				return 0;
+			}	else if (args.size() > 3 && args.get(1).equals("add")) {
 				switch (args.get(2)) {
-					case "image":
-					case "img" :
-					case "i" :
-					case "1" :
-						cmds.print (args.get(3) + " " + args.get(4));
-						MainWindow.addImageItem(new ImageItem(new ImageIcon(args.get(3)).getImage(), args.get(4), 0, 0));
-						break;
-					case "text" :
-					case "txt" :
-					case "t" :
-					case "2" :
-						MainWindow.addTextItem(new TextItem(args.get(3)));
-						break;
-					case "video" :
-					case "vid" :
-					case "v" :
-					case "3" :
-						MainWindow.addVideoItem(new VideoItem(args.get(3), args.get(4)));
-						break;
+				case "image":
+				case "img" :
+				case "i" :
+				case "1" :
+					try {
+						((BasicLayer) Start.getMainWindow().getSelectedLayer()).addItem(new ImageItem(
+								ImageIO.read(new File(args.get(3))), args.get(4), 0, 0));
+						Start.getOutline().refresh();
+					} catch (IOException e) {
+						cmds.print("[serge] oops, can't load image");
+						e.printStackTrace();
+					}
+					return 0;
+				case "text" :
+				case "txt" :
+				case "t" :
+				case "2" :
+					MainWindow.addTextItem(new TextItem(args.get(3)));
+					break;
+				case "video" :
+				case "vid" :
+				case "v" :
+				case "3" :
+					MainWindow.addVideoItem(new VideoItem(args.get(3), args.get(4)));
+					break;
 					// TODO shape
 				}
 				//MainWindow.getOutline().refresh();
 			}
 			else if (args.get(1).equals("remove") || args.get(1).equals("rm")) {
-				try {
+				/*try {
 					MainWindow.removeItemByName(args.get(2));
 				} catch (NoItemFoundException e) {
 					cmds.print ("[serge] no existing item with the name :" + args.get(2));
-				}
+				}*/
+				cmds.print ("[debug] command removed for maintenance");
 			}
 			else if (args.get(1).equals("visible")) Start.getOutline().setVisible(true);
 			else if (args.get(1).equals("unvisible")) Start.getOutline().setVisible(false);
@@ -306,6 +319,8 @@ public class start extends Mod{
 			else if (args.get(1).equals("set.size")) Start.getMainWindow().setSize(new Dimension(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3))));
 			else if (args.get(1).equals("set.position")) Start.getMainWindow().setLocation(Integer.parseInt(args.get(2)),Integer.parseInt(args.get(3)));
 			else if (args.get(1).equals("new.layer")) Start.getMainWindow().getLayers().add(new BasicLayer(args.get(2)));
+			else if (args.get(1).equals("new.guilayer")) Start.getMainWindow().getLayers().add(new GuiLayer());
+			else if (args.get(1).equals("set.selected.layer")) Start.getMainWindow().setSelectedLayer(Integer.parseInt(args.get(2)));
 			break;
 		case "image.selector" :
 			if (args.get(1).equals("default.path")) {
@@ -320,11 +335,6 @@ public class start extends Mod{
 		case "exit" :
 			if (args.get(1).equals("slve")) System.exit(1);
 			else if (args.get(1).equals ("cmd")) cmds.dispose();
-		case "loadMod":
-		case "ldmod" :
-		case "insmod":
-			AppProperties.loadMod(args.get(1));
-			break;
 		case "label" :
 			return 0;
 		case "goto" :

@@ -81,7 +81,8 @@ public class MainWindow extends JFrame implements FocusListener{
 	static ArrayList<VideoItem>        videos         = new ArrayList<VideoItem>()       ;
 	static ArrayList<Shape>            shapes         = new ArrayList<Shape>()           ;
 	static ArrayList<ArrayListIndexer> index          = new ArrayList<ArrayListIndexer>();
-	static ArrayList<Integer>          itemSelection  = new ArrayList<Integer>()         ;
+	//static ArrayList<Integer>          itemSelection  = new ArrayList<Integer>()         ;
+	ArrayList<Item> itemSelection = new ArrayList<Item>();
 	static ArrayList<Layer>            layers         = new ArrayList<Layer>()           ;
 	
 	static Outline outline;
@@ -94,7 +95,9 @@ public class MainWindow extends JFrame implements FocusListener{
 	int viewerX = 0, viewerY = 0;
 	int userClickedOnX = -1, userClickedOnY = -1; //-1:did not cliked anywhere
 	int viewerXLayer = 0, viewerYLayer = 0;
-	int panelStatus = 1; //0:drawing layer; 1:drawing layer manager 
+	int panelStatus = 0; //0:drawing layer; 1:drawing layer manager 
+	boolean optionMenu = false;
+	int selectedLayer;
 	
 	static Redrawer redrawer;
 	
@@ -177,12 +180,12 @@ public class MainWindow extends JFrame implements FocusListener{
 	 * if choseOver = true then every selection will be erase to be replace with the new one. otherwise it will added from the already existing selection.
 	 * @param choseOver
 	 */
-	public static void selectItem (int i,boolean choseOver) {
-		if (!choseOver) {
+	
+	public void selectItem (Item item, boolean choseOver) {
+		if (choseOver)
 			itemSelection.clear();
-		} else {
-		}
-		itemSelection.add(i);
+		itemSelection.add(item);
+			
 	}
 	
 	public static Item getItem (ArrayListIndexer al) throws NoItemFoundException {
@@ -202,6 +205,14 @@ public class MainWindow extends JFrame implements FocusListener{
 		return layers;
 	}
 	
+	public Layer getSelectedLayer () {
+		return layers.get(selectedLayer);
+	}
+	
+	public void setSelectedLayer (int i) {
+		selectedLayer = i;
+	}
+	
 	public void removeLayerByName (String str) {
 		for (int i = 0; i < layers.size(); i++) {
 			System.out.println(str + " " + layers.get(i).getName());
@@ -211,15 +222,15 @@ public class MainWindow extends JFrame implements FocusListener{
 		}
 	}
 	
-	public static Item getSelectedItem () throws NoItemFoundException, ArrayIndexOutOfBoundsException {
-		return getItem(index.get(itemSelection.get(itemSelection.size()-1)));
+	public Item getSelectedItem () throws NoItemFoundException, IndexOutOfBoundsException {
+		return itemSelection.get(0);
 	}
 	
-	public static Item getSelectedItem (int i) throws NoItemFoundException {
-		return getItem(index.get(itemSelection.get(i)));
+	public Item getSelectedItem (int i) throws NoItemFoundException {
+		return itemSelection.get(0);
 	}
 	
-	public static ArrayList<Integer> getItemSelection () {
+	public ArrayList<Item> getItemSelection () {
 		return itemSelection;
 	}
 	
@@ -283,31 +294,31 @@ public class MainWindow extends JFrame implements FocusListener{
 		return timeline;
 	}
 	
-	public static int getCameraWidth () {
+	public int getCameraWidth () {
 		return cameraWidth;
 	}
 	
-	public static void setCameraWidth (int i) {
+	public void setCameraWidth (int i) {
 		cameraWidth = i;
 	}
 	
-	public static int getCameraHeight () {
+	public int getCameraHeight () {
 		return cameraHeight;
 	}
 	
-	public static void setCameraHeight (int i) {
+	public void setCameraHeight (int i) {
 		cameraHeight = i;
 	}
 	
-	public static void setViewerZoom (int i) {
+	public void setViewerZoom (int i) {
 		viewerZoom = i;
 	}
 	
-	public static double getViewerZoom () {
+	public double getViewerZoom () {
 		return viewerZoom;
 	}
 	
-	public static int getNumberOfImages () {
+	public int getNumberOfImages () {
 		return images.size();
 	}
 	
@@ -375,7 +386,7 @@ public class MainWindow extends JFrame implements FocusListener{
 		throw new NoItemFoundException();
 	}
 	
-	public static void removeItemByName (String str) throws NoItemFoundException{
+	/*public static void removeItemByName (String str) throws NoItemFoundException{
 		for (int index = 0; index < images.size();index++) {
 			if (str.equals(images.get(index).getName())) {
 				images.remove(index);
@@ -414,7 +425,7 @@ public class MainWindow extends JFrame implements FocusListener{
 		}
 		
 		throw new NoItemFoundException();
-	}
+	}*/
 	
 	public static void secureRedrawerStop () {
 		redrawer.secureStop();
@@ -438,7 +449,7 @@ public class MainWindow extends JFrame implements FocusListener{
 		cmd.print(str);
 	}
 	
-	public static void ResolveIndexGap (int A, int B) {
+	/*public static void ResolveIndexGap (int A, int B) {
 		
 		itemSelection.clear();
 		int gapSolver = -1;
@@ -459,7 +470,7 @@ public class MainWindow extends JFrame implements FocusListener{
 		} else {
 			index.remove(gapSolver);
 		}
-	}
+	}*/
 	
 	 // windows event
 	boolean focusCycle = false;
@@ -502,16 +513,19 @@ public class MainWindow extends JFrame implements FocusListener{
 			if (panelStatus == 0) {
 				for (Layer layer : layers) {
 					if (layer.doRenderInside())
-						layer.render(g);
+						layer.render(g, getWidth()/2 - ((int)(cameraWidth*viewerZoom))/2, getHeight()/2 - ((int)(cameraHeight*viewerZoom))/2, getWidth(), getHeight(), cameraWidth, cameraHeight, viewerZoom);
 				}
 			} else if (panelStatus == 1) {
 				g.setColor(Color.gray);
 				g.fillRect(0, 0, getWidth(), getHeight());
 				for (int i = 0; i < layers.size(); i++) {
 					g.setColor(Color.WHITE);
-					g.fillRect(getWidth()/2 - 50, 50+i*200, 100, 150); //TODO:affiche name, give choice, move item
+					g.fillRect(getWidth()/2 - 50, 50+i*200, 100, 150);
 					g.setColor(Color.BLACK);
-					g.drawString(layers.get(i).getName(), getWidth()/2 + 100, 100+i*200);
+					if (i == selectedLayer)
+						g.drawString(layers.get(i).getName() + "<- is selected", getWidth()/2 + 100, 100+i*200);
+					else 
+						g.drawString(layers.get(i).getName(), getWidth()/2 + 100, 100+i*200);
 					int x = 0;
 					for (SlveButton button : layers.get(i).getLeftButtons()) {
 						x += button.getWidth();
@@ -524,7 +538,7 @@ public class MainWindow extends JFrame implements FocusListener{
 								&& userClickedOnY > 75 + i*200 && userClickedOnY < 75 + i*200 + button.getHeight())
 							{
 								button.push();
-								userClickedOnX = userClickedOnY = 0;
+								userClickedOnX = userClickedOnY = -1;
 							}
 					}
 					x = 0;
@@ -538,7 +552,7 @@ public class MainWindow extends JFrame implements FocusListener{
 								&& userClickedOnY > 180 + i*200 && userClickedOnY < 180 + i*200 + button.getHeight())
 							{
 								button.push();
-								userClickedOnX = userClickedOnY = 0;
+								userClickedOnX = userClickedOnY = -1;
 							}
 							;
 						x += button.getWidth();
@@ -726,7 +740,15 @@ public class MainWindow extends JFrame implements FocusListener{
 					}
 				}
 			} else if (panelStatus == 1) {
-				
+				if (e.getKeyCode() == 38)
+					selectedLayer--;
+				else
+					selectedLayer++;
+			}
+			if (e.getKeyCode() == 32) {
+				panelStatus ++;
+				if (panelStatus == 2) 
+					panelStatus = 0;
 			}
 			System.out.println("key pressed :" + e.getKeyChar() + " code :" + e.getKeyCode());
 			
@@ -747,8 +769,8 @@ public class MainWindow extends JFrame implements FocusListener{
 		public void mouseDragged(java.awt.event.MouseEvent e) {
 			if (panelStatus == 0) {
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					if (!itemOptions.getOptionType(0, 1)) {
-						for (int i = 0; i < itemSelection.size(); i++) {
+					for (int i = 0; i < itemSelection.size(); i++) {
+						if (itemSelection.get(i).isMovable()) {
 							try {
 								getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - a)/viewerZoom));
 								getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - b)/viewerZoom));

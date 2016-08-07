@@ -26,7 +26,6 @@ import javax.swing.event.DocumentListener;
 import mod.slve.items.ImageItem;
 import mod.slve.items.TextItem;
 
-import start.MainWindow;
 import start.Start;
 import tools.SourceWindow.SourceActions;
 import exceptions.NoItemFoundException;
@@ -66,6 +65,17 @@ public class ItemOption extends JFrame implements ComponentListener{
 	}
 	
 	public void loadOptions () {
+		System.out.println("ldoption start");
+		
+		try {
+			add(Start.getMainWindow().getSelectedItem().getOption(getWidth(), getHeight()));
+		} catch ( IndexOutOfBoundsException | NoItemFoundException e) {
+			e.printStackTrace();
+		}
+		
+		revalidate();
+		
+		/*
 		getContentPane().removeAll();
 		allButtons.clear();
 		allSliders.clear();
@@ -76,8 +86,8 @@ public class ItemOption extends JFrame implements ComponentListener{
 		ROTATION_FIELD = -1;POSX_FIELD = -1; POSY_FIELD = -1; WIDTH_FIELD = -1; HEIGHT_FIELD = -1; STRINGTEXT_FIELD = -1; FONTSIZE_FIELD = -1;
 		
 		try {
-			TextItem text = (TextItem) MainWindow.getSelectedItem();
-			if (MainWindow.getSelectedItem().getId() == 2) {
+			TextItem text = (TextItem) Start.getMainWindow().getSelectedItem();
+			if (Start.getMainWindow().getSelectedItem().getId() == 2) {
 				JTextField jtf = new JTextField();
 				jtf.setText(text.getText());
 				jtf.setPreferredSize(new Dimension(100, 20));
@@ -93,7 +103,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					public void update () {
 						TextItem item;
 						try {
-							item = (TextItem) MainWindow.getSelectedItem();
+							item = (TextItem) Start.getMainWindow().getSelectedItem();
 							item.setText(allTextFields.get(STRINGTEXT_FIELD).getText());
 							item.reload();
 						} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e) {
@@ -120,7 +130,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 					public void update () {
 						TextItem item;
 						try {
-							item = (TextItem) MainWindow.getSelectedItem();
+							item = (TextItem) Start.getMainWindow().getSelectedItem();
 							item.setFontSizeFormula(allTextFields.get(FONTSIZE_FIELD).getText());
 							item.reload();
 						} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e) {
@@ -132,14 +142,14 @@ public class ItemOption extends JFrame implements ComponentListener{
 				FONTSIZE_FIELD = numberOfField;
 				addTextField(jtf);
 			}
-		} catch (NoItemFoundException | ArrayIndexOutOfBoundsException | ClassCastException exc) {}
+		} catch (NoItemFoundException | IndexOutOfBoundsException | ClassCastException exc) {}
 		
 		
 		if (b[0][0]) {
 			try {
 				JTextField jtf = new JTextField();
 				jtf.setToolTipText("set rotation");
-				jtf.setText(MainWindow.getSelectedItem().getRotationFormula());
+				jtf.setText(Start.getMainWindow().getSelectedItem().getRotationFormula());
 				jtf.setPreferredSize(new Dimension(getWidth() - 20, 20));
 				jtf.getDocument().addDocumentListener(new DocumentListener() {
 					@Override
@@ -155,7 +165,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 					public void updateStat () {
 						try {
-							if (MainWindow.getSelectedItem().setRotationFormula(allTextFields.get(ROTATION_FIELD).getText())) {
+							if (Start.getMainWindow().getSelectedItem().setRotationFormula(allTextFields.get(ROTATION_FIELD).getText())) {
 								allTextFields.get(ROTATION_FIELD).setBackground(Color.white);
 							} else {
 								allTextFields.get(ROTATION_FIELD).setBackground(Color.red);
@@ -180,7 +190,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				@Override
 				public void stateChanged(ChangeEvent e) {
 					try {
-						MainWindow.getSelectedItem().setRotation(((JSlider) e.getSource()).getValue());
+						Start.getMainWindow().getSelectedItem().setRotation(((JSlider) e.getSource()).getValue());
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -195,7 +205,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 			try {
 				JTextField jtf = new JTextField();
 				jtf.setToolTipText("set position on X axis");
-				jtf.setText(MainWindow.getSelectedItem().getPosXFormula());
+				jtf.setText(Start.getMainWindow().getSelectedItem().getPosXFormula());
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100, 20));
 				jtf.getDocument().addDocumentListener(new DocumentListener() {
 					@Override
@@ -211,7 +221,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 					public void updateStat () {
 						try {
-							if (MainWindow.getSelectedItem().setPosXFormula(allTextFields.get(POSX_FIELD).getText())) {
+							if (Start.getMainWindow().getSelectedItem().setPosXFormula(allTextFields.get(POSX_FIELD).getText())) {
 								allTextFields.get(POSX_FIELD).setBackground(Color.white);
 							} else {
 								allTextFields.get(POSX_FIELD).setBackground(Color.red);
@@ -230,7 +240,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 			try {
 				JTextField jtf = new JTextField();
 				jtf.setToolTipText("set position on Y axis");
-				jtf.setText(MainWindow.getSelectedItem().getPosYFormula());
+				jtf.setText(Start.getMainWindow().getSelectedItem().getPosYFormula());
 				jtf.setPreferredSize(new Dimension(getWidth()/2 - 100, 20));
 				jtf.getDocument().addDocumentListener(new DocumentListener() {
 					@Override
@@ -246,7 +256,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 					public void updateStat () {
 						try {
-							if (MainWindow.getSelectedItem().setPosYFormula(allTextFields.get(POSY_FIELD).getText())) {
+							if (Start.getMainWindow().getSelectedItem().setPosYFormula(allTextFields.get(POSY_FIELD).getText())) {
 								allTextFields.get(POSY_FIELD).setBackground(Color.white);
 							} else {
 								allTextFields.get(POSY_FIELD).setBackground(Color.red);
@@ -266,7 +276,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 		try {
 			JTextField jtf = new JTextField();
 			jtf.setToolTipText("set width");
-			jtf.setText(MainWindow.getSelectedItem().getWidthFormula());
+			jtf.setText(Start.getMainWindow().getSelectedItem().getWidthFormula());
 			jtf.setPreferredSize(new Dimension(getWidth()/2 - 100, 20));
 			jtf.getDocument().addDocumentListener(new DocumentListener() {
 				@Override
@@ -282,7 +292,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				
 				public void updateStat () {
 					try {
-						if (MainWindow.getSelectedItem().setWidthFormula(allTextFields.get(WIDTH_FIELD).getText())) {
+						if (Start.getMainWindow().getSelectedItem().setWidthFormula(allTextFields.get(WIDTH_FIELD).getText())) {
 							allTextFields.get(WIDTH_FIELD).setBackground(Color.white);
 						} else {
 							allTextFields.get(WIDTH_FIELD).setBackground(Color.red);
@@ -294,14 +304,14 @@ public class ItemOption extends JFrame implements ComponentListener{
 			});
 			WIDTH_FIELD = numberOfField;
 			addTextField(jtf); //don't worry, everything's fine with this function, look above
-		} catch (NoItemFoundException | ArrayIndexOutOfBoundsException e) {
+		} catch (NoItemFoundException | IndexOutOfBoundsException e) {
 			
 		}
 		
 		try {
 			JTextField jtf = new JTextField();
 			jtf.setToolTipText("set height");
-			jtf.setText(MainWindow.getSelectedItem().getHeightFormula());
+			jtf.setText(Start.getMainWindow().getSelectedItem().getHeightFormula());
 			jtf.setPreferredSize(new Dimension(getWidth()/2 - 100, 20));
 			jtf.getDocument().addDocumentListener(new DocumentListener() {
 				@Override
@@ -317,7 +327,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				
 				public void updateStat () {
 					try {
-						if (MainWindow.getSelectedItem().setHeightFormula(allTextFields.get(HEIGHT_FIELD).getText())) {
+						if (Start.getMainWindow().getSelectedItem().setHeightFormula(allTextFields.get(HEIGHT_FIELD).getText())) {
 							allTextFields.get(HEIGHT_FIELD).setBackground(Color.white);
 						} else {
 							allTextFields.get(HEIGHT_FIELD).setBackground(Color.red);
@@ -329,13 +339,13 @@ public class ItemOption extends JFrame implements ComponentListener{
 			});
 			HEIGHT_FIELD = numberOfField;
 			addTextField(jtf);
-		} catch (NoItemFoundException | ArrayIndexOutOfBoundsException e) {
+		} catch (NoItemFoundException | IndexOutOfBoundsException e) {
 			
 		}
 		
 		
 		try {
-			if (MainWindow.getSelectedItem().getId() == 1) {
+			if (Start.getMainWindow().getSelectedItem().getId() == 1) {
 				JButton jb = new JButton("change image");
 				jb.addActionListener(new ActionListener() {
 					
@@ -346,7 +356,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 							@Override
 							public void userChooseImage(SourceWindow source, JFrame jf) {
 								try {
-									((ImageItem) MainWindow.getSelectedItem()).setImage(source.getSelectedItemAsImg().preview());
+									((ImageItem) Start.getMainWindow().getSelectedItem()).setImage(source.getSelectedItemAsImg().preview());
 								} catch (ArrayIndexOutOfBoundsException
 										| NoItemFoundException e) {
 									e.printStackTrace();
@@ -363,7 +373,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				});
 				add(jb);
 			}
-		} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e1) {
+		} catch (IndexOutOfBoundsException | NoItemFoundException e1) {
 		}
 		
 		JButton jb = new JButton ("delete");
@@ -372,13 +382,8 @@ public class ItemOption extends JFrame implements ComponentListener{
 		jb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					MainWindow.removeItemByName(MainWindow.getSelectedItem().getName());
-					System.out.println("index size:" + MainWindow.getIndex().size());
-				} catch (NoItemFoundException | ArrayIndexOutOfBoundsException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				//FIXME: replace me by WAY better methode
+				//removed due to maintenance until better methode
 			}
 		});
 		add(jb);
@@ -397,7 +402,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 		add(jb);
 		allButtons.add(jb);
 		
-		 revalidate();
+		 revalidate();*/
 	}
 
 	public boolean getOptionType (int dim1, int dim2) {
@@ -418,8 +423,6 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		loadOptions();
-		
 	}
 
 	@Override
@@ -488,7 +491,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 		}
 		
 		public void updateStat () {
-			TextItem txti = MainWindow.getSelectedItem();
+			TextItem txti = Start.getMainWindow().getSelectedItem();
 			String str = txti.calculeVariable(allTextFields.get(FONTSIZE_FIELD).getText());
 			int res;
 			if (str.equals("!") || str.equals("0")) {
@@ -500,7 +503,7 @@ public class ItemOption extends JFrame implements ComponentListener{
 				txti.setFontSizeFormulaNoCache(allTextFields.get(FONTSIZE_FIELD).getText());
 				txti.setFontSize(res);
 				System.out.println("[DEBUG] txti :"+ txti.getText() + " str " + str + " FONTSIZE_FIELD " + FONTSIZE_FIELD);
-				MainWindow.getSelectedItem().reload();
+				Start.getMainWindow().getSelectedItem().reload();
 			}
 		}
 		
@@ -516,8 +519,8 @@ public class ItemOption extends JFrame implements ComponentListener{
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-			MainWindow.getSelectedItem().setText(allTextFields.get(STRINGTEXT_FIELD).getText());
-			MainWindow.getSelectedItem().reload();
+			Start.getMainWindow().getSelectedItem().setText(allTextFields.get(STRINGTEXT_FIELD).getText());
+			Start.getMainWindow().getSelectedItem().reload();
 		}
 
 		@Override

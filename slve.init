@@ -28,7 +28,9 @@ item.options set.size 400 200
 item.options set.position 900 360
 echo "item option dialog setup done"
 main new.layer bleep
+main new.guilayer
+main set.selected.layer 0
+outline add i /home/nathan/Firefox_wallpaper.png A
 ldbr
 echo "all done, ready to start"
-pause "ready to start"
 #:)

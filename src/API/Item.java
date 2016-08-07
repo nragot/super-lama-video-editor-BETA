@@ -1,5 +1,7 @@
 package API;
 
+import java.awt.Container;
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.script.ScriptEngine;
@@ -10,6 +12,7 @@ import javax.swing.JFrame;
 import exceptions.NoItemFoundException;
 import start.AppProperties;
 import start.MainWindow;
+import start.Start;
 import tools.TimeLine;
 
 public class Item extends JFrame{
@@ -25,6 +28,7 @@ public class Item extends JFrame{
 	protected int m_id;
 	protected double m_ratio;
 	protected String m_name;
+	protected boolean movable;
 	protected Mod parentMod; // Every item come from either a mod or slve directly
 						//This tells us from where it comes from
 						//It also allows same id's from different mod
@@ -46,6 +50,14 @@ public class Item extends JFrame{
 	
 	public Mod getParentMod () {
 		return parentMod;
+	}
+	
+	public void setMovable (boolean b) {
+		movable = b;
+	}
+	
+	public boolean isMovable () {
+		return movable;
 	}
 	
 	public int getPosXFromFormula () {
@@ -124,6 +136,12 @@ public class Item extends JFrame{
 		m_name = name;
 	}
 	
+	public Container getOption (int w, int h) {
+		Container cont = new Container();
+		cont.setPreferredSize(new Dimension(w, h));
+		return cont;
+	}
+	
 	/**
 	 * return false if something went wrong
 	 */
@@ -167,6 +185,10 @@ public class Item extends JFrame{
 	
 	public String getName () {
 		return m_name;
+	}
+	
+	public String getInfo () {
+		return m_name + "-> x:" + cachePosX + " y:" + cachePosY + " w:" + cacheWidth + " h:" + cacheHeight + " r:" + cacheRotation;
 	}
 	
 	public void setId (int i) {
@@ -531,11 +553,11 @@ public class Item extends JFrame{
 				b = true;
 			}
 			if (str.indexOf("#camera_width") != -1) {
-				str = str.replace("#camera_width", MainWindow.getCameraWidth()+"");
+				str = str.replace("#camera_width", Start.getMainWindow().getCameraWidth()+"");
 				b = true;
 			}
 			if (str.indexOf("#camera_height") != -1) {
-				str = str.replace("#camera_height", MainWindow.getCameraHeight()+"");
+				str = str.replace("#camera_height", Start.getMainWindow().getCameraHeight()+"");
 				b = true;
 			}
 			if (str.indexOf("#me_width") != -1) {

@@ -1,11 +1,10 @@
 package API;
 
 
+import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-import javax.swing.JButton;
 
 
 public abstract class Layer {
@@ -16,8 +15,8 @@ public abstract class Layer {
 	protected ArrayList<SlveButton> rightButtons = new ArrayList<SlveButton>();
 	protected String name;
 	
-	public abstract void render (BufferedImage canvas);
-	public abstract void render (Graphics2D g);
+	public abstract void render (BufferedImage canvas, int x, int y, int w, int h, int cw, int ch, double z);
+	public abstract void render (Graphics2D g, int x, int y, int w, int h, int cw, int ch, double z);
 	
 	public boolean doRenderInside() {
 		return doRenderInside;
@@ -29,10 +28,14 @@ public abstract class Layer {
 		return leftButtons;
 	}
 	public ArrayList<SlveButton> getRightButtons () {
-		return rightButtons; //TODO:draw em
+		return rightButtons; 
 	}
 	public String getName () {
 		return name;
 	}
+	public Container getOutline () {
+		return new Container();
+	}
+	
 
 }

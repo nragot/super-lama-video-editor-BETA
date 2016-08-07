@@ -10,11 +10,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import start.Start;
+
 import mod.slve.items.TextItem;
 
 import exceptions.NoItemFoundException;
-
-import start.MainWindow;
 
 public class KeyframeTool extends JFrame{
 
@@ -27,7 +27,7 @@ public class KeyframeTool extends JFrame{
 		setTitle("keyframe manager");
 		
 		try {
-		if (MainWindow.getSelectedItem().getId() == 1 || MainWindow.getSelectedItem().getId() == 2 || MainWindow.getSelectedItem().getId() == 3) {
+		if (Start.getMainWindow().getSelectedItem().getId() == 1 || Start.getMainWindow().getSelectedItem().getId() == 2 || Start.getMainWindow().getSelectedItem().getId() == 3) {
 			JButton jb = new JButton("add translation keyframe");
 			jb.setToolTipText("move to point a to point b");
 			jb.addActionListener(new ActionListener() {
@@ -35,8 +35,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getTimeLine();
-						MainWindow.getSelectedItem().addKeyFrameTranslate(TimeLine.getTime(), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getPosXFormula()), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getPosYFormula()), 1);
+						Start.getTimeLine();
+						Start.getMainWindow().getSelectedItem().addKeyFrameTranslate(TimeLine.getTime(), Start.getMainWindow().getSelectedItem().calculeVariable(Start.getMainWindow().getSelectedItem().getPosXFormula()), Start.getMainWindow().getSelectedItem().calculeVariable(Start.getMainWindow().getSelectedItem().getPosYFormula()), 1);
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -52,8 +52,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getTimeLine();
-						MainWindow.getSelectedItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
+						Start.getMainWindow().getTimeLine();
+						Start.getMainWindow().getSelectedItem().deleteKeyFrameTranslationAt(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						e1.printStackTrace();
 					}
@@ -68,8 +68,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getTimeLine();
-						MainWindow.getSelectedItem().addKeyFrameRotation(TimeLine.getTime(), MainWindow.getSelectedItem().calculeVariable(MainWindow.getSelectedItem().getRotationFormula()) , 1);
+						Start.getMainWindow().getTimeLine();
+						Start.getMainWindow().getSelectedItem().addKeyFrameRotation(TimeLine.getTime(), Start.getMainWindow().getSelectedItem().calculeVariable(Start.getMainWindow().getSelectedItem().getRotationFormula()) , 1);
 					} catch (NoItemFoundException e1) {
 						
 					}
@@ -84,8 +84,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						MainWindow.getTimeLine();
-						MainWindow.getSelectedItem().deleteKeyFrameRotationAt(TimeLine.getTime());
+						Start.getMainWindow().getTimeLine();
+						Start.getMainWindow().getSelectedItem().deleteKeyFrameRotationAt(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						e1.printStackTrace();
 					}
@@ -101,8 +101,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getTimeLine();
-						MainWindow.getSelectedItem().addKeyFrameTranslate(TimeLine.getTime(), MainWindow.getSelectedItem().getPosXFormula(), MainWindow.getSelectedItem().getPosYFormula(), 2);
+						Start.getMainWindow().getTimeLine();
+						Start.getMainWindow().getSelectedItem().addKeyFrameTranslate(TimeLine.getTime(), Start.getMainWindow().getSelectedItem().getPosXFormula(), Start.getMainWindow().getSelectedItem().getPosYFormula(), 2);
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -118,7 +118,7 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 						try {
-							MainWindow.getSelectedItem().addKeyFrameRotation(TimeLine.getTime(), MainWindow.getSelectedItem().getRotationFormula(), 2);
+							Start.getMainWindow().getSelectedItem().addKeyFrameRotation(TimeLine.getTime(), Start.getMainWindow().getSelectedItem().getRotationFormula(), 2);
 						} catch (NoItemFoundException e1) {
 							e1.printStackTrace();
 						}
@@ -133,7 +133,7 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getSelectedItem().addKeyFrameActiv(TimeLine.getTime());
+						Start.getMainWindow().getSelectedItem().addKeyFrameActiv(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						e1.printStackTrace();
 					}
@@ -148,7 +148,7 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						MainWindow.getSelectedItem().deleteKeyFrameActiv(TimeLine.getTime());
+						Start.getMainWindow().getSelectedItem().deleteKeyFrameActiv(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						e1.printStackTrace();
 					}
@@ -156,7 +156,7 @@ public class KeyframeTool extends JFrame{
 			});
 			add(jb);
 		}// those keyframe will only spawn with TextItem
-		if (MainWindow.getSelectedItem().getId() == 2) {
+		if (Start.getMainWindow().getSelectedItem().getId() == 2) {
 			JButton jb = new JButton();
 			jb = new JButton("add solid text keyframe");
 			jb.setToolTipText("change the text at this point of the video");
@@ -165,8 +165,8 @@ public class KeyframeTool extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						if (MainWindow.getSelectedItem().getId() == 2) {
-							TextItem tx = (TextItem) MainWindow.getSelectedItem();
+						if (Start.getMainWindow().getSelectedItem().getId() == 2) {
+							TextItem tx = (TextItem) Start.getMainWindow().getSelectedItem();
 							tx.addKeyFrameText(TimeLine.getTime(), tx.getText());
 						}
 					} catch (NoItemFoundException e1) {
@@ -185,7 +185,7 @@ public class KeyframeTool extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					TextItem tx;
 					try {
-						tx = (TextItem) MainWindow.getSelectedItem();
+						tx = (TextItem) Start.getMainWindow().getSelectedItem();
 						tx.deleteKeyFrameTextAt(TimeLine.getTime());
 					} catch (NoItemFoundException e1) {
 						// TODO Auto-generated catch block

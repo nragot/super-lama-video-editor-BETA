@@ -35,7 +35,8 @@ public class SourceWindow {
 	public SourceWindow () {}
 	
 	public void active (SourceActions actions) {
-		new MyWindow(actions).setVisible(true);
+		MyWindow window = new MyWindow(actions);
+		window.setVisible(true);
 	}
 	
 	public SourceItem getSelectedItem () {

@@ -17,7 +17,7 @@ public abstract class Mod {
 		return modName;
 	}
 	
-	public abstract void render (Item item, Graphics2D g);
+	public abstract void render (Item item, Graphics2D g, int x, int y, int w, int h, int cw, int ch, double z);
 
 	/**
 	 * 

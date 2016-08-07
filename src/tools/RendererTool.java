@@ -5,25 +5,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import mod.slve.items.ImageItem;
 import mod.slve.items.TextItem;
 import mod.slve.items.VideoItem;
+import start.AppProperties;
+import start.Start;
 
 import com.googlecode.javacv.FFmpegFrameRecorder;
 import com.googlecode.javacv.FrameRecorder.Exception;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
-
-import start.AppProperties;
-import start.MainWindow;
 
 
 public class RendererTool extends JPanel{
@@ -34,11 +31,11 @@ public class RendererTool extends JPanel{
 	static ArrayList<ArrayListIndexer> index  = new ArrayList<ArrayListIndexer>();
 
 	public void renderShot () {
-		setSize(MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
-		images = MainWindow.getListSprites();
-		texts = MainWindow.getListTextItem();
-		videos = MainWindow.getListVideo();
-		index = MainWindow.getIndex();
+		setSize(Start.getMainWindow().getCameraWidth(), Start.getMainWindow().getCameraHeight());
+		images = Start.getMainWindow().getListSprites();
+		texts = Start.getMainWindow().getListTextItem();
+		videos = Start.getMainWindow().getListVideo();
+		index = Start.getMainWindow().getIndex();
 		repaint();
 		BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB);
 		Graphics2D d = render.createGraphics();
@@ -48,16 +45,16 @@ public class RendererTool extends JPanel{
 		} catch (IOException e) {
 			System.err.println("Wow ! what have you done ? the image can't be written :/");
 		}
-		MainWindow.getTimeLine();
+		Start.getMainWindow().getTimeLine();
 		System.out.println("image shot ("+TimeLine.getTime()+")");
 	}
 
 	public void renderVideo () {
-		setSize(MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
-		images = MainWindow.getListSprites();
-		texts = MainWindow.getListTextItem();
-		videos = MainWindow.getListVideo();
-		index = MainWindow.getIndex();
+		setSize(Start.getMainWindow().getCameraWidth(), Start.getMainWindow().getCameraHeight());
+		images = Start.getMainWindow().getListSprites();
+		texts = Start.getMainWindow().getListTextItem();
+		videos = Start.getMainWindow().getListVideo();
+		index = Start.getMainWindow().getIndex();
 		new Renderer().start();
 	}
 	
@@ -68,21 +65,21 @@ public class RendererTool extends JPanel{
 			printer.print("rendering will be starting in a instant");
 			
 			System.out.println("trying to render in :" + AppProperties.getRenderOutputPath() + "film.mp4");
-			FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(AppProperties.getRenderOutputPath() + "film.mp4", MainWindow.getCameraWidth(), MainWindow.getCameraHeight());
-			MainWindow.secureRedrawerStop();
+			FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(AppProperties.getRenderOutputPath() + "film.mp4", Start.getMainWindow().getCameraWidth(), Start.getMainWindow().getCameraHeight());
+			Start.getMainWindow().secureRedrawerStop();
 			
 			try {
 				recorder.setFrameRate(24);
 				recorder.setPixelFormat(0);
 				recorder.setVideoCodec(28);
-				System.out.println("recording will start soon, info :" + MainWindow.getCameraWidth() + ":" + MainWindow.getCameraHeight());
+				System.out.println("recording will start soon, info :" + Start.getMainWindow().getCameraWidth() + ":" + Start.getMainWindow().getCameraHeight());
 				
 				recorder.start();
 				
 				IplImage img = new IplImage();
 				TimeLine.setTime(0);
 				BufferedImage render;
-				printer.print("rendering start, mainWindow is hibernating");
+				printer.print("rendering start, Start.getMainWindow() is hibernating");
 				printer.print("****************************");
 				
 				for (int i = 0; i<PropertiesWindow.getEndVideo();i++) {
@@ -105,7 +102,7 @@ public class RendererTool extends JPanel{
 				System.err.println("exception catched" + e.getMessage());
 			}
 			System.out.println("video done");
-			MainWindow.secureRedrawRestart();
+			Start.getMainWindow().secureRedrawRestart();
 		}
 	}
 

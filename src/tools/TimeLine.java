@@ -12,8 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import start.Start;
+
 import exceptions.NoItemFoundException;
-import start.MainWindow;
 
 public class TimeLine extends JFrame implements KeyListener {
 
@@ -56,9 +57,9 @@ public class TimeLine extends JFrame implements KeyListener {
 			}
 			g.setColor(Color.blue);
 			try {
-				for (int index = 1; index < MainWindow.getSelectedItem().getAllKeyFramesTranslation().length; index ++) {
-					String str1 = MainWindow.getSelectedItem().getKeyFrameTranslate(index - 1);
-					String str2 = MainWindow.getSelectedItem().getKeyFrameTranslate(index);
+				for (int index = 1; index < Start.getMainWindow().getSelectedItem().getAllKeyFramesTranslation().length; index ++) {
+					String str1 = Start.getMainWindow().getSelectedItem().getKeyFrameTranslate(index - 1);
+					String str2 = Start.getMainWindow().getSelectedItem().getKeyFrameTranslate(index);
 					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
 					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
 					g.fillRect(str1T*10 + addX + 1 , 8, 8, 8);
@@ -71,16 +72,16 @@ public class TimeLine extends JFrame implements KeyListener {
 						else g.drawLine(str1T*10 + addX + 5, 10, str2T*10 + addX + 5, 12);
 					}
 				}
-				if (MainWindow.getSelectedItem().getAllKeyFramesTranslation().length > 0) {
-					String str1 = MainWindow.getSelectedItem().getKeyFrameTranslate(0);
+				if (Start.getMainWindow().getSelectedItem().getAllKeyFramesTranslation().length > 0) {
+					String str1 = Start.getMainWindow().getSelectedItem().getKeyFrameTranslate(0);
 					g.fillRect(Integer.parseInt(str1.substring(1,str1.indexOf(':')))*10 + addX + 1 , 8, 8, 8);
 				}
-			} catch (NumberFormatException | NoItemFoundException | ArrayIndexOutOfBoundsException e) {}
+			} catch (NumberFormatException | NoItemFoundException | IndexOutOfBoundsException e) {}
 			g.setColor(Color.green);
 			try {
-				for (int index = 1; index < MainWindow.getSelectedItem().getAllKeyFramesRotation().length; index ++) {
-					String str1 = MainWindow.getSelectedItem().getKeyFrameRotation(index - 1);
-					String str2 = MainWindow.getSelectedItem().getKeyFrameRotation(index);
+				for (int index = 1; index < Start.getMainWindow().getSelectedItem().getAllKeyFramesRotation().length; index ++) {
+					String str1 = Start.getMainWindow().getSelectedItem().getKeyFrameRotation(index - 1);
+					String str2 = Start.getMainWindow().getSelectedItem().getKeyFrameRotation(index);
 					int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
 					int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
 					g.fillRect(str1T*10 + addX + 1 , 18, 8, 8);
@@ -94,11 +95,11 @@ public class TimeLine extends JFrame implements KeyListener {
 					}
 				}
 				
-				if (MainWindow.getSelectedItem().getAllKeyFramesRotation().length > 0) {
-					String str1 = MainWindow.getSelectedItem().getKeyFrameRotation(0);
+				if (Start.getMainWindow().getSelectedItem().getAllKeyFramesRotation().length > 0) {
+					String str1 = Start.getMainWindow().getSelectedItem().getKeyFrameRotation(0);
 					g.fillRect(Integer.parseInt(str1.substring(1,str1.indexOf(':')))*10 + addX + 1 , 18, 8, 8);
 				}
-			} catch (NumberFormatException | NoItemFoundException | ArrayIndexOutOfBoundsException e) {
+			} catch (NumberFormatException | NoItemFoundException | IndexOutOfBoundsException e) {
 			}
 		}
 	}
@@ -122,16 +123,16 @@ public class TimeLine extends JFrame implements KeyListener {
 				g.fillRect(0, 0, getWidth(), 50);
 
 				g.setColor(Color.black);
-				for (int i = 0 ; i < MainWindow.getItemSelection().size();i++) {
+				for (int i = 0 ; i < Start.getMainWindow().getItemSelection().size();i++) {
 					try {
-						g.drawString(MainWindow.getSelectedItem(i).getName(), 5, 50*(i) + 70);
+						g.drawString(Start.getMainWindow().getSelectedItem(i).getName(), 5, 50*(i) + 70);
 						int y = 0;
-						for (y = 0; y < MainWindow.getSelectedItem(i).getAllKeyframeActiv().size()-1; y++) {
+						for (y = 0; y < Start.getMainWindow().getSelectedItem(i).getAllKeyframeActiv().size()-1; y++) {
 							if (y%2 == 1)
-								g.fillRect(MainWindow.getSelectedItem(i).getKeyframeActiv(y)*10+200, 50*(i+1), MainWindow.getSelectedItem(i).getKeyframeActiv(y+1)*10 - MainWindow.getSelectedItem(i).getKeyframeActiv(y)*10, 50);
+								g.fillRect(Start.getMainWindow().getSelectedItem(i).getKeyframeActiv(y)*10+200, 50*(i+1), Start.getMainWindow().getSelectedItem(i).getKeyframeActiv(y+1)*10 - Start.getMainWindow().getSelectedItem(i).getKeyframeActiv(y)*10, 50);
 						}
 						if (y%2 == 1) {
-							g.fillRect(200+MainWindow.getSelectedItem(i).getKeyframeActiv(MainWindow.getSelectedItem(i).getAllKeyframeActiv().size()-1)*10, 50*(i+1), getWidth(), 50);
+							g.fillRect(200+Start.getMainWindow().getSelectedItem(i).getKeyframeActiv(Start.getMainWindow().getSelectedItem(i).getAllKeyframeActiv().size()-1)*10, 50*(i+1), getWidth(), 50);
 						}
 					} catch (ArrayIndexOutOfBoundsException | NoItemFoundException e) {
 						e.printStackTrace();
@@ -156,42 +157,42 @@ public class TimeLine extends JFrame implements KeyListener {
 		}
 
 		public static void calculateItemsState () {
-			for (int i = 0; i < MainWindow.getListSprites().size() ; i++) {
+			for (int i = 0; i < Start.getMainWindow().getListSprites().size() ; i++) {
 				{ // translation
-					String str1 = MainWindow.getListSprites().get(i).getLastKeyFrameTranslate(time);
-					String str2 = MainWindow.getListSprites().get(i).getNextKeyFrameTranslate(time);
+					String str1 = Start.getMainWindow().getListSprites().get(i).getLastKeyFrameTranslate(time);
+					String str2 = Start.getMainWindow().getListSprites().get(i).getNextKeyFrameTranslate(time);
 
 					if (str2.substring(0, 1).equals("t")&& str1.substring(0, 1).equals("t")) {
 						int str1T = Integer.parseInt(str1.substring(1,str1.indexOf(':')));
-						int str1X = (int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(','))));
-						int str1Y = (int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1)));
+						int str1X = (int) Double.parseDouble(Start.getMainWindow().getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(','))));
+						int str1Y = (int) Double.parseDouble(Start.getMainWindow().getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1)));
 
 						int str2T = Integer.parseInt(str2.substring(1,str2.indexOf(':')));
-						int str2X = (int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str2.substring(str2.indexOf(':') + 1, str2.indexOf(','))));
-						int str2Y = (int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str2.substring(str2.indexOf(',') + 1)));
+						int str2X = (int) Double.parseDouble(Start.getMainWindow().getListSprites().get(i).calculeVariable(str2.substring(str2.indexOf(':') + 1, str2.indexOf(','))));
+						int str2Y = (int) Double.parseDouble(Start.getMainWindow().getListSprites().get(i).calculeVariable(str2.substring(str2.indexOf(',') + 1)));
 
 
 						//System.out.println("strings" + str1 + " :: "+ str2);
 
 						try {
 							if (str1T == str2T) {
-								MainWindow.getListSprites().get(i).setPosX(str1X);
-								MainWindow.getListSprites().get(i).setPosY(str1Y);
+								Start.getMainWindow().getListSprites().get(i).setPosX(str1X);
+								Start.getMainWindow().getListSprites().get(i).setPosY(str1Y);
 							} else {
-								MainWindow.getListSprites().get(i).setPosX((int) (str1X + ((str2X - str1X) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
-								MainWindow.getListSprites().get(i).setPosY((int) (str1Y + ((str2Y - str1Y) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+								Start.getMainWindow().getListSprites().get(i).setPosX((int) (str1X + ((str2X - str1X) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+								Start.getMainWindow().getListSprites().get(i).setPosY((int) (str1Y + ((str2Y - str1Y) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
 							}
 						} catch (java.lang.ArithmeticException e) {
 
 						}
 					} else {
-						MainWindow.getListSprites().get(i).setPosX((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
-						MainWindow.getListSprites().get(i).setPosY((int) Double.parseDouble(MainWindow.getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1))));
+						Start.getMainWindow().getListSprites().get(i).setPosX((int) Double.parseDouble(Start.getMainWindow().getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')))));
+						Start.getMainWindow().getListSprites().get(i).setPosY((int) Double.parseDouble(Start.getMainWindow().getListSprites().get(i).calculeVariable(str1.substring(str1.indexOf(',') + 1))));
 					}
 				}
 				{ //rotation
-					String str1 = MainWindow.getListSprites().get(i).getLastKeyFrameRotation(time);
-					String str2 = MainWindow.getListSprites().get(i).getNextKeyFrameRotation(time);
+					String str1 = Start.getMainWindow().getListSprites().get(i).getLastKeyFrameRotation(time);
+					String str2 = Start.getMainWindow().getListSprites().get(i).getNextKeyFrameRotation(time);
 
 					int str1T = (int) Double.parseDouble(str1.substring(1,str1.indexOf(':')));
 					int str1R = (int) Double.parseDouble(str1.substring(str1.indexOf(':') + 1));
@@ -200,20 +201,20 @@ public class TimeLine extends JFrame implements KeyListener {
 
 					try {
 						if (str1T == str2T) {
-							MainWindow.getListSprites().get(i).setRotation(str1R);
+							Start.getMainWindow().getListSprites().get(i).setRotation(str1R);
 						} else {
-							MainWindow.getListSprites().get(i).setRotation((int) (str1R + ((str2R - str1R) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+							Start.getMainWindow().getListSprites().get(i).setRotation((int) (str1R + ((str2R - str1R) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
 						}
 					} catch (java.lang.ArithmeticException e) {
 
 					}
 				}
-				MainWindow.getListSprites().get(i).cache();
+				Start.getMainWindow().getListSprites().get(i).cache();
 			}
-			for (int i = 0; i < MainWindow.getListTextItem().size() ; i++) {
+			for (int i = 0; i < Start.getMainWindow().getListTextItem().size() ; i++) {
 				{ // translation
-					String str1 = MainWindow.getListTextItem().get(i).getLastKeyFrameTranslate(time);
-					String str2 = MainWindow.getListTextItem().get(i).getNextKeyFrameTranslate(time);
+					String str1 = Start.getMainWindow().getListTextItem().get(i).getLastKeyFrameTranslate(time);
+					String str2 = Start.getMainWindow().getListTextItem().get(i).getNextKeyFrameTranslate(time);
 
 					int str1T = (int) Double.parseDouble(str1.substring(1,str1.indexOf(':')));
 					int str1X = (int) Double.parseDouble(str1.substring(str1.indexOf(':') + 1, str1.indexOf(',')));
@@ -227,19 +228,19 @@ public class TimeLine extends JFrame implements KeyListener {
 
 					try {
 						if (str1T == str2T) {
-							MainWindow.getListTextItem().get(i).setPosX(str1X);
-							MainWindow.getListTextItem().get(i).setPosY(str1Y);
+							Start.getMainWindow().getListTextItem().get(i).setPosX(str1X);
+							Start.getMainWindow().getListTextItem().get(i).setPosY(str1Y);
 						} else {
-							MainWindow.getListTextItem().get(i).setPosX((int) (str1X + ((str2X - str1X) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
-							MainWindow.getListTextItem().get(i).setPosY((int) (str1Y + ((str2Y - str1Y) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+							Start.getMainWindow().getListTextItem().get(i).setPosX((int) (str1X + ((str2X - str1X) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+							Start.getMainWindow().getListTextItem().get(i).setPosY((int) (str1Y + ((str2Y - str1Y) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
 						}
 					} catch (java.lang.ArithmeticException e) {
 
 					}
 				}
 				{ //rotation
-					String str1 = MainWindow.getListTextItem().get(i).getLastKeyFrameRotation(time);
-					String str2 = MainWindow.getListTextItem().get(i).getNextKeyFrameRotation(time);
+					String str1 = Start.getMainWindow().getListTextItem().get(i).getLastKeyFrameRotation(time);
+					String str2 = Start.getMainWindow().getListTextItem().get(i).getNextKeyFrameRotation(time);
 
 					int str1T = (int) Double.parseDouble(str1.substring(1,str1.indexOf(':')));
 					int str1R = (int) Double.parseDouble(str1.substring(str1.indexOf(':') + 1));
@@ -248,26 +249,26 @@ public class TimeLine extends JFrame implements KeyListener {
 
 					try {
 						if (str1T == str2T) {
-							MainWindow.getListTextItem().get(i).setRotation(str1R);
+							Start.getMainWindow().getListTextItem().get(i).setRotation(str1R);
 						} else {
-							MainWindow.getListTextItem().get(i).setRotation((int) (str1R + ((str2R - str1R) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
+							Start.getMainWindow().getListTextItem().get(i).setRotation((int) (str1R + ((str2R - str1R) / ((str2T - str1T) + 0.0) ) * (time - str1T)));
 						}
 					} catch (java.lang.ArithmeticException e) {
 
 					}
 				}
 				{ // text's keyframe
-					String str1 = MainWindow.getListTextItem().get(i).getLastKeyFrameText(time);
-					MainWindow.getListTextItem().get(i).setText(str1.substring(str1.indexOf(':')+1));
+					String str1 = Start.getMainWindow().getListTextItem().get(i).getLastKeyFrameText(time);
+					Start.getMainWindow().getListTextItem().get(i).setText(str1.substring(str1.indexOf(':')+1));
 				}
 				{//Reload
-					MainWindow.getListTextItem().get(i).reload();
+					Start.getMainWindow().getListTextItem().get(i).reload();
 				}
-				MainWindow.getListTextItem().get(i).cache();
+				Start.getMainWindow().getListTextItem().get(i).cache();
 			}
-			for (int i = 0; i < MainWindow.getListVideo().size() ; i++) {
-				MainWindow.getListVideo().get(i).CalculeAndSetProperFrame();
-				MainWindow.getListVideo().get(i).cache();
+			for (int i = 0; i < Start.getMainWindow().getListVideo().size() ; i++) {
+				Start.getMainWindow().getListVideo().get(i).CalculeAndSetProperFrame();
+				Start.getMainWindow().getListVideo().get(i).cache();
 			}
 		}
 

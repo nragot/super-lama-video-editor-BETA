@@ -1,5 +1,7 @@
 package tools;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,12 +17,14 @@ import javax.swing.KeyStroke;
 
 import exceptions.NoItemFoundException;
 import start.MainWindow;
+import start.Start;
 
 public class Outline extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	
-	ArrayList<JButton> AllButtons = new ArrayList<JButton>();
+	Container cont = new Container();
+	
 	private JPanel myPanel = new JPanel();
 	boolean[] key = {
 			false /*shift*/
@@ -28,6 +32,7 @@ public class Outline extends JFrame implements ActionListener{
 	
 	public Outline () {
 		setTitle("Outline");
+		cont.setLayout(new FlowLayout());
 	}
 	
 	public void GO () {
@@ -62,7 +67,8 @@ public class Outline extends JFrame implements ActionListener{
 		}});
 	}
 	
-	public void refresh () {
+	public void refresh () {//TODO: remove unnecessary comments
+		/*
 		for (int i =0; i < AllButtons.size(); i++) {
 			remove(AllButtons.get(i));
 		}
@@ -91,7 +97,14 @@ public class Outline extends JFrame implements ActionListener{
 			button.addActionListener(this);
 			add(button);
 			AllButtons.add(button);
+		}*/
+		for (Component comp : cont.getComponents()) {
+			remove(comp);
 		}
+		cont.removeAll();
+		
+		cont.add(Start.getMainWindow().getSelectedLayer().getOutline());
+		add(cont);
 		revalidate();
 	}
 
@@ -127,7 +140,7 @@ public class Outline extends JFrame implements ActionListener{
 				MainWindow.setSelectedItemId(MainWindow.getSelectedShape().getId());
 				MainWindow.getItemOption().loadOptions();
 			}
-		}*/
+		}
 		
 		//IN DEV, HIGLY UNSTABLE
 		try {
@@ -137,7 +150,7 @@ public class Outline extends JFrame implements ActionListener{
 			e1.printStackTrace();
 		}
 		MainWindow.getItemOption().loadOptions();
-		refresh();
+		refresh();*/
 	}
 	
 }
