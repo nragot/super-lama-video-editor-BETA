@@ -1,65 +1,47 @@
 package tools;
 
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
-import mod.slve.items.ImageItem;
-import mod.slve.items.TextItem;
-import mod.slve.items.VideoItem;
 import start.AppProperties;
 import start.Start;
+import API.Layer;
 
 import com.googlecode.javacv.FFmpegFrameRecorder;
 import com.googlecode.javacv.FrameRecorder.Exception;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 
-public class RendererTool extends JPanel{
+public class RendererTool{
 	
-	static ArrayList<ImageItem>        images = new ArrayList<ImageItem>()       ;
-	static ArrayList<TextItem>         texts  = new ArrayList<TextItem>()        ;
-	static ArrayList<VideoItem>        videos = new ArrayList<VideoItem>()       ;
-	static ArrayList<ArrayListIndexer> index  = new ArrayList<ArrayListIndexer>();
-
-	public void renderShot () {
-		setSize(Start.getMainWindow().getCameraWidth(), Start.getMainWindow().getCameraHeight());
-		images = Start.getMainWindow().getListSprites();
-		texts = Start.getMainWindow().getListTextItem();
-		videos = Start.getMainWindow().getListVideo();
-		index = Start.getMainWindow().getIndex();
-		repaint();
-		BufferedImage render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB);
-		Graphics2D d = render.createGraphics();
-		paintComponent(d);
+	public static void renderShot () {
+		int w = Start.getMainWindow().getCameraWidth();
+		int h = Start.getMainWindow().getCameraHeight();
+		BufferedImage render = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+		for (Layer layer : Start.getMainWindow().getLayers())
+			if (layer.doRenderOutside())
+				layer.render(render, 0, 0, w, h, 1);
 		try {
 			ImageIO.write(render, "png", new File(AppProperties.getRenderOutputPath() + "frame-" + TimeLine.getTime() + ".png"));
 		} catch (IOException e) {
 			System.err.println("Wow ! what have you done ? the image can't be written :/");
 		}
-		Start.getMainWindow().getTimeLine();
-		System.out.println("image shot ("+TimeLine.getTime()+")");
+		System.out.println("image shot ("+TimeLine.getTime()+")" + " at path :" + AppProperties.getRenderOutputPath());
 	}
 
-	public void renderVideo () {
-		setSize(Start.getMainWindow().getCameraWidth(), Start.getMainWindow().getCameraHeight());
-		images = Start.getMainWindow().getListSprites();
-		texts = Start.getMainWindow().getListTextItem();
-		videos = Start.getMainWindow().getListVideo();
-		index = Start.getMainWindow().getIndex();
-		new Renderer().start();
+	public static void renderVideo () {
+		new RendererTool().new  Renderer().start();
 	}
 	
 	class Renderer extends Thread {
 		public void run () {
+			int w = Start.getMainWindow().getCameraWidth();
+			int h = Start.getMainWindow().getCameraHeight();
+			
 			CommandFrame printer = new CommandFrame();
 			printer.activate();
 			printer.print("rendering will be starting in a instant");
@@ -83,10 +65,10 @@ public class RendererTool extends JPanel{
 				printer.print("****************************");
 				
 				for (int i = 0; i<PropertiesWindow.getEndVideo();i++) {
-					repaint();
-					render = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_3BYTE_BGR);
-					Graphics2D d = render.createGraphics();
-					paintComponent(d);
+					render = new BufferedImage(w,h,BufferedImage.TYPE_3BYTE_BGR);
+					for (Layer layer : Start.getMainWindow().getLayers())
+						if (layer.doRenderOutside())
+							layer.render(render, 0, 0, w, h, 1);
 					img = IplImage.createFrom(render);
 					recorder.record(img);
 					System.out.println("recording images :"+i);
@@ -104,29 +86,5 @@ public class RendererTool extends JPanel{
 			System.out.println("video done");
 			Start.getMainWindow().secureRedrawRestart();
 		}
-	}
-
-	@Override
-	public void paintComponent (Graphics g) {
-		Graphics2D d = (Graphics2D) g.create();
-		d.setColor(Color.WHITE);
-		d.fillRect(0, 0, getWidth(), getHeight());
-		for (int i = 0; i < index.size();i++) {
-			int A = index.get(i).getA(), B = index.get(i).getB()-1;
-			if (A == 1 && images.size() > 0) {
-				d.rotate(Math.toRadians(images.get(B).getRotation()), images.get(B).getPosX(), images.get(B).getPosY());
-				d.drawImage(images.get(B).getImage(), (int) (images.get(B).getPosX() -  (images.get(B).getWidth())/2), (int) (images.get(B).getPosY() - (images.get(B).getHeight())/2),(int) (images.get(B).getWidth()), (int) (images.get(B).getHeight()), null);
-				d.rotate(-Math.toRadians(images.get(B).getRotation()), images.get(B).getPosX(), images.get(B).getPosY());
-			} else if (A == 2 && texts.size() > 0) {
-				d.rotate(Math.toRadians(texts.get(B).getRotation()), (texts.get(B).getWidth())/2 + texts.get(B).getPosX(), (texts.get(B).getHeight())/2 + texts.get(B).getPosY());
-				d.drawImage(texts.get(B).getImage(), (int) (texts.get(B).getPosX()), (int) (texts.get(B).getPosY()),(int) (texts.get(B).getWidth()), (int) (texts.get(B).getHeight()), null);
-				d.rotate(Math.toRadians(-texts.get(B).getRotation()), (texts.get(B).getWidth())/2 + texts.get(B).getPosX(), (texts.get(B).getHeight())/2 + texts.get(B).getPosY());
-			} else if (A == 3 && videos.size() > 0) {
-				d.rotate(Math.toRadians(videos.get(B).getRotation()), (videos.get(B).getWidth())/2 + videos.get(B).getPosX(), (videos.get(B).getHeight())/2 + videos.get(B).getPosY());
-				d.drawImage(videos.get(B).getImage(), (int) (videos.get(B).getPosX()), (int) (videos.get(B).getPosY()),(int) (videos.get(B).getWidth()), (int) (videos.get(B).getHeight()), null);
-				d.rotate(Math.toRadians(-videos.get(B).getRotation()), (videos.get(B).getWidth())/2 + videos.get(B).getPosX(), (videos.get(B).getHeight())/2 + videos.get(B).getPosY());
-			}
-		}
-		
 	}
 }

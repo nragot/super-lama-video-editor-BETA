@@ -8,15 +8,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import start.Start;
+import API.SlveFrame;
 
-public class PropertiesWindow extends JFrame {
+public class PropertiesWindow extends SlveFrame {
 	static String[] screenSizeStr = {"custom","htdv - 1080i(1920*1080) | 16:9","HD - 720i(1280*720) | 16:9","WVGA - 480i(854*480) | 16:9","WQXGA - 1600(2560*1600) | 16:10","WUXGA - 1050(1680*1050) | 16:10","CGA - 200(320*200) | 16:10"};
 	static JComboBox<String> ScreenSizesCombo = new JComboBox<String>(screenSizeStr);
 	static int customW = 854, customH = 480, lastChoice = 3, endVideo = 250;
@@ -24,6 +24,7 @@ public class PropertiesWindow extends JFrame {
 	static JButton okScreenSize = new JButton("Load values");
 	
 	public PropertiesWindow () {
+		super(OVER);
 		setBounds(100,100,400,600);
 		setContentPane(new MyPanel());
 		setTitle("properties");

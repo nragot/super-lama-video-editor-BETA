@@ -3,8 +3,9 @@ package tools;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import API.SlveFrame;
 
 public class VarWindow {
 	
@@ -14,9 +15,10 @@ public class VarWindow {
 		
 	}
 	
-	private class MyWindow extends JFrame {
+	private class MyWindow extends SlveFrame {
 		
 		public MyWindow () {
+			super (OVER);
 			setBounds(0, 0, 500, 500);
 			setVisible(true);
 		}

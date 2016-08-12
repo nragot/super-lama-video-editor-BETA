@@ -72,6 +72,7 @@ public class ScriptReader {
 					cmdf.print("[serge] the line was :" + line);
 					cmdf.print("exception info :" + e.getClass() + "->" + e.getMessage());
 					e.printStackTrace();
+					file.close();
 					return false;
 				}
 

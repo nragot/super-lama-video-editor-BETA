@@ -2,28 +2,21 @@ package start;
 
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -34,27 +27,21 @@ import mod.slve.items.ShapeOval;
 import mod.slve.items.ShapeRect;
 import mod.slve.items.TextItem;
 import mod.slve.items.VideoItem;
-
-import API.Item;
-import API.Layer;
-import API.SlveButton;
-
 import tools.ArrayListIndexer;
 import tools.CommandFrame;
-import tools.ImageSelector;
 import tools.ItemOption;
 import tools.KeyframeTool;
 import tools.Outline;
-import tools.PropertiesWindow;
-import tools.RendererTool;
 import tools.SourceWindow;
 import tools.SourceWindow.SourceActions;
-import tools.SourceWindow.srcFolder;
 import tools.TimeLine;
-import tools.VideoSelector;
+import API.Item;
+import API.Layer;
+import API.SlveButton;
+import API.SlveFrame;
 import exceptions.NoItemFoundException;
 
-public class MainWindow extends JFrame implements FocusListener{
+public class MainWindow extends SlveFrame{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -115,7 +102,6 @@ public class MainWindow extends JFrame implements FocusListener{
 		Mover mm = new Mover ();
 		panel.addMouseListener(mm);
 		panel.addMouseMotionListener(mm);
-		addFocusListener((FocusListener) this);
 		
 		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK), "commandPromptReveal");
 		panel.getActionMap().put("commandPromptReveal", new AbstractAction() {
@@ -163,8 +149,8 @@ public class MainWindow extends JFrame implements FocusListener{
 		MainWindow.itemOptions = itemoptions;
 		MainWindow.timeline = timeline;
 		
-		MainWindow.itemOptions.GO();
 		MainWindow.outline.GO();
+		MainWindow.itemOptions.GO();
 		MainWindow.timeline.GO();
 
 		//prgm lunching
@@ -471,25 +457,6 @@ public class MainWindow extends JFrame implements FocusListener{
 			index.remove(gapSolver);
 		}
 	}*/
-	
-	 // windows event
-	boolean focusCycle = false;
-	@Override
-	public void focusGained(FocusEvent e) {
-		focusCycle = !focusCycle;
-		if (focusCycle) {
-			outline.toFront();
-			itemOptions.toFront();
-			timeline.toFront();
-			toFront();
-		} else {}
-	}
-
-	@Override
-	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	/*
 	 *  ----------------------------------------------------

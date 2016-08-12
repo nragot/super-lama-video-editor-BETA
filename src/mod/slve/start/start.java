@@ -6,12 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import mod.slve.items.ImageItem;
 import mod.slve.items.ItemThatReturnAnImage;
@@ -25,11 +26,14 @@ import start.GuiLayer;
 import start.MainWindow;
 import start.Start;
 import tools.CommandFrame;
+import tools.PropertiesWindow;
+import tools.RendererTool;
 import tools.ScriptReader;
 import tools.SourceWindow;
 import tools.SourceWindow.SourceActions;
 import API.Item;
 import API.Mod;
+import API.SlveFrame;
 import API.SlveMenuItem;
 import exceptions.NoItemFoundException;
 
@@ -38,6 +42,9 @@ public class start extends Mod{
 	public start() {
 		super("slve");
 		
+		SlveMenuItem renderProp = new SlveMenuItem("properties", new String[]{"render"});
+		SlveMenuItem renderShot = new SlveMenuItem("shot", new String[]{"render"});
+		SlveMenuItem renderFilm = new SlveMenuItem("video", new String[]{"render"});
 		SlveMenuItem addImage = new SlveMenuItem("image", new String[]{"add"});
 		SlveMenuItem addText = new SlveMenuItem("text", new String[]{"add"});
 		SlveMenuItem addVideo = new SlveMenuItem("video", new String[]{"add"});
@@ -45,6 +52,41 @@ public class start extends Mod{
 		SlveMenuItem addOval = new SlveMenuItem("rectangle", new String[]{"add", "shape"});
 		SlveMenuItem addEmpty = new SlveMenuItem("empty", new String[]{"add"});
 		SlveMenuItem addLayer = new SlveMenuItem("layer", new String[0]);
+		SlveMenuItem testFront = new SlveMenuItem("front", new String[0]);
+		testFront.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("@@@@@@@@@@@@@@@@@@");
+				for (SlveFrame frame : Start.getFrames()) {
+					System.out.println(frame.getTitle());
+				}
+				Thread t = new Thread () {
+					public void run () {
+						Start.getFrames().get(0).toFront();
+					}
+				};
+				t.start();
+			}
+		});
+		renderProp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new PropertiesWindow();
+			}
+		});
+		renderShot.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RendererTool.renderShot();
+			}
+		});
+		renderFilm.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RendererTool.renderVideo();
+			}
+		});
 		addImage.addActionListener(new ActionListener() {
 			
 			@Override
@@ -89,6 +131,9 @@ public class start extends Mod{
 				Start.getMainWindow().getLayers().add(new BasicLayer(JOptionPane.showInputDialog(null,"give the name of the object you want to create")));
 			}
 		});
+		Start.addMenuBarItem(renderShot);
+		Start.addMenuBarItem(renderFilm);
+		Start.addMenuBarItem(renderProp);
 		Start.addMenuBarItem(addImage);
 		Start.addMenuBarItem(addText);
 		Start.addMenuBarItem(addVideo);
@@ -96,6 +141,7 @@ public class start extends Mod{
 		Start.addMenuBarItem(addOval);
 		Start.addMenuBarItem(addEmpty);
 		Start.addMenuBarItem(addLayer);
+		Start.addMenuBarItem(testFront);
 	}
 	
 	@Override

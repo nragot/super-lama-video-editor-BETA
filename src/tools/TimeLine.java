@@ -8,15 +8,14 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import start.Start;
-
+import API.SlveFrame;
 import exceptions.NoItemFoundException;
 
-public class TimeLine extends JFrame implements KeyListener {
+public class TimeLine extends SlveFrame implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 

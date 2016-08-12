@@ -1,19 +1,17 @@
 package start;
 
-import java.awt.Component;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 import tools.ItemOption;
 import tools.Outline;
 import tools.SourceWindow;
 import tools.TimeLine;
+import API.SlveFrame;
 import API.SlveMenuItem;
 
 public class Start {
@@ -26,7 +24,9 @@ public class Start {
 	
 	static ArrayList<SlveMenuItem> baritems = new ArrayList<SlveMenuItem>();
 	static JMenuBar jmenubar;
-	static ArrayListWithName<Object> tree; 
+	static ArrayListWithName<Object> tree;
+	
+	static ArrayList<SlveFrame> frames = new ArrayList<SlveFrame>();
 	/**
 	 * @param args
 	 */
@@ -166,6 +166,42 @@ public class Start {
 	
 	public static void addMenuBarItem (SlveMenuItem item) {
 		baritems.add(item);
+	}
+	
+	static boolean waiter = false;
+	
+	public static void frontEveryFrame (String str) {
+		System.out.println("***************" + str + " " + frames.size());
+		Thread t = new Thread() {
+			@Override
+			public void run () {
+				for (int i = 0; i < 5; i++) {
+					for (int y = 0; y < frames.size();y++) {
+						SlveFrame frame = frames.get(y);
+						if (frame.getPriority()==i) {
+							waiter = true;
+							frame.toFront();
+							while (waiter) {
+								try {
+									sleep(200);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+		t.start();
+	}
+	
+	public static void setWaiterToFalse () {
+		waiter = false;
+	}
+	
+	public static ArrayList<SlveFrame> getFrames () {
+		return frames;
 	}
 
 }

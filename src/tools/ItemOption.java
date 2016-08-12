@@ -2,8 +2,6 @@ package tools;
 
 
 import java.awt.Checkbox;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,19 +16,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import mod.slve.items.ImageItem;
-import mod.slve.items.TextItem;
 
 import start.Start;
-import tools.SourceWindow.SourceActions;
+import API.SlveFrame;
 import exceptions.NoItemFoundException;
 
-public class ItemOption extends JFrame implements ComponentListener{
+public class ItemOption extends SlveFrame implements ComponentListener{
+
+	private static final long serialVersionUID = 1L;
 	ArrayList<JButton> allButtons = new ArrayList<JButton>();
 	ArrayList<JSlider> allSliders = new ArrayList<JSlider>();
 	ArrayList<JTextField> allTextFields = new ArrayList<JTextField>();
@@ -65,7 +58,6 @@ public class ItemOption extends JFrame implements ComponentListener{
 	}
 	
 	public void loadOptions () {
-		System.out.println("ldoption start");
 		
 		try {
 			add(Start.getMainWindow().getSelectedItem().getOption(getWidth(), getHeight()));

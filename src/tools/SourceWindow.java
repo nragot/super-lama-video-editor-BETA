@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import API.SlveFrame;
 import browser.BrowserActions;
 import browser.FileBrowser;
 
@@ -51,7 +52,7 @@ public class SourceWindow {
 		return (srcFolder) selectedItem;
 	}
 	
-	private class MyWindow extends JFrame implements KeyListener{
+	private class MyWindow extends SlveFrame implements KeyListener{
 		
 		SourceActions actions;
 		
@@ -61,6 +62,7 @@ public class SourceWindow {
 		JMenuItem mi_mkdir = new JMenuItem("create folder");
 		
 		public MyWindow (SourceActions actions) {
+			super (OVER);
 			this.actions = actions;
 			
 			setBounds(20, 20, 800, 800);

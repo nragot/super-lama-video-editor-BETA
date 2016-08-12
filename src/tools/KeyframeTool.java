@@ -8,19 +8,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
-
-import start.Start;
 
 import mod.slve.items.TextItem;
-
+import start.Start;
+import API.SlveFrame;
 import exceptions.NoItemFoundException;
 
-public class KeyframeTool extends JFrame{
+public class KeyframeTool extends SlveFrame{
 
 	private static final long serialVersionUID = 1L;
 
 	public KeyframeTool () {
+		super(OVER);
 		Point p = MouseInfo.getPointerInfo().getLocation();
 		setBounds((int)(p.getX() - 50),(int) (p.getY() - 20), 500, 230);
 		setLayout(new FlowLayout());

@@ -18,7 +18,8 @@ public class GuiLayer extends Layer {
 	}
 
 	@Override
-	public void render(BufferedImage canvas, int x, int y, int w, int h, int cw, int ch, double z) {
+	public void render(BufferedImage canvas, int x, int y, int cw, int ch, double z) {
+		//TODO: make something that fit a bit more than a empty methode
 	}
 
 	@Override

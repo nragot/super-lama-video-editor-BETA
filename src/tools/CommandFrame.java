@@ -2,35 +2,23 @@ package tools;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import mod.slve.items.ImageItem;
-import mod.slve.items.TextItem;
-import mod.slve.items.VideoItem;
-
-import API.Item;
-import API.Mod;
-
-import exceptions.NoItemFoundException;
 import start.AppProperties;
-import start.MainWindow;
 import start.Start;
+import API.Mod;
+import API.SlveFrame;
 
-public class CommandFrame extends JFrame {
+public class CommandFrame extends SlveFrame {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -41,6 +29,7 @@ public class CommandFrame extends JFrame {
 	Mod currentmod;
 	
 	public CommandFrame () {
+		super(TOP);
 		setContentPane(myPanel);
 		setLayout(new BorderLayout());
 		add(cmd,BorderLayout.SOUTH);

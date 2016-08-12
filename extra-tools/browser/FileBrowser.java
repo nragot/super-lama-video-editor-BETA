@@ -271,7 +271,6 @@ public class FileBrowser {
 				else if (selected >= files.size()) selected = files.size()-1;
 				repaint();
 			}
-			System.out.println(e.getY() + " " + getHeight() + " " + menuHeight);
 		}
 
 		@Override
@@ -301,7 +300,6 @@ public class FileBrowser {
 				if (selected == files.size()-1 && files.size()*50 > myPanel.getHeight()) {
 					addY = (int) (-50.0*files.size() + filesSizeHeight);
 				}
-				System.out.println((selected*50+addY) + " " + getHeight() );
 				break;
 			case 10:
 				try {

@@ -15,7 +15,7 @@ public abstract class Layer {
 	protected ArrayList<SlveButton> rightButtons = new ArrayList<SlveButton>();
 	protected String name;
 	
-	public abstract void render (BufferedImage canvas, int x, int y, int w, int h, int cw, int ch, double z);
+	public abstract void render (BufferedImage canvas, int x, int y, int cw, int ch, double z);
 	public abstract void render (Graphics2D g, int x, int y, int w, int h, int cw, int ch, double z);
 	
 	public boolean doRenderInside() {

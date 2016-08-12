@@ -65,9 +65,9 @@ public class BasicLayer extends Layer {
 	ArrayList<Item> items = new ArrayList<Item>();
 	
 	@Override
-	public void render(BufferedImage canvas, int x, int y, int w, int h, int cw, int ch, double z) {
+	public void render(BufferedImage canvas, int x, int y, int cw, int ch, double z) {
 		Graphics2D g = canvas.createGraphics();
-		render (g,x,y,w,h,cw,ch,z);
+		render (g,x,y,canvas.getWidth(),canvas.getHeight(),cw,ch,z);
 	}
 	
 	@Override
