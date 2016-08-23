@@ -2,9 +2,13 @@ package tools;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
@@ -28,8 +32,18 @@ public class CommandFrame extends SlveFrame {
 	String cmds[] = new String[cmdsLenght];
 	Mod currentmod;
 	
+	static Font font;
+	
 	public CommandFrame () {
 		super(TOP);
+		
+		InputStream is = this.getClass().getResourceAsStream("/DejaVuSansMono.ttf");
+		try {
+			font=Font.createFont(Font.TRUETYPE_FONT,is);
+		} catch (FontFormatException | IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		setContentPane(myPanel);
 		setLayout(new BorderLayout());
 		add(cmd,BorderLayout.SOUTH);
@@ -62,6 +76,9 @@ public class CommandFrame extends SlveFrame {
 		@Override
 		public void paintComponent (Graphics g) {
 			g.fillRect(0, 0, getWidth(), getHeight());
+			
+			g.setFont(font.deriveFont(15f));
+			
 			for (int i = 0 ; i < cmdsLenght; i++) {
 				if (cmds[cmdsLenght - 1 -i].startsWith("[serge]")) g.setColor(Color.RED);
 				else if (cmds[cmdsLenght - 1 -i].startsWith("[debug]")) g.setColor(Color.MAGENTA);

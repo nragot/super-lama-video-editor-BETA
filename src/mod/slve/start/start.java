@@ -1,18 +1,24 @@
 package mod.slve.start;
 
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
 import mod.slve.items.ImageItem;
 import mod.slve.items.ItemThatReturnAnImage;
@@ -33,7 +39,6 @@ import tools.SourceWindow;
 import tools.SourceWindow.SourceActions;
 import API.Item;
 import API.Mod;
-import API.SlveFrame;
 import API.SlveMenuItem;
 import exceptions.NoItemFoundException;
 
@@ -52,23 +57,6 @@ public class start extends Mod{
 		SlveMenuItem addOval = new SlveMenuItem("rectangle", new String[]{"add", "shape"});
 		SlveMenuItem addEmpty = new SlveMenuItem("empty", new String[]{"add"});
 		SlveMenuItem addLayer = new SlveMenuItem("layer", new String[0]);
-		SlveMenuItem testFront = new SlveMenuItem("front", new String[0]);
-		testFront.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("@@@@@@@@@@@@@@@@@@");
-				for (SlveFrame frame : Start.getFrames()) {
-					System.out.println(frame.getTitle());
-				}
-				Thread t = new Thread () {
-					public void run () {
-						Start.getFrames().get(0).toFront();
-					}
-				};
-				t.start();
-			}
-		});
 		renderProp.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -141,7 +129,16 @@ public class start extends Mod{
 		Start.addMenuBarItem(addOval);
 		Start.addMenuBarItem(addEmpty);
 		Start.addMenuBarItem(addLayer);
-		Start.addMenuBarItem(testFront);
+		
+		defaultRenderOutputPath.setToolTipText("exemple : C/user/nathan/Desktop");
+		defaultRenderOutputPath.setPreferredSize(new Dimension(100, 30));
+		activate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setActivated(((JCheckBox)e.getSource()).isEnabled());
+			}
+		});
 	}
 	
 	@Override
@@ -391,6 +388,76 @@ public class start extends Mod{
 			return 1;
 	}
 		return 0;
+	}
+
+	JCheckBox doShowTerminal = new JCheckBox("show terminal");
+	JCheckBox activate = new JCheckBox("activate");
+	JTextField defaultRenderOutputPath = new JTextField();
+	JCheckBox doPauseWhenDone = new JCheckBox("wait for user to press space");
+	
+	@Override
+	public String[] getModInitParameters() {
+		String x1 = "command.prompt visible";
+		if (!doShowTerminal.isSelected()) {
+			x1 = "#" + x1;
+		}
+		
+		return new String[]{
+				"command.prompt set.size 400 400\ncommand.prompt set.position 0 0\ncommand.prompt set.title \"hello, we are loading\"",
+				x1,
+				"render default.output \"" + defaultRenderOutputPath.getText() +"\"",
+				"main set.title \"super lama video editor\"\nmain set.size 900 600\nmain set.position 0 100",
+				"outline set.title \"outline\"\noutline set.size 400 200\noutline set.position 900 130",
+				"timeline set.title \"timeline\"\ntimeline set.size 1300 100\ntimeline set.position 0 0",
+				"item.options set.title \"item option\"\nitem.options set.size 400 200\nitem.options set.position 900 360",
+				"main new.layer background",
+				"main new.guilayer",
+				"main set.selected.layer 0"};
+	}
+	
+	@Override
+	public JPanel getModInitOptions (int w, int h) {
+		System.out.println("w:"+w+" h:"+h);
+		JPanel cont = new JPanel();
+		cont.setPreferredSize(new Dimension(w, 60));
+		cont.setLayout(new FlowLayout());
+		cont.add(activate);
+		cont.add(doShowTerminal);
+		cont.add(doPauseWhenDone);
+		JSeparator sep = new JSeparator();
+		sep.setPreferredSize(new Dimension(w,4));
+		cont.add(sep);
+		cont.add(new JLabel("where to render by default"));
+		cont.add(defaultRenderOutputPath);
+		sep = new JSeparator();
+		sep.setPreferredSize(new Dimension(w,4));
+		cont.add(sep);
+		return cont;
+	}
+
+	@Override
+	public String[] getModInitParametersAfterJob() {
+		String x1 = "pause \"ready to start\"";
+		
+		if (!doPauseWhenDone.isSelected())
+			x1 = "#" + x1;
+		
+		return new String[] {
+		x1,
+		"loadbar"
+		};
+	}
+
+	@Override
+	public boolean checkBeforeWritingInit() {
+		boolean b = true;
+		if (new File(defaultRenderOutputPath.getText()).exists()) {
+			defaultRenderOutputPath.setBackground(Color.white);
+		} else {
+			defaultRenderOutputPath.setBackground(Color.red);
+			b = false;
+		}
+		return b;
 	}
 
 

@@ -1,27 +1,36 @@
-#+--------------------------------+
-#|              slve              |
-#+--------------------------------+
+#this script fire right before super lama video even open a window, its goal is to give to slve
+#every pieces of information he needs and your personal settings
+#**********thank you and have a nice day :-)    ~Serge the lama
 insmod slve
 mod slve
+echo "hello world !"
 command.prompt set.size 400 400
 command.prompt set.position 0 0
 command.prompt set.title "hello, we are loading"
 command.prompt visible
+image.selector default.path "/home/nathan/"
+echo "set up render output to /home/nathan/"
 render default.output "/home/nathan/"
 main set.title "super lama video editor"
 main set.size 900 600
 main set.position 0 100
+echo "main setup done"
 outline set.title "outline"
 outline set.size 400 200
 outline set.position 900 130
+echo "outline setup done"
 timeline set.title "timeline"
 timeline set.size 1300 100
 timeline set.position 0 0
+echo "timeline window setup done"
 item.options set.title "item option"
 item.options set.size 400 200
 item.options set.position 900 360
-main new.layer background
+echo "item option dialog setup done"
+main new.layer bleep
 main new.guilayer
 main set.selected.layer 0
-#after job : slve
-pause "ready to start"
+outline add i /home/nathan/Firefox_wallpaper.png A
+ldbr
+echo "all done, ready to start"
+#:)

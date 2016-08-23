@@ -1,8 +1,8 @@
 package inittools;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -11,21 +11,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import browser.BrowserActions;
-import browser.FileBrowser;
+import API.Mod;
 
 public class MainWindow extends JFrame implements WindowListener{
 	private static final long serialVersionUID = 1L;
@@ -39,8 +41,8 @@ public class MainWindow extends JFrame implements WindowListener{
 	
 	RandomAccessFile file ;
 	String slvePath;
-	ArrayList<String> modulesFound = new ArrayList<String>();
-	ArrayList<JCheckBox> modulesFoundCheck = new ArrayList<JCheckBox>();
+	ArrayList<Mod> modulesFound = new ArrayList<Mod>();
+	ArrayList<Container> containers = new ArrayList<Container>();
 	int entryMod = 0;
 	
 	boolean done;
@@ -88,8 +90,60 @@ public class MainWindow extends JFrame implements WindowListener{
 			} while (true);
 		} catch (FileNotFoundException e) {	e.printStackTrace();}
 		
-		setLayout(new FlowLayout());
+		//load modules for slve
+		try {
+			System.out.println("loading modules");
+			URL url = this.getClass().getProtectionDomain().getCodeSource().getLocation();
+			URL jar = url;
+			ZipInputStream zip = new ZipInputStream(jar.openStream());
+			String lastModNameFound="";
+			
+			JPanel cont = new JPanel();
+			cont.setPreferredSize(new Dimension(getWidth(), getHeight()));
+			
+			while(true) {
+				ZipEntry e = zip.getNextEntry();
+				if (e == null)
+					break;
+				String name = e.getName();
+				if (name.startsWith("mod/") && name.length() > 4) {
+					name = name.substring(4);
+					name = name.substring(0, name.indexOf(File.separator));
+					if (!lastModNameFound.equals(name)) {
+						lastModNameFound = name;
+						
+						Mod mod;
+						try {
+							Class<?> clazz = Class.forName("mod."+name+".start.start");
+							Constructor<?> ctor = clazz.getConstructor(String.class.getClasses());
+							mod = (Mod) ctor.newInstance();
+							mod.setLocation(name);
+							modulesFound.add(mod);
+							cont.add(mod.getModInitOptions(getWidth() - 30, getHeight()));
+							System.out.println("mod name :" + name);
+						} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+			add(new JScrollPane(cont), BorderLayout.CENTER);
+			JButton button = new JButton("done");
+			button.setPreferredSize(new Dimension(80,1));
+			button.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					if (writeInit()) dispose(); //will write the init and dispose if everything went fine
+				}
+			});
+			add(button, BorderLayout.EAST);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+		/*
 		showConsole = new JCheckBox("show console while Super lama video editor is loading");
 		showConsole.setMnemonic('c');
 		add(showConsole);
@@ -180,8 +234,18 @@ public class MainWindow extends JFrame implements WindowListener{
 					name = name.substring(0, name.indexOf(File.separator));
 					if (!lastModNameFound.equals(name)) {
 						lastModNameFound = name;
-						modulesFound.add(name);
-						modulesFoundCheck.add(new JCheckBox(name));
+						
+						Mod mod;
+						try {
+							Class<?> clazz = Class.forName("mod."+name+".start.start");
+							Constructor<?> ctor = clazz.getConstructor(String.class.getClasses());
+							mod = (Mod) ctor.newInstance();
+							modulesFound.add(mod);
+							modulesFoundCheck.add(new JCheckBox(name));
+						} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				}
 			}
@@ -219,8 +283,8 @@ public class MainWindow extends JFrame implements WindowListener{
 			}
 		});
 		add(modsWindowUp);
-		
 		init();
+		*/
 		setVisible(true);
 	}
 	
@@ -241,8 +305,53 @@ public class MainWindow extends JFrame implements WindowListener{
 		if (initmaker.exists()) initmaker.delete();
 		initmaker = new File (slvePath + "initme.txt");
 		if (initmaker.exists()) initmaker.delete();
-		System.out.println("write init");
+		System.out.println("now writing init");
+		
+		//checking
+		boolean failed = false;
+		for (Mod mod : modulesFound) {
+			if (!mod.checkBeforeWritingInit())
+				failed = true;
+		}
+		if (failed) return false;
+		
+		//remove slve.init
+		File byebye = new File (slvePath+"/slve.init");
+		if (byebye.exists()) byebye.delete();
+		try {
+			file = new RandomAccessFile(slvePath + "/slve.init", "rw");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		//first turn writing
+		for (Mod mod : modulesFound) {
+			if (!mod.isActivated()) continue; //skip mod if not activated
+			String line = mod.getName();
+			for (int i = 0; i < (32 - mod.getName().length())/2;i++) {
+				line = " " + line + " ";
+			}
+			line = "|" + line + "|";
+			write ("#+--------------------------------+");
+			write ("#"+line);
+			write ("#+--------------------------------+");
+			write ("insmod " + mod.getLocation() + "\nmod " + mod.getName());
+			
+			for (String str : mod.getModInitParameters())
+				write(str);
+		}
+		
+		for (Mod mod : modulesFound) {
+			write ("#after job : " + mod.getName());
+			for (String str : mod.getModInitParametersAfterJob())
+				write(str);
+		}
+		
+		return true;
+		
 		//checking if everything went right about image selector's and render's default path
+		/*
 		if (!( new File(imgSelPath.getText()).isDirectory()) && !(imgSelPath.getText().equals("~"))) {
 			imgSelPath.setBackground(Color.red);
 			return false;
@@ -307,8 +416,7 @@ public class MainWindow extends JFrame implements WindowListener{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		boolean done = true;
-		return true;
+		return true;*/
 	}
 	
 	public void write (String str) {
