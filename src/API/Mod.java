@@ -1,9 +1,9 @@
 package API;
 
+import inittools.ModBox;
+
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
 
 import tools.CommandFrame;
 
@@ -51,7 +51,7 @@ public abstract class Mod {
 	 * @param initMakerTool window height (h)
 	 * @return a container that will appear in InitMakerTool
 	 */
-	public abstract JPanel getModInitOptions (int w,int h);
+	public abstract void getModInitOptions (ModBox box);
 	
 	/**
 	 * methode called before getModInitParameters and getModInitParametersAfterJob.

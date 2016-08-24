@@ -42,7 +42,6 @@ public class MainWindow extends JFrame implements WindowListener{
 	RandomAccessFile file ;
 	String slvePath;
 	ArrayList<Mod> modulesFound = new ArrayList<Mod>();
-	ArrayList<Container> containers = new ArrayList<Container>();
 	int entryMod = 0;
 	
 	boolean done;
@@ -98,8 +97,13 @@ public class MainWindow extends JFrame implements WindowListener{
 			ZipInputStream zip = new ZipInputStream(jar.openStream());
 			String lastModNameFound="";
 			
-			JPanel cont = new JPanel();
-			cont.setPreferredSize(new Dimension(getWidth(), getHeight()));
+			SlveInitToolPanel pan = new SlveInitToolPanel();
+			pan.getEastButton().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					writeInit();
+				}
+			});
 			
 			while(true) {
 				ZipEntry e = zip.getNextEntry();
@@ -118,9 +122,11 @@ public class MainWindow extends JFrame implements WindowListener{
 							Constructor<?> ctor = clazz.getConstructor(String.class.getClasses());
 							mod = (Mod) ctor.newInstance();
 							mod.setLocation(name);
+							
+							ModBox modbox = new ModBox(mod.getName());
+							mod.getModInitOptions(modbox);
+							pan.add(modbox);
 							modulesFound.add(mod);
-							cont.add(mod.getModInitOptions(getWidth() - 30, getHeight()));
-							System.out.println("mod name :" + name);
 						} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -128,163 +134,11 @@ public class MainWindow extends JFrame implements WindowListener{
 					}
 				}
 			}
-			add(new JScrollPane(cont), BorderLayout.CENTER);
-			JButton button = new JButton("done");
-			button.setPreferredSize(new Dimension(80,1));
-			button.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					if (writeInit()) dispose(); //will write the init and dispose if everything went fine
-				}
-			});
-			add(button, BorderLayout.EAST);
+			
+			setContentPane(pan);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		/*
-		showConsole = new JCheckBox("show console while Super lama video editor is loading");
-		showConsole.setMnemonic('c');
-		add(showConsole);
-		
-		renderDefOutput = new JTextField("set render output path");
-		renderDefOutput.setToolTipText("<html>where does super lama video editor when you want to save ?<br/>put \"~\" if you want to use your \"users\" file (depends of your OS)</html>");
-		renderDefOutput.setPreferredSize(new Dimension(getWidth() - 200, 20));
-		add(renderDefOutput);
-		
-		JButton browser1 = new JButton("...");
-		browser1.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				new FileBrowser(new BrowserActions() {
-					
-					@Override
-					public void done(String path) {
-						renderDefOutput.setText(path);
-					}
-					
-					@Override
-					public void close(String path) {}
-				}).go(true, "I'm in the folder I like",false);
-			}
-		});
-		add(browser1);
-		
-		imgSelPath = new JTextField("open path for the image selector");
-		imgSelPath.setToolTipText("<html>where the file selector should start when you open it ? <br/>put \"~\" if you want to use your \"users\" file (depends of your OS)</html>");
-		imgSelPath.setPreferredSize(new Dimension(getWidth() - 200, 20));
-		add(imgSelPath);
-		
-		JButton browser2 = new JButton("...");
-		browser2.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				new FileBrowser(new BrowserActions() {
-					
-					@Override
-					public void done(String path) {
-						imgSelPath.setText(path);
-					}
-					
-					@Override
-					public void close(String path) {}
-				}).go(true, "I'm in the folder I like",false);
-			}
-		});
-		add(browser2);
-		
-		pause = new JCheckBox("do a pause before super lama video editor end reading the init script, waiting for you to press OK or ENTER");
-		pause.setMnemonic('p');
-		add(pause);
-		
-		okAndClose = new JButton("OK, apply and close");
-		okAndClose.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (writeInit()) {
-					try {
-						file.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					System.exit(0);
-				}
-			}
-		});
-		okAndClose.setPreferredSize(new Dimension(getWidth() - 50, 35));
-		add(okAndClose);
-		
-		//loading modules for slve
-		try {
-			System.out.println("loading modules");
-			URL url = this.getClass().getProtectionDomain().getCodeSource().getLocation();
-			URL jar = url;
-			ZipInputStream zip = new ZipInputStream(jar.openStream());
-			String lastModNameFound="";
-			while(true) {
-				ZipEntry e = zip.getNextEntry();
-				if (e == null)
-					break;
-				String name = e.getName();
-				if (name.startsWith("mod/") && name.length() > 4) {
-					name = name.substring(4);
-					name = name.substring(0, name.indexOf(File.separator));
-					if (!lastModNameFound.equals(name)) {
-						lastModNameFound = name;
-						
-						Mod mod;
-						try {
-							Class<?> clazz = Class.forName("mod."+name+".start.start");
-							Constructor<?> ctor = clazz.getConstructor(String.class.getClasses());
-							mod = (Mod) ctor.newInstance();
-							modulesFound.add(mod);
-							modulesFoundCheck.add(new JCheckBox(name));
-						} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		modsWindowUp = new JButton("mods");
-		modsWindowUp.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				new JFrame() {
-					private static final long serialVersionUID = 1L;
-
-					public void go () {
-						setLayout(new FlowLayout());
-						setBounds(0, 0, 800, 800);
-						ButtonGroup group = new ButtonGroup();
-						for (int i = 0; i < modulesFound.size();i++) {
-							MyJRadioButton radio = new MyJRadioButton(i);
-							radio.addActionListener(new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									entryMod = ((MyJRadioButton)e.getSource()).i;
-								}
-							});
-							group.add(radio);
-							add(radio);
-							add(modulesFoundCheck.get(i));
-						}
-						setVisible(true);
-					}
-				}.go();
-			}
-		});
-		add(modsWindowUp);
-		init();
-		*/
 		setVisible(true);
 	}
 	
@@ -300,13 +154,6 @@ public class MainWindow extends JFrame implements WindowListener{
 	public boolean writeInit () {
 		done = false;
 		
-		System.out.println("removing initme");
-		File initmaker = new File (slvePath + "initme");
-		if (initmaker.exists()) initmaker.delete();
-		initmaker = new File (slvePath + "initme.txt");
-		if (initmaker.exists()) initmaker.delete();
-		System.out.println("now writing init");
-		
 		//checking
 		boolean failed = false;
 		for (Mod mod : modulesFound) {
@@ -314,6 +161,13 @@ public class MainWindow extends JFrame implements WindowListener{
 				failed = true;
 		}
 		if (failed) return false;
+		
+		System.out.println("removing initme");
+		File initmaker = new File (slvePath + "initme");
+		if (initmaker.exists()) initmaker.delete();
+		initmaker = new File (slvePath + "initme.txt");
+		if (initmaker.exists()) initmaker.delete();
+		System.out.println("now writing init");
 		
 		//remove slve.init
 		File byebye = new File (slvePath+"/slve.init");
@@ -325,8 +179,11 @@ public class MainWindow extends JFrame implements WindowListener{
 			return false;
 		}
 		
+		write ("#that file auto fire from slve to give every pieces of informations we would need from you");
+		
 		//first turn writing
 		for (Mod mod : modulesFound) {
+			System.out.println("now writing mod :" + mod.getName());
 			if (!mod.isActivated()) continue; //skip mod if not activated
 			String line = mod.getName();
 			for (int i = 0; i < (32 - mod.getName().length())/2;i++) {
@@ -347,76 +204,9 @@ public class MainWindow extends JFrame implements WindowListener{
 			for (String str : mod.getModInitParametersAfterJob())
 				write(str);
 		}
-		
+		dispose();
 		return true;
 		
-		//checking if everything went right about image selector's and render's default path
-		/*
-		if (!( new File(imgSelPath.getText()).isDirectory()) && !(imgSelPath.getText().equals("~"))) {
-			imgSelPath.setBackground(Color.red);
-			return false;
-		} else {
-			imgSelPath.setBackground(new JTextField().getBackground());
-		}
-		if (!( new File (renderDefOutput.getText()).isDirectory()) && !(renderDefOutput.getText().equals("~"))) {
-			renderDefOutput.setBackground(Color.red);
-			return false;
-		} else {
-			renderDefOutput.setBackground(new JTextField().getBackground());
-		}
-		
-		//writing the file
-		try {
-			file.close();
-			new File (slvePath + "./slve.init").delete();
-			file = new RandomAccessFile (new File (slvePath + "./slve.init"), "rw");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		write ("#this script fire right before super lama video even open a window, its goal is to give to slve");
-		write ("#every pieces of information he needs and your personal settings");
-		write ("#**********thank you and have a nice day :-)    ~Serge the lama");
-		//setup cmd
-		for (int i = 0; i < modulesFound.size();i++) {
-			if (modulesFoundCheck.get(i).isSelected())
-				write ("loadmod " + modulesFound.get(i));
-		}
-		if (modulesFound.size() > 0)
-			write ("mod " + modulesFound.get(entryMod));
-		write ("echo \"hello world !\"");
-		write ("command.prompt set.size 400 400\ncommand.prompt set.position 0 0\ncommand.prompt set.title \"hello, we are loading\"");
-		if (showConsole.isSelected()) {
-			write ("command.prompt visible");
-		} 
-		if (imgSelPath.getText().equals ("~")) {
-			write ("image.selector default.path \"" + System.getProperty("user.home") + "/\"");
-		} else {
-			write ("image.selector default.path \"" + imgSelPath.getText()+"\"");
-		}
-		write ("echo \"set up render output to " + renderDefOutput.getText() + "\"");
-		if (renderDefOutput.getText().equals("~")) {
-			write ("render default.output \"" + System.getProperty("user.home")+"/\"");
-		} else {
-			write ("render default.output \"" + renderDefOutput.getText()+"\"");
-		}
-		write ("main set.title \"super lama video editor\"\nmain set.size 900 600\nmain set.position 0 100");
-		write ("echo \"main setup done\"");
-		write ("outline set.title \"outline\"\noutline set.size 400 200\noutline set.position 900 130");
-		write ("echo \"outline setup done\"");
-		write ("timeline set.title \"timeline\"\ntimeline set.size 1300 100\ntimeline set.position 0 0");
-		write ("echo \"timeline window setup done\"");
-		write ("item.options set.title \"item option\"\nitem.options set.size 400 200\nitem.options set.position 900 360");
-		write ("echo \"item option dialog setup done\"");
-		write ("echo \"all done, ready to start\"");
-		if (pause.isSelected()) {
-			write ("pause \"ready to start\"");
-		}
-		try {
-			file.write(new String ("#:)").getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return true;*/
 	}
 	
 	public void write (String str) {

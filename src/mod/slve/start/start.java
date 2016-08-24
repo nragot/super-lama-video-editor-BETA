@@ -1,5 +1,7 @@
 package mod.slve.start;
 
+import inittools.ModBox;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -129,16 +132,6 @@ public class start extends Mod{
 		Start.addMenuBarItem(addOval);
 		Start.addMenuBarItem(addEmpty);
 		Start.addMenuBarItem(addLayer);
-		
-		defaultRenderOutputPath.setToolTipText("exemple : C/user/nathan/Desktop");
-		defaultRenderOutputPath.setPreferredSize(new Dimension(100, 30));
-		activate.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setActivated(((JCheckBox)e.getSource()).isEnabled());
-			}
-		});
 	}
 	
 	@Override
@@ -415,6 +408,7 @@ public class start extends Mod{
 				"main set.selected.layer 0"};
 	}
 	
+	/*
 	@Override
 	public JPanel getModInitOptions (int w, int h) {
 		System.out.println("w:"+w+" h:"+h);
@@ -433,6 +427,28 @@ public class start extends Mod{
 		sep.setPreferredSize(new Dimension(w,4));
 		cont.add(sep);
 		return cont;
+	}*/
+	
+
+
+	@Override
+	public void getModInitOptions(ModBox box) {
+		defaultRenderOutputPath.setToolTipText("exemple : C/user/nathan/Desktop");
+		defaultRenderOutputPath.setPreferredSize(new Dimension(100, 30));
+		activate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setActivated(((JCheckBox)e.getSource()).isEnabled());
+			}
+		});
+		
+		box.add(activate);
+		box.add(doShowTerminal);
+		box.add(doPauseWhenDone);
+		box.add(new JSeparator());
+		box.add(new JLabel("where to render by default"));
+		box.add(defaultRenderOutputPath);
 	}
 
 	@Override
