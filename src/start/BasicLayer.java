@@ -4,6 +4,7 @@ package start;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,8 @@ import API.Layer;
 import API.SlveButton;
 
 public class BasicLayer extends Layer {
+	
+	static Image image;
 	
 	public BasicLayer (String name) {
 		doRenderInside = true;
@@ -62,6 +65,10 @@ public class BasicLayer extends Layer {
 		items.add(item);
 	}
 	
+	public ArrayList<Item> getItemList () {
+		return items;
+	}
+	
 	ArrayList<Item> items = new ArrayList<Item>();
 	
 	@Override
@@ -95,6 +102,15 @@ public class BasicLayer extends Layer {
 		}
 		cont.setLayout(new FlowLayout());
 		return cont;
+	}
+
+	@Override
+	public Image getIcon() {
+		return image;
+	}
+	
+	public static void setIcon (Image img) {
+		image = img;
 	}
 
 }

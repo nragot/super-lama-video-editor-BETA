@@ -31,6 +31,11 @@ public abstract class Mod {
 	 */
 	public abstract int FireCommand(ArrayList<String> args, CommandFrame cmdFr) ;
 	
+	public void helloMsg (CommandFrame cmdFr) {
+		cmdFr.print(getName() + " is now the current mod");
+		cmdFr.setTitle("Command prompt (" + modName + ")");
+	}
+	
 	/**
 	 * every line into the return array of string will be added in Slve.init.
 	 * It is always called before getModInitParametersAfterJob.

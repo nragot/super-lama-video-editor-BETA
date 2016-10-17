@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import start.AppProperties;
 import start.Start;
@@ -59,10 +60,16 @@ public class CommandFrame extends SlveFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				print(cmd.getText());
-				command(cmd.getText());
-				cmd.setText("");
-			}});
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						//print(cmd.getText());
+						command(cmd.getText());
+						cmd.setText("");
+					}
+				});
+			}
+		});
 	}
 	
 	public String[] getLines () {
@@ -137,6 +144,7 @@ public class CommandFrame extends SlveFrame {
 			for (Mod mod : AppProperties.getMods()) {
 				if (mod.getName().equals(args.get(1))) {
 					currentmod = mod;
+					mod.helloMsg(this);
 					return 0;
 				}
 			}
@@ -162,6 +170,7 @@ public class CommandFrame extends SlveFrame {
 				for (Mod mod : AppProperties.getMods()) {
 					if (mod.getName().equals(args.get(1))) {
 						args.remove(0);args.remove(0);
+						//mod.FireCommand(args, this);
 						mod.FireCommand(args, this);
 						return 0;
 					}
@@ -181,6 +190,23 @@ public class CommandFrame extends SlveFrame {
 			}
 			currentmod.FireCommand(args, this);
 			return 0;
+		}
+	}
+	
+	public class CommandRunner extends Thread { //to use another thread than the graphical thread (and allow sleepness in thread)
+		Mod mod;
+		ArrayList<String> cmd;
+		CommandFrame cmdFr;
+		
+		public CommandRunner (Mod mod, ArrayList<String> cmd, CommandFrame cmdFr) {
+			this.mod = mod;
+			this.cmd = cmd;
+			this.cmdFr = cmdFr;
+			super.start();
+		}
+		
+		public void run () {
+			mod.FireCommand(cmd, cmdFr);
 		}
 	}
 

@@ -1,13 +1,14 @@
 package API;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import start.Start;
 
-public class SlveFrame extends JFrame implements WindowListener{
+public class SlveFrame extends JFrame implements KeyListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -21,12 +22,14 @@ public class SlveFrame extends JFrame implements WindowListener{
 	
 	public SlveFrame (int priority) {
 		this.priority = priority;
-		addWindowListener(this);
+		addKeyListener(this);
+		//addWindowListener(this);
 	}
 	
 	public SlveFrame () {
 		priority = 2;
-		addWindowListener(this);
+		addKeyListener(this);
+		//addWindowListener(this);
 	}
 
 	public void setPriority (int i) {
@@ -58,8 +61,40 @@ public class SlveFrame extends JFrame implements WindowListener{
 	@Override
 	public void dispose () {
 		Start.getFrames().remove(this);
+		super.dispose();
 	}
 
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_F3:
+			System.out.println("about to call front every frame" + this.getName());
+			Start.frontEveryFrame();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+	
+	public void messageUser (String title, String str) {
+		JOptionPane.showMessageDialog(this,str,title, JOptionPane.DEFAULT_OPTION);
+	}
+	
+	public void warnUser (String title, String str) {
+		JOptionPane.showMessageDialog(this,str,title, JOptionPane.WARNING_MESSAGE);
+	}
+	
+	public void scoldUser (String title, String str) {
+		JOptionPane.showMessageDialog(this, str, title, JOptionPane.ERROR_MESSAGE);
+	}
+	
+
+	/*
 	@Override
 	public void windowActivated(WindowEvent e) {
 		if (e.getOppositeWindow() == null) {
@@ -91,7 +126,5 @@ public class SlveFrame extends JFrame implements WindowListener{
 
 	@Override
 	public void windowOpened(WindowEvent e) {
-	}
-	
-
+	}*/
 }

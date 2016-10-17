@@ -1,23 +1,20 @@
 package API;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import exceptions.NoItemFoundException;
 import start.AppProperties;
 import start.MainWindow;
 import start.Start;
 import tools.TimeLine;
+import exceptions.NoItemFoundException;
 
-public class Item extends JFrame{
-
-	private static final long serialVersionUID = 1L;
+public class Item {
 	
 	protected ArrayList<String>  keyFrameTranslation = new ArrayList<String>();
 	protected ArrayList<String>  keyFrameRotation = new ArrayList<String>();
@@ -136,9 +133,9 @@ public class Item extends JFrame{
 		m_name = name;
 	}
 	
-	public Container getOption (int w, int h) {
-		Container cont = new Container();
-		cont.setPreferredSize(new Dimension(w, h));
+	public JPanel getOption (int w, int h) {
+		JPanel cont = new JPanel();
+		//cont.setPreferredSize(new Dimension(w, h));
 		return cont;
 	}
 	

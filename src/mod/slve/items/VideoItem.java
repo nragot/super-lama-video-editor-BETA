@@ -109,7 +109,8 @@ public class VideoItem extends ItemThatReturnAnImage {
 	
 	public void setFrame (int i) {
 		try {
-			if (videoBorn > MainWindow.getTimeLine().getTime()) {
+			MainWindow.getTimeLine();
+			if (videoBorn > TimeLine.getTime()) {
 				g.setFrameNumber(0);
 			} else {
 				g.setFrameNumber(i);

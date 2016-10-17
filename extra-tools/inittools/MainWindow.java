@@ -1,8 +1,5 @@
 package inittools;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -22,9 +19,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import API.Mod;
@@ -140,15 +134,6 @@ public class MainWindow extends JFrame implements WindowListener{
 			e.printStackTrace();
 		}
 		setVisible(true);
-	}
-	
-	private class MyJRadioButton extends JRadioButton {
-		private static final long serialVersionUID = 1L;
-		public int i = 0;
-		
-		public MyJRadioButton (int i) {
-			this.i = i;
-		}
 	}
 	
 	public boolean writeInit () {

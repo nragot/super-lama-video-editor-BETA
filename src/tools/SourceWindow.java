@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -26,8 +25,6 @@ import browser.BrowserActions;
 import browser.FileBrowser;
 
 public class SourceWindow {
-	
-	private static final long serialVersionUID = 1L;
 	
 	srcFolder root = new srcFolder("/");
 	Image folderIcon = new ImageIcon(getClass().getResource("/icon folder.png")).getImage();
@@ -54,6 +51,8 @@ public class SourceWindow {
 	
 	private class MyWindow extends SlveFrame implements KeyListener{
 		
+		private static final long serialVersionUID = 1L;
+
 		SourceActions actions;
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -66,7 +65,6 @@ public class SourceWindow {
 			this.actions = actions;
 			
 			setBounds(20, 20, 800, 800);
-			addKeyListener(this);
 			setContentPane(new MyPanel());
 			
 			selectedItem = root;
@@ -140,8 +138,10 @@ public class SourceWindow {
 		}
 		
 		private class MyPanel extends JPanel{
+
+			private static final long serialVersionUID = 1L;
+
 			public void paintComponent (Graphics g) {
-				int x = 0, y = 0;
 				drawFolder(root, new Point(0, 0), g);
 			}
 		}
@@ -258,8 +258,8 @@ public class SourceWindow {
 	}
 	
 	public interface SourceActions {
-		public void userChooseImage (SourceWindow source, JFrame window);
-		public void userChooseFolder (SourceWindow source, JFrame window);
+		public void userChooseImage (SourceWindow source, SlveFrame window);
+		public void userChooseFolder (SourceWindow source, SlveFrame window);
 	}
 
 }

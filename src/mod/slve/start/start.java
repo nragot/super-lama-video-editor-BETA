@@ -3,10 +3,9 @@ package mod.slve.start;
 import inittools.ModBox;
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,12 +13,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
@@ -42,7 +39,10 @@ import tools.SourceWindow;
 import tools.SourceWindow.SourceActions;
 import API.Item;
 import API.Mod;
+import API.SlveFrame;
 import API.SlveMenuItem;
+import browser.BrowserActions;
+import browser.FileBrowser;
 import exceptions.NoItemFoundException;
 
 public class start extends Mod{
@@ -53,11 +53,12 @@ public class start extends Mod{
 		SlveMenuItem renderProp = new SlveMenuItem("properties", new String[]{"render"});
 		SlveMenuItem renderShot = new SlveMenuItem("shot", new String[]{"render"});
 		SlveMenuItem renderFilm = new SlveMenuItem("video", new String[]{"render"});
+		SlveMenuItem addSrcImage = new SlveMenuItem("image from source", new String[]{"add"});
 		SlveMenuItem addImage = new SlveMenuItem("image", new String[]{"add"});
 		SlveMenuItem addText = new SlveMenuItem("text", new String[]{"add"});
 		SlveMenuItem addVideo = new SlveMenuItem("video", new String[]{"add"});
-		SlveMenuItem addRect = new SlveMenuItem("oval", new String[]{"add", "shape"});
-		SlveMenuItem addOval = new SlveMenuItem("rectangle", new String[]{"add", "shape"});
+		SlveMenuItem addRect = new SlveMenuItem("rectangle", new String[]{"add", "shape"});
+		SlveMenuItem addOval = new SlveMenuItem("oval", new String[]{"add", "shape"});
 		SlveMenuItem addEmpty = new SlveMenuItem("empty", new String[]{"add"});
 		SlveMenuItem addLayer = new SlveMenuItem("layer", new String[0]);
 		renderProp.addActionListener(new ActionListener() {
@@ -78,22 +79,21 @@ public class start extends Mod{
 				RendererTool.renderVideo();
 			}
 		});
-		addImage.addActionListener(new ActionListener() {
+		addSrcImage.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Start.getSourceWindow().active(new SourceActions() {
 					
 					@Override
-					public void userChooseImage(SourceWindow source, JFrame window) {
+					public void userChooseImage(SourceWindow source, SlveFrame window) {
 						ImageItem img = new ImageItem(source.getSelectedItem().preview(), JOptionPane.showInputDialog(null,"give the name of the object you want to create","item #"), 10, 10);
-						((BasicLayer) Start.getMainWindow().getSelectedLayer()).addItem((Item)img);
+						addItemInSelectedLayer(img);
 						window.dispose();
-						Start.getOutline().refresh();
 					}
 					
 					@Override
-					public void userChooseFolder(SourceWindow source, JFrame window) {
+					public void userChooseFolder(SourceWindow source, SlveFrame window) {
 						source.getSelectedItemAsFolder().toggleOpen();
 					}
 				});
@@ -115,16 +115,56 @@ public class start extends Mod{
 				});*/
 			}
 		});
+		addImage.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new FileBrowser(new BrowserActions() {
+					
+					@Override
+					public void done(String path) {
+						try {
+							Image img = new ImageIcon(path).getImage();
+							String str = JOptionPane.showInputDialog("how are we calling that ?");
+							addItemInSelectedLayer(new ImageItem(img, str, img.getWidth(null), img.getHeight(null)));
+						} catch (Exception e) {
+							e.printStackTrace();
+							new SlveFrame().warnUser("something went wrong", "couldn't load the image for some reason");
+						}
+					}
+					
+					@Override
+					public void close(String path) {
+					}
+				}).go(false, "that image", false);
+			}
+		});
+		addRect.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				addItemInSelectedLayer(new ShapeRect());
+			}
+		});
+		addOval.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				addItemInSelectedLayer(new ShapeOval());
+			}
+		});
+		
 		addLayer.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Start.getMainWindow().getLayers().add(new BasicLayer(JOptionPane.showInputDialog(null,"give the name of the object you want to create")));
+				Start.getMainWindow().getLayers().add(new BasicLayer(JOptionPane.showInputDialog(null,"give the name of the layer you want to create")));
 			}
 		});
 		Start.addMenuBarItem(renderShot);
 		Start.addMenuBarItem(renderFilm);
 		Start.addMenuBarItem(renderProp);
+		Start.addMenuBarItem(addSrcImage);
 		Start.addMenuBarItem(addImage);
 		Start.addMenuBarItem(addText);
 		Start.addMenuBarItem(addVideo);
@@ -132,22 +172,34 @@ public class start extends Mod{
 		Start.addMenuBarItem(addOval);
 		Start.addMenuBarItem(addEmpty);
 		Start.addMenuBarItem(addLayer);
+		
+		BasicLayer.setIcon(new ImageIcon(getClass().getResource("/basic layer.png")).getImage());
+		GuiLayer.setIcon(new ImageIcon(getClass().getResource("/GUI layer.png")).getImage());
 	}
 	
 	@Override
 	public void render(Item item, Graphics2D g, int x, int y, int w, int h, int cw, int ch, double z) {
-		g.rotate(Math.toRadians(item.getRotation()));
+		g.rotate(Math.toRadians(item.getRotation()), x+item.getPosX(), y+item.getPosY());
 		if (item.getId() == 401) {
 			ShapeRect rect = (ShapeRect) item;
-			g.fillRoundRect(rect.getX() - rect.getWidth()/2 + x, rect.getY() - rect.getHeight()/2 + y, rect.getWidth(), rect.getHeight(), rect.getRoundBoundX(), rect.getRoundBoundY());
+			g.fillRoundRect(rect.getPosX() - rect.getWidth()/2 + x, rect.getPosY() - rect.getHeight()/2 + y, rect.getWidth(), rect.getHeight(), rect.getRoundBoundX(), rect.getRoundBoundY());
 		}else if (item.getId() == 402) {
 			ShapeOval ovl = (ShapeOval) item;
-			g.fillOval(ovl.getX() - ovl.getWidth()/2 + x, ovl.getY() - ovl.getHeight()/2 + y, ovl.getWidth(), ovl.getHeight());
+			g.fillOval(ovl.getPosX() - ovl.getWidth()/2 + x, ovl.getPosY() - ovl.getHeight()/2 + y, ovl.getWidth(), ovl.getHeight());
 		} else {
 			ItemThatReturnAnImage img = (ItemThatReturnAnImage) item;
-			g.drawImage(img.getImage(), img.getPosX() - img.getWidth()/2 + x, img.getPosY() - img.getHeight()/2 + y, img.getWidth(), img.getHeight(), null);
+			g.drawImage(img.getImage(), img.getPosX() - img.getWidth()/2 + x, img.getPosY() - img.getHeight()/2 + y, (int) (img.getWidth()*z), (int) (img.getHeight()*z), null);
 		}
-		g.rotate(Math.toRadians(-item.getRotation()));
+		g.rotate(Math.toRadians(-item.getRotation()), x+item.getPosX(), y+item.getPosY());
+	}
+	
+	public void addItemInSelectedLayer (Item item) {
+		try {
+			((BasicLayer)Start.getMainWindow().getSelectedLayer()).addItem(item);
+			Start.getOutline().refresh();
+		} catch (ClassCastException e) {
+			Start.getMainWindow().scoldUser("wrong layer", "this item can't go in that layer !");
+		}
 	}
 
 	@Override
@@ -155,22 +207,31 @@ public class start extends Mod{
 		switch (args.get(0)) {
 		case "help" :
 			try {
-				cmds.print ("[help] hello, welcome in the Command Prompt !");
-				Thread.sleep(1000);
-				cmds.print ("[help] here you will be able to enter commands to do a lot of stuff.");
-				cmds.print ("[help] in wich case we (the commands) will, sometime, answer you. Our answers are in green.");
-				cmds.print ("[help] your commands are in blue (look above).");
-				cmds.print ("[help] if something goes wrong, serge himself will tell you that an error occur. here is an exemple :");
-				cmds.print ("[serge] it is absolutly forbidden to use the help! ... let's say it is fine for now but i'm watching you.");
-				cmds.print ("[help] a command can be written as this");
-				cmds.print ("command argument1 \"argument 2\" ...");
-				cmds.print ("[help] hopefully many commands don't need any arguments, but many more might need you much information");
-				cmds.print ("[help] if you need to write an argument wich need spaces to be written, you will have to put ...");
-				cmds.print ("[help] ... \" \" to make sure it is considere as only one argument");
-				cmds.print ("[help] here is a great exemple of command you may use :");
-				cmds.print ("outline add image \"C:/image 1\"");
-				cmds.print("[help] commands available :");
-				cmds.print("echo, list");
+				if (args.size() != 2) {
+					cmds.print("[help]you are about the help for the usage of slve command prompt");
+					Thread.sleep(4000);
+					cmds.print("[help] everything comming out of the c.p shall start with [something] and appear in green");
+					Thread.sleep(4000);
+					cmds.print("[help] Your own writing should appear in blue");
+					cmds.print("[help] If you ever see something you didn't write in blue, no worries");
+					cmds.print("the developpers must have forgotten to had a bracket in the beggining of the sentence");
+					Thread.sleep(10000);
+					cmds.print("[help] if an error occur, a text in red should appear starting with [serge]");
+					Thread.sleep(2000);
+					cmds.print("[serge] like this !");
+					Thread.sleep(4000);
+					cmds.print("[help] command should be written like this (blue on purpose):");
+					cmds.print("command [arg1] [arg2]");
+					cmds.print("[help] everything between \" \" is considered as one argument");
+					Thread.sleep(12000);
+					cmds.print("[help] here's a tip; if you write :help a");
+					cmds.print("[help] you will skip the tutorial and only the command list !");
+					Thread.sleep(6000);
+				}
+				cmds.print("[help] *************************list of cmds");
+				cmds.print("[help] echo, list, clear, pause, script");
+				cmds.print("[help] command.prompt, outline, timeline, item.options, main");
+				cmds.print("[help] render, exit");
 				break;
 			} catch (InterruptedException e) {
 
@@ -407,27 +468,6 @@ public class start extends Mod{
 				"main new.guilayer",
 				"main set.selected.layer 0"};
 	}
-	
-	/*
-	@Override
-	public JPanel getModInitOptions (int w, int h) {
-		System.out.println("w:"+w+" h:"+h);
-		JPanel cont = new JPanel();
-		cont.setPreferredSize(new Dimension(w, 60));
-		cont.setLayout(new FlowLayout());
-		cont.add(activate);
-		cont.add(doShowTerminal);
-		cont.add(doPauseWhenDone);
-		JSeparator sep = new JSeparator();
-		sep.setPreferredSize(new Dimension(w,4));
-		cont.add(sep);
-		cont.add(new JLabel("where to render by default"));
-		cont.add(defaultRenderOutputPath);
-		sep = new JSeparator();
-		sep.setPreferredSize(new Dimension(w,4));
-		cont.add(sep);
-		return cont;
-	}*/
 	
 
 

@@ -16,12 +16,13 @@ outline set.size 400 200
 outline set.position 900 130
 timeline set.title "timeline"
 timeline set.size 1300 100
-timeline set.position 0 0
+timeline set.position 0 0  
 item.options set.title "item option"
 item.options set.size 400 200
 item.options set.position 900 360
 main new.layer background
 main new.guilayer
 main set.selected.layer 0
+loadbar
 #after job : slve
 pause "ready to start"

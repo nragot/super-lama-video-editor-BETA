@@ -1,22 +1,22 @@
 package mod.slve.items;
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import miscelanious.SlveDefaultLayout;
+
 import API.Item;
 
 public class SlveItem extends Item {
-	private static final long serialVersionUID = 1L;
 	private boolean options[] = {false};
 	//options id-> 1 = rotation
 
@@ -26,9 +26,11 @@ public class SlveItem extends Item {
 	}
 	
 	@Override
-	public Container getOption(int w, int h) {
-		Container cont = new Container();
+	public JPanel getOption(int w, int h) {
+		JPanel cont = new JPanel();
+		cont.setLayout(new SlveDefaultLayout());
 		cont.setLayout(new FlowLayout());
+		System.out.println("w:"+w+"h:"+h);
 		cont.setPreferredSize(new Dimension (w,h));
 		
 		if (options[0]) {
@@ -51,7 +53,7 @@ public class SlveItem extends Item {
 					} else
 						field.setBackground(Color.red);
 					field.setCaretPosition(0);
-					revalidate();
+					field.revalidate();
 				}
 
 				@Override
@@ -96,7 +98,7 @@ public class SlveItem extends Item {
 				} else
 					field.setBackground(Color.red);
 				field.setCaretPosition(0);
-				revalidate();
+				field.revalidate();
 			}
 
 			@Override
@@ -125,14 +127,13 @@ public class SlveItem extends Item {
 					field.setBackground(Color.white);
 				} else
 					field.setBackground(Color.red);
-				revalidate();
+				field.revalidate();
 			}
 
 			@Override
 			public void focusGained(FocusEvent e) {
 				JTextField field = (JTextField) e.getSource();
-				if (field.getText().startsWith("y="))
-					field.setText(field.getText().substring(2));
+				field.setText(item.getPosYFormula());
 			}
 		});
 		cont.add(field);
@@ -155,14 +156,13 @@ public class SlveItem extends Item {
 					field.setBackground(Color.white);
 				} else
 					field.setBackground(Color.red);
-				revalidate();
+				field.revalidate();
 			}
 
 			@Override
 			public void focusGained(FocusEvent e) {
 				JTextField field = (JTextField) e.getSource();
-				if (field.getText().startsWith("w="))
-					field.setText(field.getText().substring(2));
+				field.setText(item.getWidthFormula());
 			}
 		});
 		cont.add(field);
@@ -185,14 +185,13 @@ public class SlveItem extends Item {
 					field.setBackground(Color.white);
 				} else
 					field.setBackground(Color.red);
-				revalidate();
+				field.revalidate();
 			}
 
 			@Override
 			public void focusGained(FocusEvent e) {
 				JTextField field = (JTextField) e.getSource();
-				if (field.getText().startsWith("h="))
-					field.setText(field.getText().substring(2));
+				field.setText(item.getHeightFormula());
 			}
 		});
 		cont.add(field);

@@ -1,12 +1,12 @@
 package start;
 
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -46,21 +45,6 @@ public class MainWindow extends SlveFrame{
 	private static final long serialVersionUID = 1L;
 	
 	static WorkingPanel panel;
-	//menu bar
-	/*
-	JMenuBar jmb = new JMenuBar();
-	JMenu jm_add= new JMenu("add");
-	JMenu jm_render = new JMenu("render");
-	JMenuItem jmi_add_image = new JMenuItem("image");
-	JMenuItem jmi_add_text = new JMenuItem("text");
-	JMenuItem jmi_add_video = new JMenuItem("video");
-	JMenuItem jmi_add_shape_rect = new JMenuItem("Rect");
-	JMenuItem jmi_add_shape_oval = new JMenuItem("Oval");
-	JMenu jm_add_shape = new JMenu("shape");
-	JMenuItem jmi_property = new JMenuItem("properties");
-	JMenuItem jmi_shot = new JMenuItem("shot");
-	JMenuItem jmi_video = new JMenuItem("video");*/
-	
 
 	//really usefull stuff
 	static ArrayList<ImageItem>        images         = new ArrayList<ImageItem>()       ;
@@ -83,8 +67,8 @@ public class MainWindow extends SlveFrame{
 	int userClickedOnX = -1, userClickedOnY = -1; //-1:did not cliked anywhere
 	int viewerXLayer = 0, viewerYLayer = 0;
 	int panelStatus = 0; //0:drawing layer; 1:drawing layer manager 
-	boolean optionMenu = false;
 	int selectedLayer;
+	boolean isDragging;
 	
 	static Redrawer redrawer;
 	
@@ -372,47 +356,6 @@ public class MainWindow extends SlveFrame{
 		throw new NoItemFoundException();
 	}
 	
-	/*public static void removeItemByName (String str) throws NoItemFoundException{
-		for (int index = 0; index < images.size();index++) {
-			if (str.equals(images.get(index).getName())) {
-				images.remove(index);
-				ResolveIndexGap(1, index);
-				outline.refresh();
-				itemOptions.loadOptions();
-				return;
-			}
-		}
-		for (int index = 0; index < texts.size();index++) {
-			if (str.equals(texts.get(index).getName())) {
-				texts.remove(index);
-				ResolveIndexGap(2, index);
-				outline.refresh();
-				itemOptions.loadOptions();
-				return;
-			}
-		}
-		for (int index = 0; index < videos.size();index++) {
-			if (str.equals(videos.get(index).getName())) {
-				videos.remove(index);
-				ResolveIndexGap(3, index);
-				outline.refresh();
-				itemOptions.loadOptions();
-				return;
-			}
-		}
-		for (int index = 0; index < shapes.size();index++) {
-			if (str.equals(shapes.get(index).getName())) {
-				shapes.remove(index);
-				ResolveIndexGap(401, index);
-				outline.refresh();
-				itemOptions.loadOptions();
-				return;
-			}
-		}
-		
-		throw new NoItemFoundException();
-	}*/
-	
 	public static void secureRedrawerStop () {
 		redrawer.secureStop();
 	}
@@ -467,9 +410,6 @@ public class MainWindow extends SlveFrame{
 	private class WorkingPanel extends JPanel{
 		
 		private static final long serialVersionUID = 1L;
-		
-		Font helpFont = new Font("Dialog", Font.PLAIN, 16);
-		Font drawFont = new Font("Dialog", Font.PLAIN, 16);
 		public WorkingPanel () {
 			
 		}
@@ -487,42 +427,66 @@ public class MainWindow extends SlveFrame{
 				g.fillRect(0, 0, getWidth(), getHeight());
 				for (int i = 0; i < layers.size(); i++) {
 					g.setColor(Color.WHITE);
-					g.fillRect(getWidth()/2 - 50, 50+i*200, 100, 150);
+					//drawing the layers
+					g.drawString(selectedLayer+" "+isDragging, 10, 30);
+					Image img = layers.get(i).getIcon();
+					if (img == null) {
+						g.fillRect(getWidth()/2 - 50, 50+i*200, 100, 150);
+					} else {
+						g.drawImage(img, getWidth()/2 - 50, 50+i*200, 100, 150, this);
+					}
+					if (isDragging) {
+						AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f);
+						g.setComposite(ac);
+						img = getSelectedLayer().getIcon();
+						if (img == null) {
+							g.fillRect(userClickedOnX, userClickedOnY, 100, 150);
+						} else {
+							g.drawImage(img, userClickedOnX, userClickedOnY, 100, 150, this);
+						}
+						ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f);
+						g.setComposite(ac);
+					}
+					//drawing the buttons
 					g.setColor(Color.BLACK);
 					if (i == selectedLayer)
 						g.drawString(layers.get(i).getName() + "<- is selected", getWidth()/2 + 100, 100+i*200);
 					else 
 						g.drawString(layers.get(i).getName(), getWidth()/2 + 100, 100+i*200);
 					int x = 0;
-					for (SlveButton button : layers.get(i).getLeftButtons()) {
-						x += button.getWidth();
-						if (button.getIcon() == null)
-							g.drawString(button.getName(), getWidth()/2 - 50 - x, 85+i*200);
-						else 
-							g.drawImage(button.getIcon().getImage(), getWidth()/2 - 50 - x, 75+i*200, null);
-						if (userClickedOnX != -1 
-								&& userClickedOnX > getWidth()/2 - 50 - x && userClickedOnX < getWidth()/2 - 50 - x + button.getWidth()
-								&& userClickedOnY > 75 + i*200 && userClickedOnY < 75 + i*200 + button.getHeight())
+					if (!isDragging) {
+						for (SlveButton button : layers.get(i).getLeftButtons()) {
+							x += button.getWidth();
+							if (button.getIcon() == null)
+								g.drawString(button.getName(), getWidth()/2 - 50 - x, 85+i*200);
+							else 
+								g.drawImage(button.getIcon().getImage(), getWidth()/2 - 50 - x, 75+i*200, null);
+							if (userClickedOnX != -1 
+									&& userClickedOnX > getWidth()/2 - 50 - x && userClickedOnX < getWidth()/2 - 50 - x + button.getWidth()
+									&& userClickedOnY > 75 + i*200 && userClickedOnY < 75 + i*200 + button.getHeight())
 							{
 								button.push();
 								userClickedOnX = userClickedOnY = -1;
 							}
-					}
-					x = 0;
-					for (SlveButton button : layers.get(i).getRightButtons()) {
-						if (button.getIcon() == null)
-							g.drawString(button.getName(), getWidth()/2 + 50 + x, 190+i*200);
-						else 
-							g.drawImage(button.getIcon().getImage(), getWidth()/2 +100 + x, 180+i*200, null);
-						if (userClickedOnX != -1 
-								&& userClickedOnX > getWidth()/2 + 50 + x && userClickedOnX < getWidth()/2 + 50 + x + button.getWidth()
-								&& userClickedOnY > 180 + i*200 && userClickedOnY < 180 + i*200 + button.getHeight())
-							{
-								button.push();
-								userClickedOnX = userClickedOnY = -1;
-							}
-							;
-						x += button.getWidth();
+						}
+
+						x = 0;
+						
+						for (SlveButton button : layers.get(i).getRightButtons()) {
+							if (button.getIcon() == null)
+								g.drawString(button.getName(), getWidth()/2 + 50 + x, 190+i*200);
+							else 
+								g.drawImage(button.getIcon().getImage(), getWidth()/2 +100 + x, 180+i*200, null);
+							if (userClickedOnX != -1 
+									&& userClickedOnX > getWidth()/2 + 50 + x && userClickedOnX < getWidth()/2 + 50 + x + button.getWidth()
+									&& userClickedOnY > 180 + i*200 && userClickedOnY < 180 + i*200 + button.getHeight())
+								{
+									button.push();
+									userClickedOnX = userClickedOnY = -1;
+								}
+								;
+							x += button.getWidth();
+						}
 					}
 				}
 			}
@@ -604,61 +568,6 @@ public class MainWindow extends SlveFrame{
 		}	
 	}
 	
-	private class Actions implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JMenuItem jmi= (JMenuItem)e.getSource();
-			
-			/*
-			if (jmi == jmi_add_image) {
-				Start.getSourceWindow().active(new SourceActions() {
-					
-					@Override
-					public void userChooseImage(SourceWindow source, JFrame window) {
-						addImageItem(new ImageItem(source.getSelectedItem().preview(), JOptionPane.showInputDialog(null,"give the name of the object you want to create","item #" + (index.size()+1))
-								, cameraWidth/2, cameraHeight/2));
-						selectItem(index.size()-1, true);
-						window.dispose();
-						outline.refresh();
-					}
-					
-					@Override
-					public void userChooseFolder(SourceWindow source, JFrame window) {
-						source.getSelectedItemAsFolder().toggleOpen();
-					}
-				});
-			}
-			else if (jmi == jmi_add_text) {
-				addTextItem(new TextItem("TEXT"));
-				outline.refresh();
-			}
-			else if (jmi == jmi_property) {
-				new PropertiesWindow();
-			}
-			else if (jmi == jmi_shot) {
-				RendererTool renderer = new RendererTool();
-				renderer.renderShot();
-			}
-			else if (jmi == jmi_video) {
-				RendererTool renderer = new RendererTool();
-				renderer.renderVideo();
-			}
-			else if (jmi == jmi_add_video) {
-				new VideoSelector();
-			}
-			else if (jmi == jmi_add_shape_rect) {
-				addShapeRect(new ShapeRect());
-				outline.refresh();
-			}
-			else if (jmi == jmi_add_shape_oval) {
-				addShapeOval(new ShapeOval());
-				outline.refresh();
-			}*/
-		}
-		
-	}
-	
 	class MyKeyListener implements KeyListener {
 		public MyKeyListener () {}
 		
@@ -696,11 +605,11 @@ public class MainWindow extends SlveFrame{
 						Start.getSourceWindow().active(new SourceActions() {
 
 							@Override
-							public void userChooseImage(SourceWindow source, JFrame jf) {
+							public void userChooseImage(SourceWindow source, SlveFrame jf) {
 							}
 
 							@Override
-							public void userChooseFolder(SourceWindow source, JFrame jf) {
+							public void userChooseFolder(SourceWindow source, SlveFrame jf) {
 								Start.getSourceWindow().getSelectedItemAsFolder().toggleOpen();
 							}
 						});
@@ -709,7 +618,7 @@ public class MainWindow extends SlveFrame{
 			} else if (panelStatus == 1) {
 				if (e.getKeyCode() == 38)
 					selectedLayer--;
-				else
+				else if (e.getKeyCode() == 40)
 					selectedLayer++;
 			}
 			if (e.getKeyCode() == 32) {
@@ -729,7 +638,6 @@ public class MainWindow extends SlveFrame{
 	}
 	
 	private class Mover implements MouseMotionListener, MouseListener {
-		int a,b;
 		int[] c,d;
 
 		@Override
@@ -739,19 +647,23 @@ public class MainWindow extends SlveFrame{
 					for (int i = 0; i < itemSelection.size(); i++) {
 						if (itemSelection.get(i).isMovable()) {
 							try {
-								getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - a)/viewerZoom));
-								getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - b)/viewerZoom));
+								getSelectedItem(i).setPosX((int) (c[i] + (e.getX() - userClickedOnX)/viewerZoom));
+								getSelectedItem(i).setPosY((int) (d[i] + (e.getY() - userClickedOnY)/viewerZoom));
 							} catch (NoItemFoundException exc) {
 
 							}
 						}
 					}
 				} else if (SwingUtilities.isMiddleMouseButton(e)) {
-					viewerX += (e.getX() - a);
-					viewerY += (e.getY() - b);
-					a = e.getX();
-					b = e.getY();
+					viewerX += (e.getX() - userClickedOnX);
+					viewerY += (e.getY() - userClickedOnY);
+					userClickedOnX = e.getX();
+					userClickedOnY = e.getY();
 				}
+			} else if (panelStatus == 1) {
+				userClickedOnX = e.getX();
+				userClickedOnY = e.getY();
+				isDragging = true;
 			}
 		}
 
@@ -770,8 +682,8 @@ public class MainWindow extends SlveFrame{
 		@Override
 		public void mousePressed(java.awt.event.MouseEvent e) {
 			if (panelStatus == 0) {
-				a = e.getX();
-				b = e.getY();
+				userClickedOnX = e.getX();
+				userClickedOnY = e.getY();
 				c = new int[itemSelection.size()];
 				d = new int[itemSelection.size()];
 				for (int i = 0; i < itemSelection.size(); i++) {
@@ -785,13 +697,25 @@ public class MainWindow extends SlveFrame{
 			} else if (panelStatus == 1) {
 				userClickedOnX = e.getX();
 				userClickedOnY = e.getY();
+				selectedLayer = (userClickedOnY - 50) / 200;
+				selectedLayer = Math.min(selectedLayer, layers.size()-1);
+				selectedLayer = Math.max(selectedLayer, 0);
 				System.out.println("x:"+ userClickedOnX + " y:" + userClickedOnY);
 			}
 		}
 
 		@Override
 		public void mouseReleased(java.awt.event.MouseEvent e) {
-			
+			isDragging = false;
+			if (panelStatus == 1) {
+				Layer temp = layers.get(selectedLayer);
+				int i = (userClickedOnY - 50) / 200;
+				layers.add (i, temp);
+				if (i < selectedLayer)
+					layers.remove(layers.lastIndexOf(temp));
+				else
+					layers.remove(layers.indexOf(temp));
+			}
 		}
 		
 	}

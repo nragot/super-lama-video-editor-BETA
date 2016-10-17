@@ -3,6 +3,7 @@ package API;
 
 import java.awt.Container;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -36,6 +37,7 @@ public abstract class Layer {
 	public Container getOutline () {
 		return new Container();
 	}
+	public abstract Image getIcon ();
 	
 
 }

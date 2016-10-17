@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
@@ -88,7 +89,7 @@ public class Start {
 			for (Object obj : branch) {
 				//System.out.println(str + " " + ((ArrayListWithName) obj).getName());
 				if (!(obj instanceof SlveMenuItem) && str.equals(((ArrayListWithName) obj).getName())) {
-					branch = (ArrayListWithName<Object>) obj;
+					branch = (ArrayListWithName) obj;
 					continue a;
 				}
 			}
@@ -168,36 +169,10 @@ public class Start {
 		baritems.add(item);
 	}
 	
-	static boolean waiter = false;
-	
-	public static void frontEveryFrame (String str) {
-		System.out.println("***************" + str + " " + frames.size());
-		Thread t = new Thread() {
-			@Override
-			public void run () {
-				for (int i = 0; i < 5; i++) {
-					for (int y = 0; y < frames.size();y++) {
-						SlveFrame frame = frames.get(y);
-						if (frame.getPriority()==i) {
-							waiter = true;
-							frame.toFront();
-							while (waiter) {
-								try {
-									sleep(200);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-				}
-			}
-		};
-		t.start();
-	}
-	
-	public static void setWaiterToFalse () {
-		waiter = false;
+	public static void frontEveryFrame () {
+		for (JFrame frame : frames) {
+			frame.toFront();
+		}
 	}
 	
 	public static ArrayList<SlveFrame> getFrames () {

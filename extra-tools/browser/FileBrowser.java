@@ -42,7 +42,6 @@ public class FileBrowser {
 	
 	public FileBrowser(BrowserActions actions) {
 		setActions(actions);
-		HaveTODO = true;
 	}
 	
 	public void setActions (BrowserActions action) {
@@ -80,12 +79,14 @@ public class FileBrowser {
 				synchronized (MainThread) {
 					MainThread.wait(); // THREAD IS INTERUPTED, ONLY BROWSER REMAIN, BROWSER GIVE BACK MONITOR IF CLOSEN
 				}
+				HaveTODO = true;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			return file.getAbsolutePath();
-			} else {
-				new MyWindow(); //THREAD IS NOT INTERUPTED, EVERYTHING GOES AS NORMAL
+		} else {
+			new MyWindow(); //THREAD IS NOT INTERUPTED, EVERYTHING GOES AS NORMAL
+			HaveTODO = false;
 			return "thread not hold";
 		}
 	}
@@ -132,6 +133,9 @@ public class FileBrowser {
 		}
 
 		private class MyPanel extends JPanel {
+
+			private static final long serialVersionUID = 1L;
+
 			public void paintComponent (Graphics graphics) {
 				Graphics2D g = (Graphics2D) graphics.create();
 				
@@ -257,12 +261,12 @@ public class FileBrowser {
 					else 
 						valueToReturn = file.getAbsolutePath() + "/" + files.get(selected).getName();
 					if (HaveTODO) {
-						actions.done(valueToReturn);
-					} else {
+						
 						synchronized (MainThread) {
 							MainThread.notify();
 						}
 					}
+					actions.done(valueToReturn);
 					dispose();
 				}
 			} else {
@@ -302,25 +306,7 @@ public class FileBrowser {
 				}
 				break;
 			case 10:
-				try {
-					if (files.get(selected).isDirectory())
-						readFolder(files.get(selected).getCanonicalPath());
-					else {
-						valueToReturn = file.getAbsolutePath() + "/" + files.get(selected).getName();
-						if (HaveTODO) {
-							actions.done(valueToReturn);
-						} else {
-							synchronized (MainThread) {
-								MainThread.notify();
-							}
-						}
-						dispose();
-					}
-						
-				} catch (IOException e1) {
-					System.err.println("Aouch !!! something wrong happend");
-				}
-				addY = 0;
+				userMadeIsMind();
 			}
 			repaint();
 		}
@@ -335,6 +321,27 @@ public class FileBrowser {
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
 			
+		}
+		
+		public void userMadeIsMind () {
+			try {
+				if (files.get(selected).isDirectory())
+					readFolder(files.get(selected).getCanonicalPath());
+				else {
+					valueToReturn = file.getAbsolutePath() + "/" + files.get(selected).getName();
+					if (HaveTODO) {
+						synchronized (MainThread) {
+							MainThread.notify();
+						}
+					}
+					actions.done(valueToReturn);
+					dispose();
+				}
+					
+			} catch (IOException e1) {
+				System.err.println("Aouch !!! something wrong happend");
+			}
+			addY = 0;
 		}
 		
 	}

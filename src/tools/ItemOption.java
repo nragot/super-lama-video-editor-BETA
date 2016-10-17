@@ -1,22 +1,25 @@
 package tools;
 
 
-import java.awt.Checkbox;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
+import miscelanious.SlveDefaultLayout;
+
+import start.BasicLayer;
 import start.Start;
 import API.SlveFrame;
 import exceptions.NoItemFoundException;
@@ -59,13 +62,38 @@ public class ItemOption extends SlveFrame implements ComponentListener{
 	
 	public void loadOptions () {
 		
+		Panel panel = new Panel();
+		panel.setLayout(new SlveDefaultLayout());
+		JButton remove = new JButton();
+		remove.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					((BasicLayer)(Start.getMainWindow().getSelectedLayer())).getItemList().remove(Start.getMainWindow().getSelectedItem());
+				} catch (IndexOutOfBoundsException | NoItemFoundException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		remove.setText("delete");
+		remove.setBackground(Color.red);
+		panel.add(remove);
+		panel.add(new JSeparator());
 		try {
-			add(Start.getMainWindow().getSelectedItem().getOption(getWidth(), getHeight()));
+			panel.add(Start.getMainWindow().getSelectedItem().getOption(getWidth(), getHeight()));
+			setContentPane (panel);
 		} catch ( IndexOutOfBoundsException | NoItemFoundException e) {
 			e.printStackTrace();
 		}
 		
-		revalidate();
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				revalidate();
+			}
+		});
 		
 		/*
 		getContentPane().removeAll();
@@ -421,45 +449,6 @@ public class ItemOption extends SlveFrame implements ComponentListener{
 	public void componentShown(ComponentEvent e) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	//-------------------------
-	//inner classes
-	//-------------------------
-	private class ChooseOptionsType extends JFrame {
-		public ChooseOptionsType () {
-			setBounds(0, 0, 400, 600);
-			setTitle("tools type");
-			setVisible(true);
-			setLayout(new FlowLayout());
-			Checkbox cb = new Checkbox("enable text rotation");
-			cb.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					b[0][0] = e.getStateChange() == ItemEvent.SELECTED;
-				}
-			});
-			add (cb);
-			cb = new Checkbox("enable text position");
-			cb.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					b[0][1] = e.getStateChange() == ItemEvent.SELECTED;
-				}
-			});
-			add (cb);
-			JButton jb = new JButton("reload");
-			jb.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					loadOptions();
-				}
-			});
-			add(jb);
-		}
 	}
 	
 
