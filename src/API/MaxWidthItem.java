@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package mod.slve.items;
+package API;
 
-import java.awt.Image;
-
-public abstract class ItemThatReturnAnImage extends SlveItem {
-	
-	public ItemThatReturnAnImage () {
-		super("no name");
-	}
-	
-	public abstract Image getImage ();
-
+/**
+ *
+ * @author nathan
+ */
+public interface MaxWidthItem {
+    
 }

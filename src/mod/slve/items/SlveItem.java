@@ -1,8 +1,22 @@
+/* 
+ * Copyright 2016 nathan.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package mod.slve.items;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -13,8 +27,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import miscelanious.SlveDefaultLayout;
-
 import API.Item;
+import miscelanious.MaxWidthPanel;
+import miscelanious.MaxWidthSlider;
 
 public class SlveItem extends Item {
 	private boolean options[] = {false};
@@ -27,16 +42,15 @@ public class SlveItem extends Item {
 	
 	@Override
 	public JPanel getOption(int w, int h) {
-		JPanel cont = new JPanel();
+		MaxWidthPanel cont = new MaxWidthPanel();
 		cont.setLayout(new SlveDefaultLayout());
-		cont.setLayout(new FlowLayout());
 		System.out.println("w:"+w+"h:"+h);
 		cont.setPreferredSize(new Dimension (w,h));
 		
 		if (options[0]) {
 			JTextField field = new JTextField();
 			field.setText("r="+getRotationFormula());
-			field.setPreferredSize(new Dimension(w - 10,30));
+			field.setPreferredSize(new Dimension(-1,30));
 			field.addFocusListener(new MyFocusListener(this) {
 				
 				@Override
@@ -64,7 +78,7 @@ public class SlveItem extends Item {
 			});
 			cont.add(field);
 		} else {
-			JSlider slider = new JSlider();
+			MaxWidthSlider slider = new MaxWidthSlider();
 			slider.setPreferredSize(new Dimension(w - 10, 30));
 			slider.setMaximum(360);
 			slider.setMinimum(-360);
@@ -195,7 +209,7 @@ public class SlveItem extends Item {
 			}
 		});
 		cont.add(field);
-		
+                
 		return cont;
 	}
 	

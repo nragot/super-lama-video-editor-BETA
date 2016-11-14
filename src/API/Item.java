@@ -1,6 +1,20 @@
+/* 
+ * Copyright 2016 nathan.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package API;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.script.ScriptEngine;
@@ -141,6 +155,7 @@ public class Item {
 	
 	/**
 	 * return false if something went wrong
+         * @return 
 	 */
 	public boolean cache () {
 		boolean isEveryThingsRight = true;
@@ -286,10 +301,10 @@ public class Item {
 			
 		}
 		
-		a:for (int index = 0; index < keyFrameActiv.size();index++) {
+		for (int index = 0; index < keyFrameActiv.size();index++) {
 			int testedTime = keyFrameActiv.get(index);
 			if (time < testedTime) {
-				break a;
+				break;
 			} else {
 				finalIndex += 1;
 			}
@@ -309,6 +324,8 @@ public class Item {
 	
 	/**
 	 * return the last ActivKeyFrame from time given, (if everything went fine). Otherwise it will return -1
+         * @param i
+         * @return 
 	 */
 	public int getLastKeyFrameActiv (int i) {
 		for (int index = 0; index < keyFrameTranslation.size(); index++) {
@@ -327,6 +344,8 @@ public class Item {
 	
 	/**
 	 *return the next ActivkeyFrame from time given, (if everything went fine). Otherwise it will return -1
+         * @param i
+         * @return 
 	 **/
 	public int getNextKeyFrameActiv (int i) {
 		for (int index = 0; index < keyFrameActiv.size(); index++) {
@@ -544,36 +563,36 @@ public class Item {
 		//System.out.println("findandchangevariable");
 		do {
 			b = false;
-			if (str.indexOf("#time_frame") != -1) {
+			if (str.contains("#time_frame")) {
 				MainWindow.getTimeLine();
 				str = str.replace("#time_frame", TimeLine.getTime()+"");
 				b = true;
 			}
-			if (str.indexOf("#camera_width") != -1) {
+			if (str.contains("#camera_width")) {
 				str = str.replace("#camera_width", Start.getMainWindow().getCameraWidth()+"");
 				b = true;
 			}
-			if (str.indexOf("#camera_height") != -1) {
+			if (str.contains("#camera_height")) {
 				str = str.replace("#camera_height", Start.getMainWindow().getCameraHeight()+"");
 				b = true;
 			}
-			if (str.indexOf("#me_width") != -1) {
+			if (str.contains("#me_width")) {
 				str = str.replace("#me_width", m_width+"");
 				b = true;
 			}
-			if (str.indexOf("#me_height") != -1) {
+			if (str.contains("#me_height")) {
 				str = str.replace("#me_height", m_height+"");
 				b = true;
 			}
-			if (str.indexOf("#me_posX") != -1) {
+			if (str.contains("#me_posX")) {
 				str = str.replace("#me_posX", m_posX+"");
 				b = true;
 			}
-			if (str.indexOf("#me_posY") != -1) {
+			if (str.contains("#me_posY")) {
 				str = str.replace("#me_posY", m_posY+"");
 				b = true;
 			}
-			if (str.indexOf("#item_width(") != -1) {
+			if (str.contains("#item_width(")) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_width(") + 12, str.indexOf(')'));
 					str = str.replace("#item_width(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
@@ -582,7 +601,7 @@ public class Item {
 					break;
 				} catch (NoItemFoundException e) {}
 			}
-			if (str.indexOf("#item_height(") != -1) {
+			if (str.contains("#item_height(")) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_height(") + 12, str.indexOf(')'));
 					str = str.replace("#item_height(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
@@ -591,7 +610,7 @@ public class Item {
 					break;
 				} catch (NoItemFoundException e) {}
 			}
-			if (str.indexOf("#item_posX(") != -1) {
+			if (str.contains("#item_posX(")) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_posX(") + 12, str.indexOf(')'));
 					str = str.replace("#item_posX(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
@@ -600,7 +619,7 @@ public class Item {
 					break;
 				} catch (NoItemFoundException e) {}
 			}
-			if (str.indexOf("#item_posAbsciss(") != -1) {
+			if (str.contains("#item_posAbsciss(")) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_posAbsciss(") + 12, str.indexOf(')'));
 					str = str.replace("#item_posAbsciss(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
@@ -609,7 +628,7 @@ public class Item {
 					break;
 				} catch (NoItemFoundException e) {}
 			}
-			if (str.indexOf("#item_posY(") != -1) {
+			if (str.contains("#item_posY(")) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_Y(") + 12, str.indexOf(')'));
 					str = str.replace("#item_Y(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");
@@ -618,7 +637,7 @@ public class Item {
 					break;
 				} catch (NoItemFoundException e) {}
 			}
-			if (str.indexOf("#item_posOrdinate(") != -1) {
+			if (str.contains("#item_posOrdinate(")) {
 				try {
 					String str1 = str.substring(str.indexOf("#item_posOrdinate(") + 12, str.indexOf(')'));
 					str = str.replace("#item_posOrdinate(" + str1 + ")", MainWindow.getItemByName(str1).getWidth()+"");

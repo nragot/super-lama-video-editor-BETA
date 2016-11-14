@@ -1,3 +1,18 @@
+/* 
+ * Copyright 2016 nathan.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package inittools;
 
 import java.awt.event.ActionEvent;
@@ -35,7 +50,7 @@ public class MainWindow extends JFrame implements WindowListener{
 	
 	RandomAccessFile file ;
 	String slvePath;
-	ArrayList<Mod> modulesFound = new ArrayList<Mod>();
+	ArrayList<Mod> modulesFound = new ArrayList<>();
 	int entryMod = 0;
 	
 	boolean done;
@@ -67,15 +82,18 @@ public class MainWindow extends JFrame implements WindowListener{
 					} else if (i == 1) {
 						String[] options = {"well then, i've changed my mind !", "yeah whatever, I'm going my rule !", "TL:DR"};
 						int y = JOptionPane.showOptionDialog(this, "slve.init is a really small file although necessary for super lama video editor. \n if you press \"no\" in fear of not being able to erase it once you will not have any use of it anymore (and super lama video editor),\n you have to know that the file is (or will be) right next to super lama video editor's luncher, making it easy to erase.\n the file is not installed or copy in any part of your computer or your system", "a long warrning text that nobody read", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-						if (y == 0) {
-							continue A;
-						} else if (y == 1) {
-							System.exit(0);
-						} else if (y == 2) {
-							JOptionPane.showOptionDialog(this, "Really ??? ya don't want to read ? you really wants to play that game with me?", "WHAT ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"yes","no","whatever"}, "yes");
-							JOptionPane.showOptionDialog(this, "Uuuuugh, i quit ....", "you know what ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"i'll","just","restart :)"}, "yes");
-							System.exit(255);
-						}
+                                            switch (y) {
+                                                case 0:
+                                                    continue;
+                                                case 1:
+                                                    System.exit(0);
+                                                case 2:
+                                                    JOptionPane.showOptionDialog(this, "Really ??? ya don't want to read ? you really wants to play that game with me?", "WHAT ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"yes","no","whatever"}, "yes");
+                                                    JOptionPane.showOptionDialog(this, "Uuuuugh, i quit ....", "you know what ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"i'll","just","restart :)"}, "yes");
+                                                    System.exit(255);
+                                                default:
+                                                    break;
+                                            }
 					}
 				}
 				file = new RandomAccessFile(test, "rw");

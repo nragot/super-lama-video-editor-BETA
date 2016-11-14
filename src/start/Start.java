@@ -1,3 +1,18 @@
+/* 
+ * Copyright 2016 nathan.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package start;
 
 import java.io.File;
@@ -23,19 +38,25 @@ public class Start {
 	static ItemOption itemoptions;
 	static SourceWindow srcWindow;
 	
-	static ArrayList<SlveMenuItem> baritems = new ArrayList<SlveMenuItem>();
+	static ArrayList<SlveMenuItem> baritems = new ArrayList<>();
 	static JMenuBar jmenubar;
 	static ArrayListWithName<Object> tree;
-	
-	static ArrayList<SlveFrame> frames = new ArrayList<SlveFrame>();
+	static ArrayList<SlveFrame> frames = new ArrayList<>();
+        static boolean debug = false;
+        
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+                if (args.length > 0 && (args[0].equals ("--debug") || args[0].equals ("-d"))){
+                    debug = true;
+                }
+                
 		try {
 			String slvePath = new File (new File (new MainWindow().getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent()).getAbsolutePath() + File.separator;
-			if ( ! new File (slvePath + "slve.init").exists() 			//
+			if(debug) System.out.println("slve location : " + slvePath);
+                        if ( ! new File (slvePath + "slve.init").exists() 			//
 					|| new File (slvePath + "initme").exists() 			//
 					|| new File (slvePath + "initme.txt").exists()) 	//
 				new inittools.MainWindow(slvePath);
@@ -50,7 +71,7 @@ public class Start {
 			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-		};
+		}
 	}
 	
 	public static MainWindow getMainWindow () {

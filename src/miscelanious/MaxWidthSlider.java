@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package mod.slve.items;
+package miscelanious;
 
-import java.awt.Image;
+import API.MaxWidthItem;
+import javax.swing.JSlider;
 
-public abstract class ItemThatReturnAnImage extends SlveItem {
-	
-	public ItemThatReturnAnImage () {
-		super("no name");
-	}
-	
-	public abstract Image getImage ();
-
-}
+/**
+ *
+ * @author nathan
+ */
+public class MaxWidthSlider extends JSlider implements MaxWidthItem {}

@@ -1,5 +1,21 @@
+/* 
+ * Copyright 2016 nathan.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package miscelanious;
 
+import API.MaxWidthItem;
 import inittools.TitleLabel;
 
 import java.awt.Component;
@@ -33,6 +49,11 @@ public class SlveDefaultLayout implements LayoutManager{
 				x = 0;
 				continue;
 			}
+                        
+                        if (p instanceof MaxWidthItem) {
+                            p.setPreferredSize(new Dimension((int) c.getWidth() - 5, (int) p.getPreferredSize().getHeight()));
+                        }
+                        
 			x+=p.getPreferredSize().getWidth();
 			if (yToBe < p.getPreferredSize().getHeight()) 
 			{
@@ -60,7 +81,11 @@ public class SlveDefaultLayout implements LayoutManager{
 		x = (c.getWidth() - x) / 2;
 		setupComponent(array, x, y);
 		preferredHeight = y + yToBe + 20;
-		c.setPreferredSize(new Dimension(0, preferredHeight));
+		try {
+			c.setPreferredSize(new Dimension((int) c.getPreferredSize().getWidth(), preferredHeight));
+		} catch (NullPointerException exc) {
+			System.err.println("NullPointerException handled in LayoutManager, you need to have a default prefferedSize set");
+		}
 	}
 
 	public void GoNextLineAndSetupComponents (Component p, Container c) {
